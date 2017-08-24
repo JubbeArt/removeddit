@@ -1,0 +1,16 @@
+{% extends "main.html" %}
+{% block body %}
+<div id="loading-comments" class="loading-comments"></div>
+<!-- https://rawgit.com/ -->
+<script src="{{ url_for('static', filename='snuownd.js') }}"></script>
+<script src="https://cdn.rawgit.com/showdownjs/showdown/1.7.2/dist/showdown.min.js"></script>
+<script src="{{ url_for('static', filename='functions.js') }}"></script>
+<script>
+const thread_id = "{{ thread_id }}";
+const token = "{{ token }}";
+const subreddit = "{{ subreddit }}";
+const all_ids = new Set({{ comment_ids|safe }});
+</script>
+<script src="{{ url_for('static', filename='script.js')}}"></script>
+{% endblock %}
+

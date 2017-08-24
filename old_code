@@ -1,0 +1,105 @@
+/*
+function get_comments(json) {
+	var comments = [];
+	var comments_json = json[1].data.children;
+	
+	for(var i = 0; i < comments_json.length; i++) {	
+		get_comment_data(comments_json[i], comments);
+	}
+	
+	return comments;
+}
+
+
+var stripped_comment_tags = ["author_flair_css_class", "approved_by", 
+"approved_at_utc", "archived", "author_flair_text", 
+"body_html", "banned_at_utc", "banned_by", 
+"can_gild", "can_mod_post", "created", "collapsed", "collapsed_reason", 
+"downs", "distinguished", "gilded",
+"edited", "likes", "link_id", "name", "mod_reports", "num_reports",
+"removal_reason", "report_reasons", 
+"saved", "subreddit", "subreddit_type", "subreddit_name_prefixed", "subreddit_id", 
+"ups", "user_reports"];
+
+
+
+
+// Strips unnecessary tags from comment, adds to comment array
+// Do this recursivly to all replies
+// Params comment:JSON object, comments: array
+function get_comment_data(comment, comments) {
+	if(comment.kind !== "t1") {
+		alert(comment.kind);
+		return;	
+	}
+
+	var comment_data = comment.data;
+	
+	for(var i = 0; i < stripped_comment_tags.length; i++) {
+		delete comment_data[stripped_comment_tags[i]];	
+	}
+	
+	if(comment_data.replies) {
+		for(var i = 0; i < comment_data.replies.data.children.length; i++) {
+			get_comment_data(comment_data.replies.data.children[i], comments);			
+		}
+	}
+		
+	if(comment_data.parent_id.indexOf("_") !== -1) {
+		comment_data.parent_id = comment_data.parent_id.split("_")[1];
+	}
+		
+	delete comment_data["replies"];
+	comments.push(comment_data);
+}
+*/
+
+
+old_code:
+
+	
+	"""headers = {'Authorization': 'bearer ' + token, 'User-Agent': USER_AGENT}
+	url = API_URL + THREAD_PATH.format(subreddit, thread_id)
+	
+	response = requests.get(url, headers=headers)
+	thread_json = None	
+	
+	try:
+		thread_json = response.json()
+	except:
+		return 'Error parsing the thread'
+	
+	thread = {
+		'body': get_thread_body(thread_json),
+		'comments': get_thread_comments(thread_json)
+	}
+ 	
+	return str(get_thread_comments(thread_json))
+	#return str(get_thread_comments(thread_json)) + '/' + str(thread['body']['num_comments'])
+
+def get_thread_body(thread_json):
+	body_json = thread_json[0]['data']['children'][0]['data']	
+	filtered_body = {k:v for k,v in body_json.items() if k in FILTER_BODY}
+	return filtered_body
+	
+def get_thread_comments(thread_json):
+	comments_json = thread_json[1]['data']['children']
+	filtered_comments = []
+	
+	for comment_json in comments_json:
+		comment_data = get_comment_data(comment_json)
+		filtered_comments.append(comment_data)
+		
+	return filtered_comments
+
+def get_comment_data(comment):
+	comment_data = comment['data']
+	filtered_comment = {k:v for k,v in comment_data.items() if k in FILTER_COMMENT}
+	filtered_comment['replies'] = []
+		
+	if comment_data['replies']:
+		for child_comment in comment_data['replies']['data']['children']:
+			filtered_comment['replies'].append(get_comment_data(child_comment))
+		
+	return filtered_comment
+	"""
