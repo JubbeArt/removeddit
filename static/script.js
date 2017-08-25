@@ -8,7 +8,6 @@ const single_comment_url = `https://oauth.reddit.com/r/${subreddit}/api/info/?id
 const removed_comments_url = "/comments/?c=";
 
 const main_div = document.getElementById("main");
-
 const loading_comments = document.getElementById("loading-comments");
 
 const comment_ids = new Set();
@@ -18,11 +17,16 @@ const comments_to_generate_ids = new Set();
 let ajax_calls_left = 0;
 let total_comments;
 
+get_multiple([single_comment_url+"dlg744z",single_comment_url+"dlu05ei",single_comment_url+"dlu08gp"], 
+	response => console.log(response),
+	() => console.log("done with all")
+);
+/*
 get(thread_url, response => {
 	const json = JSON.parse(response);
-	//generate_thread(json[0].data.children[0].data);
-	//get_comment_ids(json[1].data.children);
-});
+	generate_thread(json[0].data.children[0].data);
+	get_comment_ids(json[1].data.children);
+});*/
 
 function generate_thread(thread) {
 	const thread_div = document.createElement("div");
@@ -69,6 +73,7 @@ function extract_id_from_comment(comment) {
 		// Some "show more"-comments were missing, need to do more ajax-calls
 		if(children.length < comment.data.count){
 			ajax_calls_left++;
+			
 			get(morechildren_url + children.join(), response => handle_show_more_comments(JSON.parse(response)));
 		}
 
@@ -91,14 +96,13 @@ function extract_id_from_comment(comment) {
 }
 
 function handle_show_more_comments(comments) {
-	
 	comments.jquery[14][3][0].forEach(comment => {
 		if(comment.kind == "more") {
 			let children = comment.data.children;
 
 			if(children.length < comment.data.count) {
-				ajax_calls_left++;
-				get(morechildren_url + children.join, response => handle_show_more_comments(JSON.parse(response)));
+				ajax_calls_left++;				
+				get(morechildren_url + children.join(), response => handle_show_more_comments(JSON.parse(response)));
 			}
 
 			comment_ids.add(...children);
@@ -108,27 +112,6 @@ function handle_show_more_comments(comments) {
 		}		
 	});
 	
-/*
-
-	for(var i = 0, len = comments.length; i < len; i++){
-		if(comments[i].kind == "more") {
-			var children = comments[i].data.children;
-			
-			if(children.length < comments[i].data.count) {
-				ajax_calls_left++;
-				get(morechildren_url + thread_id + "&children=" + children.join(), function(data){
-					handle_show_more_comments(JSON.parse(data))
-				});	
-			}
-			
-			add_id(children);
-			
-		} else {
-			add_id(comments[i].data.id);
-			comment_lookup[comments[i].data.id] = comments[i].data;
-		}	
-	}
-*/	
 	ajax_calls_left--;
 	
 	if(ajax_calls_left == 0) {
@@ -143,7 +126,7 @@ function get_all_comment_ids() {
 	console.log(comment_ids);
 	console.log(ids_diff);
 	
-	if(ids_diff.size > 100) {
+	if(ids_diff.size > 144) {
 		alert("very many removal, aborting");
 		return;
 	}
@@ -161,17 +144,7 @@ function create_comments(comments) {
 		comment_lookup.set(comment.id, comment);
 	});
 
-	//create_parent_comments();
-
-/*	
-	for(var i = 0; i < comments.length; i++) {
-		comment = create_comment(comments[i], true);
-		comment_section.appendChild(comment);
-		comment_lookup[comments[i].id] = comments[i];
-	}
-	*/
-	//add_parent_comments();
-
+	create_parent_comments();
 }
 
 function create_parent_comments() {
@@ -180,23 +153,22 @@ function create_parent_comments() {
 	let comment;
 
 	for(let i = comments_to_generate.length - 1; i >= 0; i--) {
-		//console.log(comments[i]);
 		comment = comments_to_generate[i];
-
 		parent_id = comment_lookup.get(comment.id).parent_id.split("_")[1];
 			
 		// Done with this comment
-		if(parent_id == thread_id || comments_to_generate_ids.has(parent_id)) {	} 
-		// comment exists in lookup but hasnt been added to the queue yet
+		if(parent_id == thread_id || comments_to_generate_ids.has(parent_id)) {} 
+		// parent comment exists in lookup but hasnt been added to the queue yet
 		else if(comment_lookup.has(parent_id)) {
-			comments_to_generate.push(comment);
-			comments_to_generate_ids.add(comment.id);
+			console.log(i, "finding parent in lookup");
+			comments_to_generate.push(comment_lookup.get(parent_id));
+			comments_to_generate_ids.add(parent_id);
 			done = false;
 		} 
 		// parent comment doesn't exists
 		else {
 			get(single_comment_url + parent_id, response => {
-				let new_comment = JSON.parse(data).data.children[0].data;
+				let new_comment = JSON.parse(response).data.children[0].data;
 				
 				comments_to_generate.push(new_comment);
 				comments_to_generate_ids.add(new_comment.id);
@@ -206,8 +178,6 @@ function create_parent_comments() {
 			done = false;
 			console.log(i, " doesn't exist");
 		}
-
-		console.log(i);
 	}
 	
 	if(!done) {
@@ -215,23 +185,47 @@ function create_parent_comments() {
 	} else {
 		generate_comments();
 	}
-
 }
 
 function generate_comments() {
 	const comment_section = document.createElement("div");
-	comment_section.id = "comments";
+	comment_section.id = thread_id;
 	main_div.insertBefore(comment_section, loading_comments);
 	
-	sort_comments();
-	comments_to_generate.forEach(comment => {
-		comment_section.appendChild(create_comment(comment));
+	comments_to_generate.sort(function(a, b) {
+		if(a.score == b.score) {
+			return 0;
+		}		
+		return a.score > b.score ? 1 : -1; 
 	});
+	
+	const generated_comment_ids = new Set([thread_id]);
+	let parent_id;	
+	let comment;
+
+	while(comments_to_generate.length > 0) {
+		for(let i = comments_to_generate.length -1; i >= 0; i--) {
+			comment = comments_to_generate[i];
+			parent_id = comment.parent_id.split("_")[1];
+
+			if(generated_comment_ids.has(parent_id)) {
+				document.getElementById(parent_id).appendChild(create_comment(comment_lookup.get(comment.id)));				
+				generated_comment_ids.add(comment.id);
+				comments_to_generate.splice(i, 1);
+			}
+		}
+	}
 }
 
 function create_comment(comment) {
 	const comment_div = document.createElement("div");
-	comment_div.className = "comment " + (comment.hasOwnProperty("removed") ? "comment-removed" : "");
+	//comment_div.className = "comment " + (comment.hasOwnProperty("removed") ? "comment-removed" : );
+	if(comment.hasOwnProperty("removed")) {
+		comment_div.className = "comment comment-removed";
+	} else {
+		comment_div.className = "comment comment-" + (comment.depth % 2 == 0 ? "even" : "odd");
+	}
+
 	comment_div.id = comment.id;
 	
 	const comment_html = `
@@ -251,63 +245,6 @@ function create_comment(comment) {
 	return comment_div;
 }
 
-/*function create_parent_comments() {
-	var comment_section = document.getElementById("comments"); 
-	var comments = comment_section.children;
-	var parent_id;
-	var comment;
-	var created_comments = [];
-	var done = true;
-	
-	for(var i = comments.length - 1; i >= 0; i--) {
-		//console.log(comments[i]);
-	
-		parent_id = comment_lookup[comments[i].id].parent_id;
-		
-		if(parent_id.includes("_")) {
-			parent_id = parent_id.split("_")[1];
-		}
-	
-		// Done with this comment
-		if(parent_id == thread_id) {
-			//console.log(i, "done");
-		}
-		// Check if parent already exists
-		else if(comments_on_display.has(parent_id)) {
-			document.getElementById(parent_id).appendChild(comments[i]);
-			//console.log(i, "comment already exists");	
-			done = false;	
-		} 
-		// comment_data exists but parent comment hasn't been created yet
-		else if(comment_lookup.hasOwnProperty(parent_id)) {
-			//created_comments.push(create_comment(comments_data[parent_id]));
-			comment_section.appendChild(create_comment(comment_lookup[parent_id], false));
-			//console.log(i, " comment data exists");
-			//done = false;
-		} 
-		// parent comment doesn't exists
-		else {
-			get(single_comment_url + parent_id, function(data){
-				var comment = create_comment(JSON.parse(data).data.children[0].data, false);
-				comment_section.appendChild();
-				add_parent_comments();	
-				console.log(parent_id, " created via /api/info ???");
-			});
-	
-			console.log(i, " doesn't exist");
-		}
-	}
-	
-	if(!done) {
-		add_parent_comments();
-	} else {
-		fix_background_color();
-		sort_comments();
-	}
-
-}
-*/
-
 function create_comment_info(removed_comments) {
 	const comment_info = document.createElement("div");
 	comment_info.innerHTML = `
@@ -320,35 +257,13 @@ function create_comment_info(removed_comments) {
 	main_div.insertBefore(comment_info, loading_comments);
 }
 
-function fix_background_color(root = document.getElementById("comments"), depth = 0) {
-	var comments = document.getElementById("comments").children;
-	
-	
-	
-	for(var i = 0, len = comments.length; i < len; i++) {
-		//if(!comments.
-		
-		//comments.
-	}
-
-}
-//https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentElement
-function sort_comments() {
-	comments_to_generate.sort(function(a, b) {
-		if(a.score == b.score) {
-			return 0;
-		}		
-		return a.score < b.score ? 1 : -1; 
-	});
-}
-
 // ---------------- Other less interesting functions ------------------------
 
 function get(url, callback) {
 	const xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			callback(this.responseText);
+			callback(JSON.parse(this.responseText));
 		} else if (this.readyState == 4) {
 			alert(this.status + " error: " + this.responseText);
 			// Error handle
@@ -360,12 +275,18 @@ function get(url, callback) {
 	xhttp.send();
 }
 
-function add_id(id) {
-	if(id instanceof Array) {
-		comment_ids.add(...id);
-	} else {
-		comment_ids.add(id);
-	}
+function get_multiple(urls, callback, all_completed_callback) {
+	let num_calls_left = urls.length;
+
+	urls.forEach(url => {
+		get(url, function(data){
+			callback(data); 
+			num_calls_left--;
+			if(num_calls_left == 0) {
+				all_completed_callback();
+			}
+		});
+	});
 }
 
 // UTC -> "Reddit time format"

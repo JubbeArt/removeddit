@@ -1,3 +1,74 @@
+
+/*function create_parent_comments() {
+	var comment_section = document.getElementById("comments"); 
+	var comments = comment_section.children;
+	var parent_id;
+	var comment;
+	var created_comments = [];
+	var done = true;
+	
+	for(var i = comments.length - 1; i >= 0; i--) {
+		//console.log(comments[i]);
+	
+		parent_id = comment_lookup[comments[i].id].parent_id;
+		
+		if(parent_id.includes("_")) {
+			parent_id = parent_id.split("_")[1];
+		}
+	
+		// Done with this comment
+		if(parent_id == thread_id) {
+			//console.log(i, "done");
+		}
+		// Check if parent already exists
+		else if(comments_on_display.has(parent_id)) {
+			document.getElementById(parent_id).appendChild(comments[i]);
+			//console.log(i, "comment already exists");	
+			done = false;	
+		} 
+		// comment_data exists but parent comment hasn't been created yet
+		else if(comment_lookup.hasOwnProperty(parent_id)) {
+			//created_comments.push(create_comment(comments_data[parent_id]));
+			comment_section.appendChild(create_comment(comment_lookup[parent_id], false));
+			//console.log(i, " comment data exists");
+			//done = false;
+		} 
+		// parent comment doesn't exists
+		else {
+			get(single_comment_url + parent_id, function(data){
+				var comment = create_comment(JSON.parse(data).data.children[0].data, false);
+				comment_section.appendChild();
+				add_parent_comments();	
+				console.log(parent_id, " created via /api/info ???");
+			});
+	
+			console.log(i, " doesn't exist");
+		}
+	}
+	
+	if(!done) {
+		add_parent_comments();
+	} else {
+		fix_background_color();
+		sort_comments();
+	}
+
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 function get_comments(json) {
 	var comments = [];
