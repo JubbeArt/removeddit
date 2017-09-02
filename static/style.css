@@ -40,11 +40,6 @@ a:hover {
 	color: #6a98af;
 
 }
-/*
-.user-link:hover {
-	text-decoration: underline;
-}*/
-
 
 #header {
 	background-color: #181818;
@@ -53,11 +48,13 @@ a:hover {
 
 #header a {
 	color: #ddd;
+	transition: color 0.3s;
 }
 
 #header a:hover {
-	color: #fff;
+	color: #ca302c;
 	text-decoration: none;
+	
 }
 
 #header-title {
@@ -159,7 +156,7 @@ a:hover {
 }
 
 #comment-info {
-	color: red;
+	color: #ca302c;
 	margin-top: 10px;
 	padding-bottom: 5px;
 	border-bottom: 1px dotted #808080;
@@ -199,6 +196,7 @@ a:hover {
 }
 
 .comment-body {
+	max-width: 840px;
 	line-height: 20px;
 }
 
