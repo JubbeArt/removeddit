@@ -26,6 +26,8 @@ load_page()
 
 async function load_page() {
 	const json = await fetch(thread_url, reddit_init).then(thread => thread.json())
+	//const json = await fetch(morechildren_url + "dmh2rmf,dmglplf,dmgq1zv,dmgu4lb", reddit_init).then(thread => thread.json())
+	//console.log(json)
 
 	generate_thread(json)
 	comment_ids.push(...get_comment_ids(json))
@@ -47,10 +49,11 @@ async function load_page() {
 async function get_removed_comments() {
 	const ids_diff = all_ids.filter(x => !comment_ids.includes(x))
 	generate_comment_info(ids_diff.length)
-	console.log(all_ids)
-	console.log(comment_ids)
-	console.log(comment_ids.length, new Set(comment_ids).size)
-	console.log(ids_diff)
+	console.log("All ids :", all_ids)
+	console.log("Comments ids (dup): ", comment_ids)
+	console.log("With/without dups: ", comment_ids.length, new Set(comment_ids).size)
+	console.log("Difference: ", ids_diff)
+	console.log("Lookup size:", comment_lookup.size)
 	return fetch_multiple(removed_comments_url, ids_diff, ["data"], true)
 }
 
@@ -59,8 +62,9 @@ async function get_continuethisthread_ids() {
 }
 
 async function get_morechildren_ids() {
-	console.log("asdf")
-	const responses = await Promise.all(split_array(morechildren_ids, max_ids_per_call).map(ids => fetch(morechildren_url + ids.join(), reddit_init)))
+	//const responses = await Promise.all(split_array(morechildren_ids, max_ids_per_call).map(ids => fetch(morechildren_url + ids.join(), reddit_init)))
+	const responses = await Promise.all(morechildren_ids.map(id_array => fetch(morechildren_url + id_array.join(), reddit_init)))
+	
 	const responses_json = await Promise.all(responses.map(x => x.json()))
 	morechildren_ids.length = 0
 	responses_json.forEach(extract_morechildren_ids)
@@ -76,7 +80,7 @@ function extract_morechildren_ids(comments) {
 			const children = comment.data.children
 
 			if(children.length < comment.data.count) {
-				morechildren_ids.push(...children)			
+				morechildren_ids.push(children)			
 			} 
 			comment_ids.push(...children)
 			
@@ -94,19 +98,16 @@ function extract_id_from_comment(comment) {
 	const data = comment.data
 	// "Show more"-comments
 	if(comment.kind == "more") {	
-		console.log(data.id)
-		console.log(data.name)
-		console.log(data.parent_id)
-		console.log(data.children)
-		console.log(data.children.length + "/" + data.count)
-		console.log("-----------------------")	
+		//console.log(data.id)
+		//console.log(data.children)
+		//console.log(data.children.length + "/" + data.count)
+		//console.log("-----------------------")	
 		
 		if(data.id === "_") {
 			continuethisthread_ids.push(data.parent_id)
 			return []
-		}		
-		if(data.children.length < data.count){
-			morechildren_ids.push(...data.children)
+		} else if(data.children.length < data.count){
+			morechildren_ids.push(data.children)
 			// ???????????????????? maybe wrong, data.id? ytest this
 			//return [] //-----------------------------------
 		}
@@ -136,7 +137,6 @@ async function generate_comments(removed_comments) {
 	removed_comments.forEach(comment => {
 		comment["removed"] = true
 		comment_lookup.set(comment.id, comment)
-		console.log(comment.id)
 	})
 
 	const comments_to_lookup = removed_comments.map(comment => comment.id)	
@@ -280,6 +280,7 @@ async function fetch_multiple(url, data, json_walkdown=[], flattening=false) {
 // ------------------------------------------------------------------------------
 // ---------------------- Other less interesting functions ----------------------
 // ------------------------------------------------------------------------------
+
 function split_array(array, size) {
 	const array_split = []
 	

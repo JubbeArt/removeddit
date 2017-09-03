@@ -21,7 +21,6 @@ const (
 	commentIDsURL = "https://api.pushshift.io/reddit/submission/comment_ids/"
 	commentsURL   = "https://api.pushshift.io/reddit/comment/search?ids="
 	tmplFolder    = "templates/"
-	errorHTML     = "<h3 style=\"colorError;font-family: verdana, arial, helvetica, sans-serif;\">Error: %s</h3>"
 )
 
 var (
@@ -50,7 +49,7 @@ type pushshiftAPI struct {
 	Data []string `json:"data"`
 }
 
-type pageData struct {
+type threadPageData struct {
 	Token      string
 	Subreddit  string
 	ThreadID   string
@@ -88,7 +87,7 @@ func initLogging() {
 	errorLog = log.New(errorFile, "", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-// Wrap handle function for the access log
+// Wrap page handle function for the access log
 func pageHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		accessLog.Println(r.URL.Path)
@@ -130,7 +129,7 @@ func threadHandler(w http.ResponseWriter, r *http.Request) {
 	var dataStructure pushshiftAPI
 	json.Unmarshal(body, &dataStructure)
 
-	data := &pageData{
+	data := &threadPageData{
 		Token:      token,
 		Subreddit:  pathParts[2],
 		ThreadID:   pathParts[4],
