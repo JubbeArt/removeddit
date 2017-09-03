@@ -42,17 +42,17 @@ a:hover {
 }
 
 #header {
-	background-color: #181818;
+	background-color: #ca302c;/*#19171c;/*#181818*/
 	padding: 20px 10px 10px;
 }
 
 #header a {
-	color: #ddd;
+	color: #fff;/*#ddd;*/
 	transition: color 0.3s;
 }
 
 #header a:hover {
-	color: #ca302c;
+	color: #FF8B88;/*#ca302c*/;
 	text-decoration: none;
 	
 }
@@ -64,6 +64,32 @@ a:hover {
 
 #main {
 	margin: 15px;
+}
+
+#main-box {
+	margin: 0 auto;
+	padding: 20px;
+	border-radius: 5px;
+	color: #fff;
+}
+
+.error-box {
+	max-width: 500px;
+	background-color: #ca302c;
+}
+
+.frontpage-box {
+	max-width: 800px;
+	background-color: #161616;
+
+}
+
+.frontpage-box p {
+	margin: 15px;
+}
+
+.error-title {
+	margin: 0 0 15px 0;
 }
 
 #thread {

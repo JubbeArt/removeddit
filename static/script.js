@@ -40,6 +40,10 @@ async function load_page() {
 	generate_comments(removed_comments)
 }
 
+// ------------------------------------------------------------------------------
+// ----------------------- Functions for getting IDs ----------------------------
+// ------------------------------------------------------------------------------
+
 async function get_removed_comments() {
 	const ids_diff = all_ids.filter(x => !comment_ids.includes(x))
 	generate_comment_info(ids_diff.length)
@@ -120,9 +124,9 @@ function extract_id_from_comment(comment) {
 	return replies_ids
 }
 
-// -------------------------------------------------------------------------------------
-// ----------------- Comment generating functions ---------------------
-// -------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
+// ----------------------- Comment generating functions -------------------------
+// ------------------------------------------------------------------------------
 
 async function generate_comments(removed_comments) {
 	const comment_section = document.createElement("div")
@@ -199,10 +203,9 @@ function create_comments() {
 		}
 	}
 }
-
-// -------------------------------------------------------------------------------------
-// --------------------- HTML-generating functions ----------------------
-// -------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
+// ------------------------- HTML-generating functions --------------------------
+// ------------------------------------------------------------------------------
 
 function generate_thread(data) {
 	const thread = data[0].data.children[0].data
@@ -260,9 +263,10 @@ function generate_comment_info(removed_comments) {
 	`
 	main_div.insertBefore(comment_info, loading_comments)
 }
-// -------------------------------------------------------------------------------------
+
+// ------------------------------------------------------------------------------
 // ----------------------------- AJAX-functions ---------------------------------
-// -------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 async function fetch_multiple(url, data, json_walkdown=[], flattening=false) {
 	const responses = await Promise.all(split_array(data, max_ids_per_call).map(single_request_data => fetch(url + single_request_data.join())))
@@ -272,10 +276,10 @@ async function fetch_multiple(url, data, json_walkdown=[], flattening=false) {
 	})
 	return flattening ? flatten_array(json) : json
 }
-// -------------------------------------------------------------------------------------
-// ---------------- Other less interesting functions ---------------------
-// -------------------------------------------------------------------------------------
 
+// ------------------------------------------------------------------------------
+// ---------------------- Other less interesting functions ----------------------
+// ------------------------------------------------------------------------------
 function split_array(array, size) {
 	const array_split = []
 	
