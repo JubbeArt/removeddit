@@ -26,19 +26,17 @@ load_page()
 
 async function load_page() {
 	const json = await fetch(thread_url, reddit_init).then(thread => thread.json())
-	//const json = await fetch(morechildren_url + "dmh2rmf,dmglplf,dmgq1zv,dmgu4lb", reddit_init).then(thread => thread.json())
-	//console.log(json)
-
+	
 	generate_thread(json)
 	comment_ids.push(...get_comment_ids(json))
 	
+	await get_morechildren_ids()
+		
 	const smaller_threads = await Promise.all(continuethisthread_ids.map(id =>fetch(thread_url + "/_/" + id.split("_")[1], reddit_init)))
 	const smaller_threads_json = await Promise.all(smaller_threads.map(x => x.json()))
 	smaller_threads_json.forEach(thread => comment_ids.push(...get_comment_ids(thread)))
 	
-	await get_morechildren_ids()
 	const removed_comments = await get_removed_comments()
-	
 	generate_comments(removed_comments)
 }
 
@@ -54,20 +52,15 @@ async function get_removed_comments() {
 	console.log("With/without dups: ", comment_ids.length, new Set(comment_ids).size)
 	console.log("Difference: ", ids_diff)
 	console.log("Lookup size:", comment_lookup.size)
-	return fetch_multiple(removed_comments_url, ids_diff, ["data"], true)
-}
-
-async function get_continuethisthread_ids() {
-	return
+	return fetch_multiple(removed_comments_url, ids_diff, null, ["data"], true)
 }
 
 async function get_morechildren_ids() {
-	//const responses = await Promise.all(split_array(morechildren_ids, max_ids_per_call).map(ids => fetch(morechildren_url + ids.join(), reddit_init)))
-	const responses = await Promise.all(morechildren_ids.map(id_array => fetch(morechildren_url + id_array.join(), reddit_init)))
-	
-	const responses_json = await Promise.all(responses.map(x => x.json()))
+	//const responses = await Promise.all(morechildren_ids.map(id_array => fetch(morechildren_url + id_array.join(), reddit_init)))
+	const responses_arrays = await Promise.all(morechildren_ids.map(id_array => fetch_multiple(morechildren_url, id_array, reddit_init)))
+	const responses  = flatten_array(responses_arrays)
 	morechildren_ids.length = 0
-	responses_json.forEach(extract_morechildren_ids)
+	responses.forEach(extract_morechildren_ids)
 	
 	if(morechildren_ids.length !== 0) {
 		await get_morechildren_ids()
@@ -77,13 +70,18 @@ async function get_morechildren_ids() {
 function extract_morechildren_ids(comments) {
 	comments.jquery[14][3][0].forEach(comment => {
 		if(comment.kind == "more") {
-			const children = comment.data.children
+			if(comment.data.id === "_") {
+				console.log("From more, continue: " + comment.data.parent_id)
+				continuethisthread_ids.push(comment.data.parent_id)	
+			} else {
 
-			if(children.length < comment.data.count) {
-				morechildren_ids.push(children)			
-			} 
-			comment_ids.push(...children)
-			
+				const children = comment.data.children
+
+				if(children.length < comment.data.count) {
+					morechildren_ids.push(children)			
+				} 
+				comment_ids.push(...children)
+			}
 		} else {
 			comment_ids.push(comment.data.id)
 			comment_lookup.set(comment.data.id, comment.data)
@@ -104,6 +102,7 @@ function extract_id_from_comment(comment) {
 		//console.log("-----------------------")	
 		
 		if(data.id === "_") {
+			console.log("From thread countinue: "+ data.parent_id)
 			continuethisthread_ids.push(data.parent_id)
 			return []
 		} else if(data.children.length < data.count){
@@ -268,8 +267,8 @@ function generate_comment_info(removed_comments) {
 // ----------------------------- AJAX-functions ---------------------------------
 // ------------------------------------------------------------------------------
 
-async function fetch_multiple(url, data, json_walkdown=[], flattening=false) {
-	const responses = await Promise.all(split_array(data, max_ids_per_call).map(single_request_data => fetch(url + single_request_data.join())))
+async function fetch_multiple(url, data, init, json_walkdown=[], flattening=false) {
+	const responses = await Promise.all(split_array(data, max_ids_per_call).map(single_request_data => fetch(url + single_request_data.join(), init)))
 	let json = await Promise.all(responses.map(x => x.json()))
 	json_walkdown.forEach(property =>{
 		json.forEach((x, i) => json[i] = json[i][property])
