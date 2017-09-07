@@ -107,15 +107,15 @@ func main() {
 			Handler:      http.HandlerFunc(redirectTLS),
 		}
 
-		if err := server.ListenAndServeTLS("", ""); err != nil {
-			log.Fatalf("Could not start server with SSL/TLS Certificate: %v", err)
-		}
-
 		go func() {
 			if err := redirect.ListenAndServe(); err != nil {
 				log.Fatalf("Could not start redirect server: %v", err)
 			}
 		}()
+
+		if err := server.ListenAndServeTLS("", ""); err != nil {
+			log.Fatalf("Could not start server with SSL/TLS Certificate: %v", err)
+		}
 	}
 
 	log.Println("Shutting down server")
