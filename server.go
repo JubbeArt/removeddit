@@ -91,7 +91,6 @@ func main() {
 		}
 
 		server := &http.Server{
-			Addr:         "",
 			ReadTimeout:  10 * time.Second,
 			WriteTimeout: 10 * time.Second,
 			TLSConfig: &tls.Config{
@@ -101,7 +100,6 @@ func main() {
 		}
 
 		redirect := &http.Server{
-			Addr:         "",
 			ReadTimeout:  10 * time.Second,
 			WriteTimeout: 10 * time.Second,
 			Handler:      http.HandlerFunc(redirectTLS),
