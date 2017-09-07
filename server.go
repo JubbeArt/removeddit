@@ -1,8 +1,10 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -12,6 +14,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"golang.org/x/crypto/acme/autocert"
 )
 
 // consts
@@ -59,24 +63,62 @@ type threadPageData struct {
 func main() {
 	initLogging()
 	accessLog.Println("Staring server")
-	/*
-		s := &http.Server{
-		Addr:           ":8080",
-		Handler:        myHandler,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}*/
 
-	// Only serve local static files for debugging, otherwise use cdn.rawgit.com
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	var debugMode bool
+	flag.BoolVar(&debugMode, "d", false, "debug mode: run the server on localhost")
+	flag.Parse()
 
 	http.HandleFunc("/", pageHandler(mainHandler))
 	http.HandleFunc("/r/", pageHandler(threadHandler))
 	http.HandleFunc("/comments/", pageHandler(commentHandler))
 
-	http.ListenAndServe(":9000", nil)
+	// Run locally for debugging/testing
+	if debugMode {
+		// Serve static files, in production use cdn.rawgit.com
+		fs := http.FileServer(http.Dir("static"))
+		http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+		fmt.Println("Starting server on http://localhost:8080")
+
+		if err := http.ListenAndServe(":8080", nil); err != nil {
+			log.Fatalf("Could not start server: %v", err)
+		}
+	} else { // Run in production
+		certManager := autocert.Manager{
+			Prompt:     autocert.AcceptTOS,
+			HostPolicy: autocert.HostWhitelist(hostname, "www."+hostname),
+			Cache:      autocert.DirCache("certs"),
+		}
+
+		server := &http.Server{
+			Addr:         "",
+			ReadTimeout:  10 * time.Second,
+			WriteTimeout: 10 * time.Second,
+			TLSConfig: &tls.Config{
+				GetCertificate: certManager.GetCertificate,
+			},
+			ErrorLog: errorLog,
+		}
+
+		redirect := &http.Server{
+			Addr:         "",
+			ReadTimeout:  10 * time.Second,
+			WriteTimeout: 10 * time.Second,
+			Handler:      http.HandlerFunc(redirectTLS),
+		}
+
+		if err := server.ListenAndServeTLS("", ""); err != nil {
+			log.Fatalf("Could not start server with SSL/TLS Certificate: %v", err)
+		}
+
+		go func() {
+			if err := redirect.ListenAndServe(); err != nil {
+				log.Fatalf("Could not start redirect server: %v", err)
+			}
+		}()
+	}
+
+	log.Println("Shutting down server")
 }
 
 func initLogging() {
@@ -99,6 +141,11 @@ func renderTemplate(w http.ResponseWriter, pageName string, data interface{}) {
 	templates.ExecuteTemplate(w, "header.html", nil)
 	templates.ExecuteTemplate(w, pageName+".html", data)
 	templates.ExecuteTemplate(w, "footer.html", nil)
+}
+
+func handleError(w http.ResponseWriter, msg string) {
+	renderTemplate(w, "error", msg)
+	errorLog.Println(msg)
 }
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
@@ -139,11 +186,6 @@ func threadHandler(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "thread", data)
 }
 
-func handleError(w http.ResponseWriter, msg string) {
-	renderTemplate(w, "error", msg)
-	errorLog.Println(msg)
-}
-
 func commentHandler(w http.ResponseWriter, r *http.Request) {
 	commentIDs := r.FormValue("c")
 	if commentIDs == "" {
@@ -176,4 +218,8 @@ func getAPIToken() (string, error) {
 	var r tokenResponse
 	json.Unmarshal(body, &r)
 	return r.AccessToken, nil
+}
+
+func redirectTLS(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, fmt.Sprintf("https://www.%s/%s", hostname, r.RequestURI), http.StatusMovedPermanently)
 }

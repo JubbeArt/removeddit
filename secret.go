@@ -6,4 +6,5 @@ const (
 	clientID     = ""
 	clientSecret = ""
 	version      = ""
+	hostname     = ""
 )
