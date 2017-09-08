@@ -49,8 +49,23 @@ type tokenResponse struct {
 	Scope       string `json:"scope"`
 }
 
-type pushshiftAPI struct {
+type pushshiftIDsAPI struct {
 	Data []string `json:"data"`
+}
+
+type pushshiftCommentsAPI struct {
+	Data []pushshiftComment `json:"data"`
+}
+
+type pushshiftComment struct {
+	Author          string `json:"author"`
+	AuthorFlairText string `json:"author_flair_text"`
+	Body            string `json:"body"`
+	CreatedUTC      int32  `json:"created_utc"`
+	ID              string `json:"id"`
+	IsSubmitter     bool   `json:"is_submitter"`
+	ParentID        string `json:"parent_id"`
+	Score           int32  `json:"score"`
 }
 
 type threadPageData struct {
@@ -171,7 +186,7 @@ func threadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
-	var dataStructure pushshiftAPI
+	var dataStructure pushshiftIDsAPI
 	json.Unmarshal(body, &dataStructure)
 
 	data := &threadPageData{
@@ -194,12 +209,27 @@ func commentHandler(w http.ResponseWriter, r *http.Request) {
 	resp, err := client.Get(commentsURL + commentIDs)
 
 	if err != nil {
-		handleError(w, "Trouble getting removed comments from pushshift")
+		handleError(w, "Trouble getting removed comments from pushshift1")
 		return
 	}
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Fprintf(w, string(body))
+	var c pushshiftCommentsAPI
+	err = json.Unmarshal(body, &c)
+
+	if err != nil {
+		handleError(w, "Trouble parsing removed comments from pushshift2")
+		return
+	}
+
+	jsonString, err := json.Marshal(c)
+
+	if err != nil {
+		handleError(w, "Trouble parsing removed comments from pushshift3")
+		return
+	}
+
+	fmt.Fprintf(w, string(jsonString))
 }
 
 func getAPIToken() (string, error) {
