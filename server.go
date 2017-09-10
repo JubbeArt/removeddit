@@ -65,12 +65,12 @@ func main() {
 	http.HandleFunc("/", pageHandler(mainHandler))
 	http.HandleFunc("/r/", pageHandler(threadHandler))
 
+	// Serve static files, in production use cdn.rawgit.com (nvm fuck this, always serve static)
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	// Run locally for debugging/testing
 	if debugMode {
-		// Serve static files, in production use cdn.rawgit.com
-		fs := http.FileServer(http.Dir("static"))
-		http.Handle("/static/", http.StripPrefix("/static/", fs))
-
 		fmt.Println("Starting server on http://localhost:8080")
 
 		if err := http.ListenAndServe(":8080", nil); err != nil {
