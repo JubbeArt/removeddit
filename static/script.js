@@ -35,7 +35,9 @@ const redditInit = {
 loadPage()
 
 async function loadPage() {
+	
 	loadingImage.src = loadingImageSrc
+	loadingImage.style.display = "block"
 	setLoadingText("Loading thread...")	
 	
 	// Get thread from reddit and all comment IDs (inc. removed ones) from pushshift
@@ -139,6 +141,15 @@ function extractMorechildrenIDs(comments) {
 
 async function getRemovedComments(allCommentIDs) {
 	const idsDiff = allCommentIDs.filter(x => !commentIDs.includes(x))
+
+	commentIDs.forEach(id =>  {
+		if(commentLookup.has(id)) {
+			if(commentLookup.get(id).body === "[removed]") {
+				idsDiff.push(id)
+			}
+		}
+	})
+
 	generateCommentInfo(idsDiff.length)
 	console.log("All ids :", allCommentIDs)
 	console.log("Comments ids (dup): ", commentIDs)
@@ -200,7 +211,7 @@ async function getCommentsToGenerate(commentsToLookup) {
 
 	if(commentsToFetch.length !== 0) {
 		//await
-		console.log("fuck it") 
+		console.error("fuck it, ill fix it later") 
 	}
 
 	if(newCommentsToLookup.length !== 0) {
@@ -272,31 +283,17 @@ function generateThread(data) {
 	mainDiv.appendChild(threadDiv)
 }
 function createComment(comment) {
-	/*const comment_div = document.createElement("div")
-	comment_div.id = comment.id
-	comment_div.className = "comment comment-" + (comment.hasOwnProperty("removed")  ? "removed" :  (comment.depth % 2 == 0 ? "even" : "odd"));
-	comment_div.innerHTML = `
-		<div class="comment-head">
-			<a href="javascript:void(0)" class="user-link">[–]</a>
-			<a href="https://www.reddit.com/user/${comment.author}" class="user-link comment-author">${comment.author}</a>
-			<span class="comment-score">${pretty_score(comment.score)} point${(comment.score == 1) ? '': 's'}</span>
-			<span class="comment-time">${pretty_date(comment.created_utc) }</span>
-		</div>
-		<div class="comment-body">${markdown.render(comment.body)}</div>
-		<div class="comment-links">
-			<a href="https://todo.com">permalink</a>
-		</div>
-	`
-	return comment_div*/
+	const isRemoved = comment.hasOwnProperty("removed")
+
 	return generateHTML(`
-		<div id="${comment.id}" class="comment comment-${comment.hasOwnProperty("removed")  ? "removed" :  (comment.depth % 2 == 0 ? "even" : "odd")}">
+		<div id="${comment.id}" class="comment comment-${isRemoved  ? "removed" :  (comment.depth % 2 == 0 ? "even" : "odd")}">
 			<div class="comment-head">
 				<a href="javascript:void(0)" class="user-link">[–]</a>
 				<a href="https://www.reddit.com/user/${comment.author}" class="user-link comment-author">${comment.author}</a>
 				<span class="comment-score">${prettyScore(comment.score)} point${(comment.score == 1) ? '': 's'}</span>
 				<span class="comment-time">${prettyDate(comment.created_utc) }</span>
 			</div>
-			<div class="comment-body">${markdown.render(comment.body)}</div>
+			<div class="comment-body">${comment.body === "[removed]" && isRemoved ? "<p>[likely removed by automoderator]</p>" : markdown.render(comment.body)}</div>
 			<div class="comment-links">
 				<a href="https://todo.com">permalink</a>
 			</div>
@@ -317,7 +314,7 @@ function generateCommentInfo(removedCommentsAmount) {
 
 // Works for everything except iframes/script-tags, use "old fashion"-way in those cases (createElement etc...)
 function generateHTML(html) {
-	return htmlParser.parseFromString(html, "text/html").documentElement
+	return htmlParser.parseFromString(html, "text/html").body.firstChild
 }
 
 // "&lt;" => "<"
@@ -390,8 +387,8 @@ function prettyDate(createdUTC) {
 		if(secondDiff < 86400)
 			return Math.floor(secondDiff / 3600) + " hours ago"
 	}
-	if(dayDiff == 1)
-		return "Yesterday"
+	//if(dayDiff == 1)
+	//	return "Yesterday"
 	if(dayDiff < 7)
 		return dayDiff + " days ago"
 	if(dayDiff < 31)
