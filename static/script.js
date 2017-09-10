@@ -5,7 +5,7 @@ const htmlParser = new DOMParser();
 
 const redditThreadURL = `https://oauth.reddit.com/r/${subreddit}/comments/${threadID}`
 const redditMorechildrenURL = `https://oauth.reddit.com/api/morechildren?link_id=t3_${threadID}&children=`
-const redditSingleCommentURL = `https://oauth.reddit.com/r/${subreddit}/api/info/?id=t1_`
+const redditSingleCommentURL = `https://oauth.reddit.com/r/${subreddit}/api/info/?id=`
 const pushshiftIDsURL = `https://api.pushshift.io/reddit/submission/comment_ids/${threadID}`
 const pushshiftCommentsURL = "https://api.pushshift.io/reddit/comment/search?ids="
 
@@ -67,7 +67,7 @@ async function loadPage() {
 	const removedComments = await getRemovedComments(allCommentIDs.data)
 	
 	setLoadingText("Generating comments...")
-	generateComments(removedComments)
+	await generateComments(removedComments)
 
 	setLoadingText("")
 	loadingImage.src = doneImageSrc
@@ -200,9 +200,6 @@ async function getCommentsToGenerate(commentsToLookup) {
 				newCommentsToLookup.push(parentID)
 		} else{
 			console.error("Comment doesn't exists, but lets try it anyway :D")
-			console.log("ID: " + id)
-			console.log("Parent: " + parent_id)
-
 			commentsToFetch.push(parentID)
 		}
 
@@ -210,8 +207,14 @@ async function getCommentsToGenerate(commentsToLookup) {
 	})
 
 	if(commentsToFetch.length !== 0) {
-		//await
-		console.error("fuck it, ill fix it later") 
+		const newComments = await fetch(redditSingleCommentURL + commentsToFetch.map(x => "t1_" + x).join(), redditInit).then(json)
+		console.log(newComments)
+		
+		newComments.data.children.forEach(x => {
+			console.log(x.data.id)
+			commentLookup.set(x.data.id, x.data)
+			newCommentsToLookup.push(x.data.id)
+		})
 	}
 
 	if(newCommentsToLookup.length !== 0) {
