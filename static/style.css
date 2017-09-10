@@ -43,23 +43,44 @@ a:hover {
 
 #header {
 	background-color: #ca302c;/*#19171c;/*#181818*/
-	padding: 20px 10px 10px;
+	display: flex;
+	justify-content: space-between;
+	padding: 10px;
 }
 
-#header a {
+#header-title-link {
+	align-self: center;
 	color: #fff;/*#ddd;*/
 	transition: color 0.3s;
+	margin: 12px 0;
 }
 
-#header a:hover {
+#header-title-link:hover {
 	color: #FF8B88;/*#ca302c*/;
 	text-decoration: none;
-	
 }
 
 #header-title {
 	margin: 0;
 	display: inline;
+}
+
+
+
+#loading {
+	color: #fff;    
+	display: flex;
+	align-items: center;
+}
+
+#loading-text {
+	margin: 0 20px 0 0;
+}
+
+#loading-image {
+	height: 64px;
+	width: 64px;
+	border-radius: 32px;
 }
 
 #main {
@@ -94,6 +115,7 @@ a:hover {
 
 #thread {
 	display: flex;
+	flex-grow: 1;
 }
 
 
@@ -133,15 +155,13 @@ a:hover {
 	float: left;
 	font-size: 13px;
 	font-weight: bold;
-    text-align: center;
-
+	text-align: center;
 }
 
 #thread-content {
 	flex: 1;
 	float: left;
 	margin-left: 3px;
-	max-width: 840px;
 }
 
 .link-flair {
@@ -174,16 +194,29 @@ a:hover {
 	margin-top: 2px;
 }
 
+#total-comments {
+	color: #828282;
+	font-size: 10px;
+	margin: 4px 0;
+}
+
 #thread-selftext {
 	border: 1px solid #666;
-    border-radius: 7px;
-    margin: 5px 0;
-    padding: 5px 10px;
+	border-radius: 7px;
+	margin: 5px 0 7px;
+	padding: 5px 10px;
+	max-width: 840px;
+}
+
+#thread-image {
+	max-width: 768px;
+	max-height: 768px;
 }
 
 #comment-info {
 	color: #ca302c;
 	margin-top: 10px;
+	font-weight: bold;
 	padding-bottom: 5px;
 	border-bottom: 1px dotted #808080;
 	font-size: 16px;
@@ -196,7 +229,7 @@ a:hover {
 }
 
 .comment {
-	margin: 0 8px 8px 0;
+	margin: 0 0 8px 0;
 	padding: 5px 8px 5px /*14px*/ 30px;
 	border: 1px solid #333;
 	border-radius: 3px;
@@ -237,7 +270,7 @@ a:hover {
 }
 
 .comment-removed {
-	background-color: #633636;
+	background-color: #840c09/*#633636*/;
 }
 
 .comment-odd {

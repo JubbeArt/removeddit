@@ -20,11 +20,9 @@ import (
 
 // consts
 const (
-	userAgent     = "Javascript:" + appName + ":" + version + "s (by /u/" + userName + ")"
-	tokenURL      = "https://www.reddit.com/api/v1/access_token"
-	commentIDsURL = "https://api.pushshift.io/reddit/submission/comment_ids/"
-	commentsURL   = "https://api.pushshift.io/reddit/comment/search?ids="
-	tmplFolder    = "templates/"
+	userAgent  = "Javascript:" + appName + ":" + version + "s (by /u/" + userName + ")"
+	tokenURL   = "https://www.reddit.com/api/v1/access_token"
+	tmplFolder = "templates/"
 )
 
 var (
@@ -49,25 +47,6 @@ type tokenResponse struct {
 	Scope       string `json:"scope"`
 }
 
-type pushshiftIDsAPI struct {
-	Data []string `json:"data"`
-}
-
-type pushshiftCommentsAPI struct {
-	Data []pushshiftComment `json:"data"`
-}
-
-type pushshiftComment struct {
-	Author          string `json:"author"`
-	AuthorFlairText string `json:"author_flair_text"`
-	Body            string `json:"body"`
-	CreatedUTC      int32  `json:"created_utc"`
-	ID              string `json:"id"`
-	IsSubmitter     bool   `json:"is_submitter"`
-	ParentID        string `json:"parent_id"`
-	Score           int32  `json:"score"`
-}
-
 type threadPageData struct {
 	Token      string
 	Subreddit  string
@@ -85,7 +64,6 @@ func main() {
 
 	http.HandleFunc("/", pageHandler(mainHandler))
 	http.HandleFunc("/r/", pageHandler(threadHandler))
-	http.HandleFunc("/comments/", pageHandler(commentHandler))
 
 	// Run locally for debugging/testing
 	if debugMode {
@@ -173,63 +151,19 @@ func threadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, _ := client.Get(commentIDsURL + pathParts[4])
-	if resp.StatusCode != 200 {
-		handleError(w, "Trouble getting removed comments from pushshift")
-		return
-	}
-
 	token, err := getAPIToken()
 	if err != nil {
 		handleError(w, err.Error())
 		return
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	var dataStructure pushshiftIDsAPI
-	json.Unmarshal(body, &dataStructure)
-
 	data := &threadPageData{
-		Token:      token,
-		Subreddit:  pathParts[2],
-		ThreadID:   pathParts[4],
-		CommentIDs: dataStructure.Data,
+		Token:     token,
+		Subreddit: pathParts[2],
+		ThreadID:  pathParts[4],
 	}
 
 	renderTemplate(w, "thread", data)
-}
-
-func commentHandler(w http.ResponseWriter, r *http.Request) {
-	commentIDs := r.FormValue("c")
-	if commentIDs == "" {
-		handleError(w, "Not enough arguments provided")
-		return
-	}
-
-	resp, err := client.Get(commentsURL + commentIDs)
-
-	if err != nil {
-		handleError(w, "Trouble getting removed comments from pushshift1")
-		return
-	}
-
-	body, _ := ioutil.ReadAll(resp.Body)
-	var c pushshiftCommentsAPI
-	err = json.Unmarshal(body, &c)
-
-	if err != nil {
-		handleError(w, "Trouble parsing removed comments from pushshift2")
-		return
-	}
-
-	jsonString, err := json.Marshal(c)
-
-	if err != nil {
-		handleError(w, "Trouble parsing removed comments from pushshift3")
-		return
-	}
-
-	fmt.Fprintf(w, string(jsonString))
 }
 
 func getAPIToken() (string, error) {
