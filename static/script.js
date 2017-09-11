@@ -25,6 +25,7 @@ const continuethisthreadIDs = []
 const maxIDsPerRequest = 100
 const commentLookup = new Map()
 const commentsToCreate = []
+const deletedCommentIDs = []
 
 let totalComments
 
@@ -144,8 +145,11 @@ async function getRemovedComments(allCommentIDs) {
 
 	commentIDs.forEach(id =>  {
 		if(commentLookup.has(id)) {
-			if(commentLookup.get(id).body === "[removed]" || commentLookup.get(id).body === "[deleted]") {
+			if(commentLookup.get(id).body === "[removed]") {
 				idsDiff.push(id)
+			} else if (commentLookup.get(id).body === "[deleted]"){
+				idsDiff.push(id)
+				deletedCommentIDs.push(id)
 			}
 		}
 	})
@@ -288,13 +292,14 @@ function generateThread(data) {
 	mainDiv.appendChild(threadDiv)
 }
 function createComment(comment) {
+	const isDeleted = deletedCommentIDs.includes(comment.id)
 	const isRemoved = comment.hasOwnProperty("removed")
 
 	return generateHTML(`
 		<div id="${comment.id}" class="comment comment-${isRemoved  ? "removed" :  (comment.depth % 2 == 0 ? "even" : "odd")}">
 			<div class="comment-head">
 				<a href="javascript:void(0)" class="user-link">[–]</a>
-				<a href="https://www.reddit.com/user/${comment.author}" class="user-link comment-author">${comment.author}</a>
+				<a href="https://www.reddit.com/user/${comment.author}" class="user-link comment-author">${comment.author}${isDeleted ? " (user deleted this comment)" : ""}</a>
 				<span class="comment-score">${prettyScore(comment.score)} point${(comment.score == 1) ? '': 's'}</span>
 				<span class="comment-time">${prettyDate(comment.created_utc) }</span>
 			</div>

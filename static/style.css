@@ -92,6 +92,7 @@ a:hover {
 	padding: 20px;
 	border-radius: 5px;
 	color: #fff;
+	word-wrap: break-word;
 }
 
 .error-box {
