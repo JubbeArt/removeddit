@@ -179,7 +179,11 @@ func getAPIToken() (string, error) {
 		return "", errors.New("Coulnd't get API token from Reddit")
 	}
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", errors.New("Coulnd't get API token from Reddit, timeout error")
+	}
+
 	var r tokenResponse
 	json.Unmarshal(body, &r)
 	return r.AccessToken, nil
