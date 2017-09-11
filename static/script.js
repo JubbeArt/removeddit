@@ -140,16 +140,18 @@ function extractMorechildrenIDs(comments) {
 
 
 async function getRemovedComments(allCommentIDs) {
-	const idsDiff = allCommentIDs.filter(x => !commentIDs.includes(x))
+	let idsDiff = allCommentIDs.filter(x => !commentIDs.includes(x))
 
 	commentIDs.forEach(id =>  {
 		if(commentLookup.has(id)) {
-			if(commentLookup.get(id).body === "[removed]") {
+			if(commentLookup.get(id).body === "[removed]" || commentLookup.get(id).body === "[deleted]") {
 				idsDiff.push(id)
 			}
 		}
 	})
 
+	idsDiff = [...new Set(idsDiff)]
+	
 	generateCommentInfo(idsDiff.length)
 	console.log("All ids :", allCommentIDs)
 	console.log("Comments ids (dup): ", commentIDs)
@@ -279,7 +281,7 @@ function generateThread(data) {
 				${thread.selftext !== '' ? '<div id="thread-selftext" class="user-text">'+markdown.render(thread.selftext)+'</div>':''}
 				<div id="total-comments"><b>${totalComments} comments</b></div>
 				${thread.media !== null ? parseHTML(thread.media_embed.content) : ''}
-				${imageHosts.includes(thread.domain) ? '<a href="'+thread.url+'"><img id="thread-image" src="'+thread.preview.images[0].source.url+'"></a>' : ''}
+				${imageHosts.includes(thread.domain) && thread.hasOwnProperty("preview") ? '<a href="'+thread.url+'"><img id="thread-image" src="'+thread.preview.images[0].source.url+'"></a>' : ''}
 			</div>
 		</div>
 	`
