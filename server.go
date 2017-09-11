@@ -84,8 +84,8 @@ func main() {
 		}
 
 		server := &http.Server{
-			ReadTimeout:  10 * time.Second,
-			WriteTimeout: 10 * time.Second,
+			ReadTimeout:  20 * time.Second,
+			WriteTimeout: 20 * time.Second,
 			TLSConfig: &tls.Config{
 				GetCertificate: certManager.GetCertificate,
 			},
