@@ -101,14 +101,17 @@ func main() {
 		go func() {
 			if err := redirect.ListenAndServe(); err != nil {
 				log.Fatalf("Could not start redirect server: %v", err)
+				errorLog.Printf("Could not start redirect server: %v", err)
 			}
 		}()
 
 		if err := server.ListenAndServeTLS("", ""); err != nil {
 			log.Fatalf("Could not start server with SSL/TLS Certificate: %v", err)
+			errorLog.Printf("Could not start server with SSL/TLS Certificate: %v", err)
 		}
 	}
 
+	accessLog.Println("Shutting down server")
 	log.Println("Shutting down server")
 }
 
@@ -136,7 +139,7 @@ func renderTemplate(w http.ResponseWriter, pageName string, data interface{}) {
 
 func handleError(w http.ResponseWriter, msg string) {
 	renderTemplate(w, "error", msg)
-	errorLog.Println(msg)
+	errorLog.Println("Error: " + msg)
 }
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {

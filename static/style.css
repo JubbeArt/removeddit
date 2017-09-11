@@ -30,7 +30,6 @@ a:hover {
 	text-decoration: underline;
 }
 
-
 .user-text {
 	color: #ddd;
 	font-size: 14px;
@@ -64,8 +63,6 @@ a:hover {
 	margin: 0;
 	display: inline;
 }
-
-
 
 #loading {
 	color: #fff;    
