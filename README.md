@@ -5,7 +5,7 @@ The site will only display the removed comments and thier parents, not the full 
 
 This is a done by comparing the comments found from Reddit API and comments from [Jason Baumgartners](https://pushshift.io/) [Pushshift Reddit API](https://github.com/pushshift/api). The frontend is written in pure Javascript (ES6). You can use this code however you want, as long as it's non-commercial.
 
-# The "I just want to get this shit running"
+# The "I just want to get this shit running" guide
 Using [Ubuntu 16.04](http://releases.ubuntu.com/16.04/) and [nginx](https://www.nginx.com/resources/wiki/)
 ```
 sudo git clone git@github.com:JubbeArt/removeddit.git /var/www/
@@ -27,7 +27,7 @@ Restart nginx and visit "localhost"
 sudo service nginx restart
 ```
 
-# The "I care about HTTPS and security"
+# The "I care about HTTPS and security" guide
 In this part we'll set up [nginx](https://www.nginx.com/resources/wiki/) with SSL and set up a free renewing SSL certificates with [Let's Encrypt](https://letsencrypt.org/). I assume you've already done the guide above.
 
 ## Nginx.conf
@@ -67,7 +67,7 @@ sudo mkdir /etc/letsencrypt/configs
 cp /var/www/removeddit/config/letsencrypt /etc/letsencrypt/configs/removeddit.com.conf
 ```
 
-In this config file you change the domains you want and a email for when the certificates are close to expiring.
+In this config file change the domains and the email for your own. The email is tells when the certificates are close to expiring.
 
 This is when the webmasters start praying to God Almighty, for only He can deside the fate of the certbot. 
 Forgive me, Father, for I have sinned. Just don't fuck up certs you asshole.
