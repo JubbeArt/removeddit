@@ -4,7 +4,7 @@ server {
 	
 	root /var/www/removeddit;
 	index index.html;
-	server_name removeddit.com;
+	server_name removeddit.com www.removeddit.com;
 
 	access_log /var/log/nginx/removeddit/access.log;
 	error_log /var/log/nginx/removeddit/error.log;
@@ -28,6 +28,7 @@ server {
 server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
+	server_name removeddit.com www.removeddit.com;
 
 	location / {
 		return 301 https://$host$request_uri;

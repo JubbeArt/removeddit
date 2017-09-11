@@ -3,6 +3,12 @@
 const markdown = SnuOwnd.getParser()
 const htmlParser = new DOMParser();
 
+const mainDiv = document.getElementById("main")
+const loadingText = document.getElementById("loading-text")
+const statusImage = document.getElementById("loading-image")
+const doneImageSrc = "/static/done.png"
+const errorImageSrc = "/static/error.png"
+
 const pathname = window.location.pathname.split("/")
 
 // Just fucking crach if the user is retarded
@@ -19,12 +25,6 @@ const redditMorechildrenURL = `https://oauth.reddit.com/api/morechildren?link_id
 const redditSingleCommentURL = `https://oauth.reddit.com/r/${subreddit}/api/info/?id=`
 const pushshiftIDsURL = `https://api.pushshift.io/reddit/submission/comment_ids/${threadID}`
 const pushshiftCommentsURL = "https://api.pushshift.io/reddit/comment/search?ids="
-
-const mainDiv = document.getElementById("main")
-const loadingText = document.getElementById("loading-text")
-const statusImage = document.getElementById("loading-image")
-const doneImageSrc = "/static/done.png"
-const errorImageSrc = "/static/error.png"
 
 // I actually haven't found a better way of doing this... 
 // Imgur has image-links with no indication that they are actually images
@@ -57,7 +57,10 @@ let redditInit = {
 	headers: { "Authorization": ""  }
 }
 
-loadPage()
+// Start loading the page
+if(threadID !== undefined) {
+	loadPage()
+}
 
 // Maybe a little to long a function...
 async function loadPage() {

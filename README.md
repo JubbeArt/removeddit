@@ -39,7 +39,7 @@ add_header X-Content-Type-Options nosniff;
 add_header X-XSS-Protection "1; mode=block";
 ```
 
-In the same file you also want to change `gzip on` to `gzip off`. (read more [here](https://github.com/h5bp/server-configs-nginx/issues/72))
+In the same file you also want to change `gzip on` to `gzip off` (read more [here](https://github.com/h5bp/server-configs-nginx/issues/72)).
 
 ## Nginx server config
 Copy the ssl config and create a soft link. Create folder for logs and also remove the default config
@@ -50,7 +50,7 @@ sudo mkdir /var/log/nginx/removeddit
 sudo rm /etc/nginx/sites-enabled/default
 ```
 
-Change the "server_name" in the config to your domain name.
+Change both the "server_name" in the config to your domain name.
 
 ## SSL with Let's encrypt
 Read the full guide [here](https://certbot.eff.org/#ubuntutyakkety-nginx). Start of by installing the Let's Encrypt client [certbot](https://certbot.eff.org/)
@@ -64,7 +64,7 @@ sudo apt install -y python-certbot-nginx
 Copy the Let's Encrypt config file for our site 
 ```
 sudo mkdir /etc/letsencrypt/configs
-cp /var/www/removeddit/config/letsencrypt /etc/letsencrypt/config/removeddit.com.conf
+cp /var/www/removeddit/config/letsencrypt /etc/letsencrypt/configs/removeddit.com.conf
 ```
 
 In this config file you change the domains you want and a email for when the certificates are close to expiring.
@@ -72,7 +72,7 @@ In this config file you change the domains you want and a email for when the cer
 This is when the webmasters start praying to God Almighty, for only He can deside the fate of the certbot. 
 Forgive me, Father, for I have sinned. Just don't fuck up certs you asshole.
 ```
-sudo certbot --nginx certonly
+sudo certbot --config /etc/letsencrypt/configs/removeddit.com.conf certonly
 ```
 
 You'll now have a valid SSL certificate (hopefully)! You might have to edit the path for `ssl_certificate` and `ssl_certificate_key` in `/etc/nginx/sites-available/removeddit.com` depending on where the certs are located. (Should be in `/etc/letsencrypt/live/`)
