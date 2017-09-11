@@ -1,5 +1,2 @@
 .secret
-access.log
-error.log
-server
 .vscode/settings.json

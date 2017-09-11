@@ -3,6 +3,17 @@
 const markdown = SnuOwnd.getParser()
 const htmlParser = new DOMParser();
 
+const pathname = window.location.pathname.split("/")
+
+// Just fucking crach if the user is retarded
+if(pathname.length <= 4) {
+	displayError("Missing necessary parts of the URL")
+}
+
+const subreddit = pathname[2]
+const threadID = pathname[4]
+
+const redditTokenURL = "https://www.reddit.com/api/v1/access_token"
 const redditThreadURL = `https://oauth.reddit.com/r/${subreddit}/comments/${threadID}`
 const redditMorechildrenURL = `https://oauth.reddit.com/api/morechildren?link_id=t3_${threadID}&children=`
 const redditSingleCommentURL = `https://oauth.reddit.com/r/${subreddit}/api/info/?id=`
@@ -11,12 +22,12 @@ const pushshiftCommentsURL = "https://api.pushshift.io/reddit/comment/search?ids
 
 const mainDiv = document.getElementById("main")
 const loadingText = document.getElementById("loading-text")
-const loadingImage = document.getElementById("loading-image")
-const loadingImageSrc = "/static/loading.gif"
+const statusImage = document.getElementById("loading-image")
 const doneImageSrc = "/static/done.png"
+const errorImageSrc = "/static/error.png"
 
 // I actually haven't found a better way of doing this... 
-// Imgur has images-links with no indication that they are actually images
+// Imgur has image-links with no indication that they are actually images
 const imageHosts = ["i.redd.it", "flickr.com", "i.imgur.com", "imgur.com", "m.imgur.com"]
 
 const commentIDs = []
@@ -29,17 +40,30 @@ const deletedCommentIDs = []
 
 let totalComments
 
-const redditInit = {
-	headers: { "Authorization": "bearer " + token }
+const tokenFormData = new FormData();
+tokenFormData.append("grant_type", "https://oauth.reddit.com/grants/installed_client");
+tokenFormData.append("device_id", "DO_NOT_TRACK_THIS_DEVICE")
+tokenFormData.append("scope", "account,edit,history,mysubreddits,privatemessages,report,save,submit,subscribe,vote,wikiedit,wikiread,read,flair,identity,modconfig")
+tokenFormData.append("api_type", "json")
+
+const tokenInit = {
+	headers: { "Authorization": "Basic " + btoa(clientID + ":") },
+	method: "POST",
+	body: tokenFormData
+}
+
+let token
+let redditInit = {
+	headers: { "Authorization": ""  }
 }
 
 loadPage()
 
+// Maybe a little to long a function...
 async function loadPage() {
-	
-	loadingImage.src = loadingImageSrc
-	loadingImage.style.display = "block"
 	setLoadingText("Loading thread...")	
+	token = await getToken()
+	redditInit.headers.Authorization = "bearer " + token
 	
 	// Get thread from reddit and all comment IDs (inc. removed ones) from pushshift
 	const requests = [
@@ -71,7 +95,7 @@ async function loadPage() {
 	await generateComments(removedComments)
 
 	setLoadingText("")
-	loadingImage.src = doneImageSrc
+	statusImage.src = doneImageSrc
 }
 
 // ------------------------------------------------------------------------------
@@ -262,6 +286,7 @@ function createComments() {
 function generateThread(data) {
 	const thread = data[0].data.children[0].data
 	totalComments = thread.num_comments
+	document.title = `${thread.title} : ${thread.subreddit}`
 	
 	const threadDiv = document.createElement("div")
 	threadDiv.id = "thread"
@@ -348,6 +373,11 @@ async function fetchMultiple(url, data, init, jsonWalkdown=[], flattening=false)
 	return flattening ? flattenArray(json) : json
 }
 
+async function getToken() {
+	const data = await fetch(redditTokenURL, tokenInit).then(json)
+	return data.access_token
+}
+
 // ------------------------------------------------------------------------------
 // ---------------------- Other less interesting functions ----------------------
 // ------------------------------------------------------------------------------
@@ -372,6 +402,12 @@ function setLoadingText(text) {
 
 function json(x) {
 	return x.json()
+}
+
+function displayError(errorMsg) {
+	statusImage.src = errorImageSrc
+	setLoadingText("<b>ERROR: " + errorMsg + "</b>")
+	console.error(errorMsg)
 }
 
 // UTC -> "Reddit time format" (5 hours ago, just now, etc...)

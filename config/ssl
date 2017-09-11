@@ -1,0 +1,39 @@
+server {
+	listen 443 ssl http2 default_server;
+	listen [::]:443 ssl http2 default_server;
+	
+	root /var/www/removeddit;
+	index index.html;
+	server_name removeddit.com;
+
+	access_log /var/log/nginx/removeddit/access.log;
+	error_log /var/log/nginx/removeddit/error.log;
+
+	ssl_certificate /etc/letsencrypt/live/removeddit.com/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/removeddit.com/privkey.pem;
+	
+	location / {
+		try_files /index.html /index.html =404;
+	}
+
+	location /r/ {
+		try_files /thread.html /thread.html =404;
+	}
+
+	location /static/ {
+		try_files $uri $uri/ =404;
+	}	
+}
+
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	location / {
+		return 301 https://$host$request_uri;
+	}
+
+	location ~ /.well-known {
+		allow all;
+	}
+}
