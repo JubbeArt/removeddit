@@ -9,8 +9,9 @@ server {
 	access_log /var/log/nginx/removeddit/access.log;
 	error_log /var/log/nginx/removeddit/error.log;
 
-	ssl_certificate /etc/letsencrypt/live/removeddit.com/fullchain.pem;
-	ssl_certificate_key /etc/letsencrypt/live/removeddit.com/privkey.pem;
+	# Uncomment these after you've received the certificates
+	#ssl_certificate /etc/letsencrypt/live/removeddit.com/fullchain.pem;
+	#ssl_certificate_key /etc/letsencrypt/live/removeddit.com/privkey.pem;
 	
 	location / {
 		try_files /index.html /index.html =404;

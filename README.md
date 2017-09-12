@@ -8,7 +8,7 @@ This is a done by comparing the comments found from Reddit API and comments from
 # The "I just want to get this shit running" guide
 Using [Ubuntu 16.04](http://releases.ubuntu.com/16.04/) and [nginx](https://www.nginx.com/resources/wiki/)
 ```
-sudo git clone git@github.com:JubbeArt/removeddit.git /var/www/
+sudo git clone https://github.com/JubbeArt/removeddit.git /var/www/removeddit
 sudo apt install -y nginx
 sudo cp /var/www/removeddit/config/basic /etc/nginx/sites-available/default 
 ```
@@ -55,7 +55,7 @@ Change both the "server_name" in the config to your domain name.
 ## SSL with Let's encrypt
 Read the full guide [here](https://certbot.eff.org/#ubuntutyakkety-nginx). Start of by installing the Let's Encrypt client [certbot](https://certbot.eff.org/)
 ```
-sudo apt install software-properties-common
+sudo apt install -y software-properties-common
 sudo add-apt-repository ppa:certbot/certbot
 sudo apt update
 sudo apt install -y python-certbot-nginx 
@@ -64,18 +64,18 @@ sudo apt install -y python-certbot-nginx
 Copy the Let's Encrypt config file for our site 
 ```
 sudo mkdir /etc/letsencrypt/configs
-cp /var/www/removeddit/config/letsencrypt /etc/letsencrypt/configs/removeddit.com.conf
+cp /var/www/removeddit/config/letsencrypt.conf /etc/letsencrypt/configs/removeddit.com.conf
 ```
 
-In this config file change the domains and the email for your own. The email is tells when the certificates are close to expiring.
+In this config file change the domains and the email address for your own. The emails tells you when the certificates are close to expiring.
 
-This is when the webmasters start praying to God Almighty, for only He can deside the fate of the certbot. 
+This is when the webmasters start praying to God, for only He can deside the fate of the certbot. 
 Forgive me, Father, for I have sinned. Just don't fuck up certs you asshole.
 ```
 sudo certbot --config /etc/letsencrypt/configs/removeddit.com.conf certonly
 ```
 
-You'll now have a valid SSL certificate (hopefully)! You might have to edit the path for `ssl_certificate` and `ssl_certificate_key` in `/etc/nginx/sites-available/removeddit.com` depending on where the certs are located. (Should be in `/etc/letsencrypt/live/`)
+You'll now have a valid SSL certificate (hopefully)! You now have to uncomment the `ssl_certificate` and `ssl_certificate_key` in `/etc/nginx/sites-available/removeddit.com` and maybe change the path depending on where the certs are located (check in `/etc/letsencrypt/live/`).
 
 ## Automated renewal of certs
 The certificate expires after 90 days so we want a way to atomatically update the certs.

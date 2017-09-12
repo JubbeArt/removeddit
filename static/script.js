@@ -19,6 +19,8 @@ if(pathname.length <= 4) {
 const subreddit = pathname[2]
 const threadID = pathname[4]
 
+const root = getCommentContext() === "" ? threadID : getCommentContext()
+
 const redditTokenURL = "https://www.reddit.com/api/v1/access_token"
 const redditThreadURL = `https://oauth.reddit.com/r/${subreddit}/comments/${threadID}`
 const redditMorechildrenURL = `https://oauth.reddit.com/api/morechildren?link_id=t3_${threadID}&children=`
@@ -149,7 +151,7 @@ function extractMorechildrenIDs(comments) {
 	comments.jquery[14][3][0].forEach(comment => {
 		if(comment.kind == "more") {
 			if(comment.data.id === "_") {
-				console.log("From more, continue: " + comment.data.parent_id)
+				//console.log("From more, continue: " + comment.data.parent_id)
 				continuethisthreadIDs.push(comment.data.parent_id)	
 			} else {
 				const children = comment.data.children
@@ -184,11 +186,11 @@ async function getRemovedComments(allCommentIDs) {
 	idsDiff = [...new Set(idsDiff)]
 	
 	generateCommentInfo(idsDiff.length)
-	console.log("All ids :", allCommentIDs)
-	console.log("Comments ids (dup): ", commentIDs)
-	console.log("With/without dups: ", commentIDs.length, new Set(commentIDs).size)
-	console.log("Difference: ", idsDiff)
-	console.log("Lookup size:", commentLookup.size)
+	//console.log("All ids :", allCommentIDs)
+	//console.log("Comments ids (dup): ", commentIDs)
+	//console.log("With/without dups: ", commentIDs.length, new Set(commentIDs).size)
+	//console.log("Difference: ", idsDiff)
+	//console.log("Lookup size:", commentLookup.size)
 	return fetchMultiple(pushshiftCommentsURL, idsDiff, null, ["data"], true)
 }
 
@@ -198,7 +200,7 @@ async function getRemovedComments(allCommentIDs) {
 // ------------------------------------------------------------------------------
 
 async function generateComments(removedComments) {
-	const commentSection = generateHTML(`<div id="${threadID}"></div>`)
+	const commentSection = generateHTML(`<div id="${threadID === root ? threadID : "0000000"}"></div>`)
 	mainDiv.appendChild(commentSection)
 	
 	removedComments.forEach(comment => {
@@ -232,7 +234,7 @@ async function getCommentsToGenerate(commentsToLookup) {
 		else if(commentLookup.has(parentID)) {
 				newCommentsToLookup.push(parentID)
 		} else{
-			console.error("Comment doesn't exists, but lets try it anyway :D")
+			//console.error("Comment doesn't exists, but lets try it anyway :D")
 			commentsToFetch.push(parentID)
 		}
 
@@ -241,10 +243,10 @@ async function getCommentsToGenerate(commentsToLookup) {
 
 	if(commentsToFetch.length !== 0) {
 		const newComments = await fetch(redditSingleCommentURL + commentsToFetch.map(x => "t1_" + x).join(), redditInit).then(json)
-		console.log(newComments)
+		//console.log(newComments)
 		
 		newComments.data.children.forEach(x => {
-			console.log(x.data.id)
+			//console.log(x.data.id)
 			commentLookup.set(x.data.id, x.data)
 			newCommentsToLookup.push(x.data.id)
 		})
@@ -256,7 +258,12 @@ async function getCommentsToGenerate(commentsToLookup) {
 }
 
 function createComments() {
-	const createdCommentIDs = [threadID]
+	const createdCommentIDs = [threadID === root ? threadID : "0000000"]
+
+	if(root !== threadID) {
+		commentLookup.get(root).parent_id = "t1_0000000"
+	}
+
 	let id, parentID
 	let didSomething
 
@@ -266,8 +273,10 @@ function createComments() {
 		for(let i = commentsToCreate.length -1; i >= 0; i--) {
 			id = commentsToCreate[i]
 			parentID = commentLookup.get(id).parent_id.split("_")[1]
+			//console.log(parentID)
 
 			if(createdCommentIDs.includes(parentID)) {
+				//console.error("True :" + parentID)
 				document.getElementById(parentID).appendChild(createComment(commentLookup.get(id)))
 				createdCommentIDs.push(id)
 				commentsToCreate.splice(i, 1)
@@ -333,7 +342,7 @@ function createComment(comment) {
 			</div>
 			<div class="comment-body">${comment.body === "[removed]" && isRemoved ? "<p>[likely removed by automoderator]</p>" : markdown.render(comment.body)}</div>
 			<div class="comment-links">
-				<a href="https://todo.com">permalink</a>
+				<a href="/r/${subreddit}/comments/${threadID}/_/${comment.id}/">permalink</a>
 			</div>
 		</div>
 	`)
@@ -411,6 +420,20 @@ function displayError(errorMsg) {
 	statusImage.src = errorImageSrc
 	setLoadingText("<b>ERROR: " + errorMsg + "</b>")
 	console.error(errorMsg)
+}
+
+function getCommentContext() {
+	let commentToot = ""
+	
+	if(window.location.pathname.split("/").length >= 7) {
+		commentToot = window.location.pathname.split("/")[6]
+	} 
+	
+	if(window.location.hash.length === 8) {
+		commentToot = window.location.hash.substring(1)
+	}
+	
+	return commentToot
 }
 
 // UTC -> "Reddit time format" (5 hours ago, just now, etc...)
