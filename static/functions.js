@@ -36,6 +36,7 @@ return {
 	init: init,
 	subreddit: window.location.pathname.split("/")[2],
 	threadID: window.location.pathname.split("/")[4],
+	permalink: window.location.pathname.split("/")[6],
 	fetchToken: function() {		
 		return fetch("https://www.reddit.com/api/v1/access_token", {
 			headers: {

@@ -130,13 +130,18 @@ return {
 	setTotalComments: function(total) { totalComments = total; },
 
 	getRoot: function() {
-		if(window.location.pathname.split("/").length >= 7) {
-			if(window.location.pathname.split("/")[6] !== "") {
-				return window.location.pathname.split("/")[6];
-			}
-		} 
-				
-		return Reddit.threadID;
+		if(Reddit.permalink !== undefined && Reddit.permalink === "") {
+			return Reddit.threadID;
+		}
+
+		if(Reddit.permalink === undefined) {
+			return Reddit.threadID;
+		}
+
+		if(_.has(Comments.lookup, Reddit.permalink)) {
+			return Comments.lookup[Reddit.permalink].parent_id.split("_")[1];
+		}			
+		return "";
 	},
 	generate: function(removedComments) {
 		removedComments.forEach(function(comment){
@@ -320,7 +325,7 @@ var ThreadHTML = (function(){
 			return Comments.lookup[id].score;
 		});
 
-		var createdComments = [Reddit.threadID];
+		var createdComments = [Comments.getRoot()];
 		var didSomething = false;
 	
 		while(commentsToCreate.length > 0) {
