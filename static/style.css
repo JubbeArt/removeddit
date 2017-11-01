@@ -197,6 +197,11 @@ a:hover {
 	margin: 4px 0;
 }
 
+.grey-link, .grey-link:link, .grey-link:visited, .grey-link:hover, .grey-link:focus, .grey-link:active  {
+	color: #828282;
+}
+
+
 #thread-selftext {
 	border: 1px solid #666;
 	border-radius: 7px;
@@ -268,6 +273,10 @@ a:hover {
 
 .comment-removed {
 	background-color: #840c09/*#633636*/;
+}
+
+.comment-deleted {
+	background-color: #00007D;
 }
 
 .comment-odd {
