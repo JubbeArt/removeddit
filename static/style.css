@@ -36,7 +36,6 @@ a:hover {
 
 .user-link {
 	color: #6a98af;
-
 }
 
 #header {
@@ -272,7 +271,7 @@ a:hover {
 }
 
 .comment-removed {
-	background-color: #840c09/*#633636*/;
+	background-color: #840c09;
 }
 
 .comment-deleted {
