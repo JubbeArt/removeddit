@@ -10,20 +10,20 @@ var Status = (function(){
 
 return {
 	loading: function(msg) {
-		statusImage.src = loadingImg
-		loadingText.innerHTML = msg
+		statusImage.src = loadingImg;
+		loadingText.innerHTML = msg;
 	},
 		
 	success: function(msg) {
-		msg = _.defaultTo(msg, "")
-		statusImage.src = successImg
-		loadingText.innerHTML = msg
+		msg = _.defaultTo(msg, "");
+		statusImage.src = successImg;
+		loadingText.innerHTML = msg;
 	},
 
 	error: function(msg) {
-		statusImage.src = errorImg
-		loadingText.innerHTML = "<b>"+msg+"</b>"
-		console.error(msg)
+		statusImage.src = errorImg;
+		loadingText.innerHTML = "<b>"+msg+"</b>";
+		console.error(msg);
 	}
 }})();
 
@@ -78,8 +78,7 @@ return {
 		})
 		.catch(function(error) {
 			return Promise.reject("Can't connect to Reddit API (401)");
-		})
-		
+		});		
 	}
 }})();
 

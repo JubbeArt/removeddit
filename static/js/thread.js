@@ -387,6 +387,7 @@ var ThreadHTML = (function(){
 			<div class="comment-body">'+(comment.body === "[removed]" && isRemoved ? "<p>[likely removed by automoderator]</p>" : Format.parse(comment.body))+'</div> \
 			<div class="comment-links"> \
 				<a href="/r/'+Reddit.subreddit+'/comments/'+Reddit.threadID+'/_/'+comment.id+'/">permalink</a> \
+				<a href="https://www.reddit.com/r/'+Reddit.subreddit+'/comments/'+Reddit.threadID+'/_/'+comment.id+'/">reddit</a> \
 		</div>';
 
 		return commentDiv;

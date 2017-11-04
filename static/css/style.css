@@ -285,3 +285,14 @@ a:hover {
 .comment-even {
 	background-color: #161616;
 }
+
+
+.bookmarklet {    
+	background: #ca302c;
+	color: white;
+	padding: 9px;
+	font-size: large;
+	font-weight: bold;
+	display: inline-block;
+	border-radius: 5px;
+}

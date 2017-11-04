@@ -3,7 +3,7 @@
 Usage: go to any reddit thread and change the `reddit` in the URL to `removeddit`.
 The site will only display the removed comments and thier parents, not the full thread.
 
-This is a done by comparing the comments found from Reddit API and comments from [Jason Baumgartners](https://pushshift.io/) [Pushshift Reddit API](https://github.com/pushshift/api). The frontend is written with a fuckington of promises and some [Lodash](https://lodash.com/). You can use this code however you want, as long as it's non-commercial (and preferably open source).
+This is a done by comparing the comments found from Reddit API and comments from [Jason Baumgartners](https://pushshift.io/) [Pushshift Reddit API](https://github.com/pushshift/api). The frontend is written with a fuckton of promises and some [Lodash](https://lodash.com/). You can use this code however you want, as long as it's non-commercial (and preferably open source).
 
 # The "I just want to get this shit running" guide
 Using [Ubuntu 16.04](http://releases.ubuntu.com/16.04/) and [nginx](https://www.nginx.com/resources/wiki/)
