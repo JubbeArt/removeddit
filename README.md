@@ -1,23 +1,23 @@
 # Removeddit
-[Removeddit](https://removeddit.com) is a site for viewing removed comments from [Reddit](https://www.reddit.com).
+[Removeddit](https://removeddit.com) is a site for viewing removed and deleted comments from [Reddit](https://www.reddit.com).
 Usage: go to any reddit thread and change the `reddit` in the URL to `removeddit`.
 The site will only display the removed comments and thier parents, not the full thread.
 
-This is a done by comparing the comments found from Reddit API and comments from [Jason Baumgartners](https://pushshift.io/) [Pushshift Reddit API](https://github.com/pushshift/api). The frontend is written in pure Javascript (ES6). You can use this code however you want, as long as it's non-commercial.
+This is a done by comparing the comments found from Reddit API and comments from [Jason Baumgartners](https://pushshift.io/) [Pushshift Reddit API](https://github.com/pushshift/api). The frontend is written with a fuckington of promises and some [Lodash](https://lodash.com/). You can use this code however you want, as long as it's non-commercial (and preferably open source).
 
 # The "I just want to get this shit running" guide
 Using [Ubuntu 16.04](http://releases.ubuntu.com/16.04/) and [nginx](https://www.nginx.com/resources/wiki/)
 ```
 sudo git clone https://github.com/JubbeArt/removeddit.git /var/www/removeddit
 sudo apt install -y nginx
-sudo cp /var/www/removeddit/config/basic /etc/nginx/sites-available/default 
+sudo cp /var/www/removeddit/config/basic /etc/nginx/sites-available/default
 ```
 
 Create a reddit app [here](https://www.reddit.com/prefs/apps/), select **installed app**. For "redirect url" it doesn't really matter in this case, you can pick `http://localhost`.
 
 Copy the **client ID** for your app set it as a variable in `id.js`, e.g. with 
 ```
-sudo nano /var/www/removeddit/static/id.js
+sudo nano /var/www/removeddit/static/js/id.js
 # Insert with ctrl-shift-v
 # Save with ctrl-o, exit with ctrl-x
 ```

@@ -82,7 +82,7 @@ return {
 			}
 		});
 	}
-}})()
+}})();
 
 // ------------------------------------------------------------------------------
 // ----------------------- Store and genrates comments --------------------------
@@ -190,7 +190,7 @@ return {
 			ThreadHTML.createComments();
 		})
 	}
-}})()
+}})();
 
 
 
@@ -246,7 +246,7 @@ var HandleIDs = (function(){
 		morechildren: morechildren,
 		removed: removed
 	};
-})()
+})();
 
 
 // ------------------------------------------------------------------------------
@@ -279,7 +279,7 @@ var Extract = (function(){
 	return {
 		normal: normal
 	};	
-})()
+})();
 
 
 // ------------------------------------------------------------------------------
@@ -406,7 +406,7 @@ var ThreadHTML = (function(){
 		createCommentSection: createCommentSection,
 		createComments: createComments
 	}
-})()
+})();
 
 if(isSupported) {
 	app.loadPage()

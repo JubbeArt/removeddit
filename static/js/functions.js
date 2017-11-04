@@ -4,9 +4,9 @@
 var Status = (function(){
 	var loadingText = document.getElementById("loading-text");
 	var statusImage = document.getElementById("loading-image");
-	var loadingImg = "/static/loading.gif";
-	var successImg = "/static/done.png";
-	var errorImg = "/static/error.png";
+	var loadingImg = "/static/images/loading.gif";
+	var successImg = "/static/images/done.png";
+	var errorImg = "/static/images/error.png";
 
 return {
 	loading: function(msg) {
@@ -25,21 +25,19 @@ return {
 		loadingText.innerHTML = "<b>"+msg+"</b>"
 		console.error(msg)
 	}
-}})()
+}})();
 
 
 // Check browser support
-var isSupported = self.fetch && _ && self.Promise;
+var isSupported = self.fetch && self._ && self.Promise;
 
 if(!isSupported) {
-	console.log("isSupported",isSupported);
-	
 	(function() {
 		var isMissing = [];
 
 		if(!self.fetch) isMissing.push("fetch");
 		if(!self.Promise) isMissing.push("promise");
-		if(!_) push("lodash");
+		if(!self._) isMissing.push("lodash");
 
 		var url = "https://www.reddit.com/message/compose/?to=Jubbeart";
 		url += "&subject="+encodeURIComponent("Missing dependencies: " + isMissing.join(" "));
@@ -48,8 +46,6 @@ if(!isSupported) {
 		Status.error("Error: Missing dependencies ("+isMissing+"). Contact <a href=\""+url+"\">/u/jubbeart</a>");
 	})();
 }
-
-
 
 
 // Reddit API
@@ -85,7 +81,7 @@ return {
 		})
 		
 	}
-}})()
+}})();
 
 
 // Helper functions for fetch
@@ -119,7 +115,7 @@ return {
 	json: json
 
 
-}})()
+}})();
 
 var URLs = (function(){
 	var reddit = "https://oauth.reddit.com";
@@ -149,7 +145,7 @@ return {
 		tmpDiv.innerHTML = htmlString
 		return tmpDiv.childNodes.length === 0 ? "" : tmpDiv.childNodes[0].nodeValue
 	}
-}})()
+}})();
 
 
 // For text formatting
@@ -183,4 +179,4 @@ return {
 	prettyScore: function(score) {
 		return score >= 10000 ? (score / 1000).toFixed(1) + "k" : score;
 	}
-}})()
+}})();
