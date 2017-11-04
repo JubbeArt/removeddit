@@ -22,10 +22,34 @@ return {
 
 	error: function(msg) {
 		statusImage.src = errorImg
-		loadingText.innerHTML = "<b>ERROR: " + msg + "</b>"
+		loadingText.innerHTML = "<b>"+msg+"</b>"
 		console.error(msg)
 	}
 }})()
+
+
+// Check browser support
+var isSupported = self.fetch && _ && self.Promise;
+
+if(!isSupported) {
+	console.log("isSupported",isSupported);
+	
+	(function() {
+		var isMissing = [];
+
+		if(!self.fetch) isMissing.push("fetch");
+		if(!self.Promise) isMissing.push("promise");
+		if(!_) push("lodash");
+
+		var url = "https://www.reddit.com/message/compose/?to=Jubbeart";
+		url += "&subject="+encodeURIComponent("Missing dependencies: " + isMissing.join(" "));
+		url += "&message="+encodeURIComponent("Comment (optional): ");
+		url += "%0A%0A"+encodeURIComponent("Browser details: "+navigator.userAgent);
+		Status.error("Error: Missing dependencies ("+isMissing+"). Contact <a href=\""+url+"\">/u/jubbeart</a>");
+	})();
+}
+
+
 
 
 // Reddit API
@@ -45,11 +69,21 @@ return {
 			},
 			method: "POST",
 			body: "grant_type="+encodeURIComponent("https://oauth.reddit.com/grants/installed_client")+"&device_id=DO_NOT_TRACK_THIS_DEVICE"
-		})		
-		.then(function(response) { return response.json() })
+		})
+		.then(function(response) { 
+			if(response.ok) {
+				return response.json();
+			} else {
+				return Promise.reject("Can't connect to Reddit API (401)");
+			}
+		})
 		.then(function(json) {
 			init.headers.Authorization = "bearer " + json.access_token;
-		});
+		})
+		.catch(function(error) {
+			return Promise.reject("Can't connect to Reddit API (402)");
+		})
+		
 	}
 }})()
 
@@ -83,6 +117,8 @@ return {
 		});
 	},
 	json: json
+
+
 }})()
 
 var URLs = (function(){

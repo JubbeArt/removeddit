@@ -15,11 +15,17 @@ return {
 			return Promise.all([
 				fetch(URLs.thread, Reddit.init)
 				.then(Fetch2.json)
-				.then(ThreadHTML.createThread), 
+				.then(ThreadHTML.createThread)
+				.catch(function(error) {
+					return Promise.reject("Could not get thread from Reddit");
+				}), 
 
 				fetch(URLs.pushshiftIDs)
 				.then(Fetch2.json)
-				.then(_.property("data"))		
+				.then(_.property("data"))
+				.catch(function(error) {
+					return Promise.reject("Could not get removed comment IDs");
+				}), 
 			])
 		})
 		.then(function(results) {
@@ -29,15 +35,23 @@ return {
 			Status.loading("Loading comments from reddit...");
 			HandleIDs.normal(thread);
 			console.log("After normal", Comments.ids.length);
-			return HandleIDs.morechildren();		
+			return HandleIDs.morechildren()
+			.catch(function(error){
+				return Promise.reject("Could not get comments from Reddit (moreChildren)");
+			});		
 		})
 		.then(function(){
 			console.log("After morechildren", Comments.ids.length);
 			return Promise.all(_.map(_.uniq(Comments.countinuethread), function(id) { 
 				return fetch(URLs.thread+"/_/"+id.split("_")[1], Reddit.init)
 				.then(Fetch2.json)
-			}));			
-		}).then(function(smallerThreads){
+				.catch(function(error){ return Promise.reject("Could not get comments from Reddit (continueThisThread)") })
+			}))
+			.catch(function(error){
+				return Promise.reject("Could not get comments from Reddit (continueThisThread)");
+			});			
+		})
+		.then(function(smallerThreads){
 			_.forEach(smallerThreads, function(thread){
 				HandleIDs.normal(thread);
 			})
@@ -48,7 +62,10 @@ return {
 			HandleIDs.removed();
 			console.log("Removed", Comments.removed.length);
 			ThreadHTML.createCommentInfo(Comments.removed.length);
-			return Fetch2.multiple(URLs.format(URLs.pushshiftComments, Comments.removed), null, "data");			
+			return Fetch2.multiple(URLs.format(URLs.pushshiftComments, Comments.removed), null, "data")
+			.catch(function(error){
+				return Promise.reject("Could not get removed comments");
+			});			
 		})
 		.then(function(removedComments){
 			Status.loading("Generating comments...");
@@ -56,6 +73,13 @@ return {
 		})
 		.then(function(){
 			Status.success();
+		})
+		.catch(function(error) {
+			if(_.includes(_.lowerCase(error), "error")) {
+				Status.error(error);
+			} else {
+				Status.error("Error: "+error);
+			}
 		});
 	}
 }})()
@@ -384,4 +408,6 @@ var ThreadHTML = (function(){
 	}
 })()
 
-app.loadPage()
+if(isSupported) {
+	app.loadPage()
+}
