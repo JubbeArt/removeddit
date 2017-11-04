@@ -77,7 +77,7 @@ return {
 			init.headers.Authorization = "bearer " + json.access_token;
 		})
 		.catch(function(error) {
-			return Promise.reject("Can't connect to Reddit API (402)");
+			return Promise.reject("Can't connect to Reddit API (401)");
 		})
 		
 	}
@@ -86,10 +86,6 @@ return {
 
 // Helper functions for fetch
 var Fetch2 = (function(){
-	var json = function(response) {
-		return response.json();
-	};
-
 return {
 	multiple: function(urls, init, jsonPath, flattening) {
 		flattening = _.defaultTo(flattening, true);
@@ -97,7 +93,7 @@ return {
 		
 		return Promise.all(_.map(urls, function(url) { 
 			return fetch(url, init)
-			.then(json)
+			.then(Fetch2.json)
 			.then(function(jsonArray) {
 				if(! _.isNil(jsonPath)) {
 					return _.get(jsonArray, jsonPath);
@@ -112,9 +108,9 @@ return {
 			return dataArray;
 		});
 	},
-	json: json
-
-
+	json: function(response) {
+		return response.json();
+	}
 }})();
 
 var URLs = (function(){

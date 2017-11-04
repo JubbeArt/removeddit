@@ -34,14 +34,12 @@ return {
 
 			Status.loading("Loading comments from reddit...");
 			HandleIDs.normal(thread);
-			console.log("After normal", Comments.ids.length);
 			return HandleIDs.morechildren()
 			.catch(function(error){
 				return Promise.reject("Could not get comments from Reddit (moreChildren)");
 			});		
 		})
 		.then(function(){
-			console.log("After morechildren", Comments.ids.length);
 			return Promise.all(_.map(_.uniq(Comments.countinuethread), function(id) { 
 				return fetch(URLs.thread+"/_/"+id.split("_")[1], Reddit.init)
 				.then(Fetch2.json)
@@ -55,12 +53,8 @@ return {
 			_.forEach(smallerThreads, function(thread){
 				HandleIDs.normal(thread);
 			})
-			console.log("After continueThisThread", Comments.ids.length);	
-			console.log("Total", Comments.ids.length);
-			console.log("Unique", _.uniq(Comments.ids).length);
 			Status.loading("Getting removed comments...");
 			HandleIDs.removed();
-			console.log("Removed", Comments.removed.length);
 			ThreadHTML.createCommentInfo(Comments.removed.length);
 			return Fetch2.multiple(URLs.format(URLs.pushshiftComments, Comments.removed), null, "data")
 			.catch(function(error){
@@ -184,8 +178,6 @@ return {
 				
 		return getParentComments(Comments.removed)
 		.then(function(){	
-			//console.log("Removed length", Comments.removed.length)
-			//console.log("ToBeCreated", Comments.toBeCreated);
 			ThreadHTML.createCommentSection();	
 			ThreadHTML.createComments();
 		})
@@ -409,5 +401,5 @@ var ThreadHTML = (function(){
 })();
 
 if(isSupported) {
-	app.loadPage()
+	app.loadPage();
 }
