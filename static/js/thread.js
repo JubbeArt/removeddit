@@ -308,7 +308,10 @@ var ThreadHTML = (function(){
 						<a id="subreddit-link" class="user-link" href="https://reddit.com/r/'+thread.subreddit+'">/r/'+thread.subreddit+'</a> \
 					</div>' +
 					(thread.selftext !== '' ? '<div id="thread-selftext" class="user-text">'+Format.parse(thread.selftext)+'</div>':'') +
-					'<div id="total-comments"><a class="grey-link" href="https://www.reddit.com'+thread.permalink+'"><b>'+thread.num_comments+' comments</b></a></div>' +
+					'<div id="total-comments"> \
+						<a class="grey-link" href="'+thread.permalink+'"><b>'+thread.num_comments+' comments</b></a> \
+						<a class="grey-link" href="https://www.reddit.com'+thread.permalink+'"><b>reddit</b></a> \
+						</div>' +
 					(thread.media !== null ? HTML.parse(thread.media_embed.content) : '') +
 					(_.includes(imageHosts, thread.domain) && _.has(thread, "preview") ? '<a href="'+thread.url+'"><img id="thread-image" src="'+thread.preview.images[0].source.url+'"></a>' : '') +
 				'</div> \
