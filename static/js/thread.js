@@ -69,7 +69,7 @@ return {
 			Status.success();
 		})
 		.catch(function(error) {
-			if(_.includes(_.lowerCase(error), "error")) {
+			if(_.includes(_.toLower(error), "error")) {
 				Status.error(error);
 			} else {
 				Status.error("Error: "+error);
@@ -288,34 +288,43 @@ var ThreadHTML = (function(){
 		var thread = data[0].data.children[0].data;
 		Comments.setTotalComments(thread.num_comments);
 		document.title = thread.title+" : "+thread.subreddit;
+
+		var defaultThumbnails = ["self", "default", "image", "nsfw"];		
+		var thumbnail = '<a href="'+thread.permalink+'" class="thumbnail';
+		if(thread.thumbnail === "") {
+			thumbnail = "";
+		} else if(_.includes(defaultThumbnails, thread.thumbnail)) {
+			thumbnail += ' thumbnail-'+thread.thumbnail+'"></a>';
+		} else {
+			thumbnail += '"><img src="'+thread.thumbnail+'" width="'+(thread.thumbnail_width * 0.5)+'" height="'+(thread.thumbnail_height * 0.5)+'"></a>';
+		}
 		
 		var threadDiv = document.createElement("div");
+		threadDiv.className = "thread";
 		threadDiv.innerHTML  = ' \
-			<div id="thread"> \
-				<div id="thread-score-box"> \
-					<div class="vote upvote"></div> \
-					<div id="thread-score">'+Format.prettyScore(thread.score)+'</div> \
-					<div class="vote downvote"></div> \
-				</div> \
-				<div id="thumbnail"></div> \
-				<div id="thread-content"> \
-					'+(thread.link_flair_text !== null ? '<span class="link-flair">'+thread.link_flair_text+'</span>' : '') +
-					'<a id="thread-title" href="'+thread.url+'">'+thread.title+'</a> \
-					<span id="domain">('+thread.domain+')</span> \
-					<div id="thread-info"> \
-						submitted <span id="thread-time">'+Format.prettyDate(thread.created_utc)+'</span> by \
-						<a id="thread-author" class="user-link" href="https://www.reddit.com/user/'+thread.author+'">'+thread.author+'</a> to \
-						<a id="subreddit-link" class="user-link" href="https://reddit.com/r/'+thread.subreddit+'">/r/'+thread.subreddit+'</a> \
+			<div class="thread-score-box"> \
+				<div class="vote upvote"></div> \
+				<div class="thread-score">'+Format.prettyScore(thread.score)+'</div> \
+				<div class="vote downvote"></div> \
+			</div>'+
+			thumbnail+
+			'<div class="thread-content"> \
+				'+(thread.link_flair_text !== null ? '<span class="link-flair">'+thread.link_flair_text+'</span>' : '') +
+				'<a class="thread-title" href="'+thread.url+'">'+thread.title+'</a> \
+				<span class="domain">('+thread.domain+')</span> \
+				<div class="thread-info"> \
+					submitted <span class="thread-time">'+Format.prettyDate(thread.created_utc)+'</span> by \
+					<a class="thread-author author" href="https://www.reddit.com/user/'+thread.author+'">'+thread.author+'</a> to \
+					<a class="subreddit-link author" href="/r/'+thread.subreddit+'">/r/'+thread.subreddit+'</a> \
+				</div>' +
+				(thread.selftext !== '' ? '<div class="thread-selftext user-text">'+Format.parse(thread.selftext)+'</div>':'') +
+				'<div class="total-comments"> \
+					<a class="grey-link" href="'+thread.permalink+'"><b>'+thread.num_comments+' comments</b></a> \
+					<a class="grey-link" href="https://www.reddit.com'+thread.permalink+'"><b>reddit</b></a> \
 					</div>' +
-					(thread.selftext !== '' ? '<div id="thread-selftext" class="user-text">'+Format.parse(thread.selftext)+'</div>':'') +
-					'<div id="total-comments"> \
-						<a class="grey-link" href="'+thread.permalink+'"><b>'+thread.num_comments+' comments</b></a> \
-						<a class="grey-link" href="https://www.reddit.com'+thread.permalink+'"><b>reddit</b></a> \
-						</div>' +
-					(thread.media !== null ? HTML.parse(thread.media_embed.content) : '') +
-					(_.includes(imageHosts, thread.domain) && _.has(thread, "preview") ? '<a href="'+thread.url+'"><img id="thread-image" src="'+thread.preview.images[0].source.url+'"></a>' : '') +
-				'</div> \
-			</div> \
+				(thread.media !== null ? HTML.parse(thread.media_embed.content) : '') +
+				(_.includes(imageHosts, thread.domain) && _.has(thread, "preview") ? '<a href="'+thread.url+'"><img id="thread-image" src="'+thread.preview.images[0].source.url+'"></a>' : '') +
+			'</div> \
 		';
 		mainDiv.appendChild(threadDiv);
 		return data;
@@ -382,8 +391,8 @@ var ThreadHTML = (function(){
 		commentDiv.className = "comment " + commentCss;
 		commentDiv.innerHTML = ' \
 			<div class="comment-head"> \
-				<a href="javascript:void(0)" class="user-link">[–]</a> \
-				<a href="https://www.reddit.com/user/'+comment.author+'" class="user-link comment-author">'+comment.author+(isDeleted ? " (deleted by user)" : "")+'</a> \
+				<a href="javascript:void(0)" class="author">[–]</a> \
+				<a href="https://www.reddit.com/user/'+comment.author+'" class="author comment-author">'+comment.author+(isDeleted ? " (deleted by user)" : "")+'</a> \
 				<span class="comment-score">'+Format.prettyScore(comment.score)+' point'+((comment.score == 1) ? '': 's')+'</span> \
 				<span class="comment-time">'+Format.prettyDate(comment.created_utc)+'</span> \
 			</div> \

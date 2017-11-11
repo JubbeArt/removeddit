@@ -1,0 +1,46 @@
+extends base.pug
+
+block main
+	#main-box
+		h2.about About
+		p
+			| Display 
+			b(title='Removed by mods').removed removed
+			|  (by mods) and 
+			b(title='Deleted by users').deleted deleted
+			|  (by users) comments/threads from  Reddit.
+		p
+			| #[b Usage]: Drag this bookmarklet 
+			a(href="javascript: document.location = document.URL.replace('reddit.com','removeddit.com');").bookmarklet Removeddit
+			|
+			| to your bookmark bar and use it to get from reddit to removeddit.
+			br
+			br
+			| Alternatively you can manually replace the #[i reddit] in the URL to #[i removeddit].
+			br
+			| E.g. 
+			a(href='/r/TwoXChromosomes/comments/6z1hch/') https://www.removeddit.com/r/TwoXChromosomes/comments/6z1hch/
+		p
+			| Created by 
+			a(href='https://github.com/JubbeArt/') Jesper Wrang
+			|  and uses 
+			a(href='https://pushshift.io/') Jason Baumgartner
+			|  service for getting removed comments.
+
+		h2.todo TODO
+		ul
+			li Collapsing comments
+			li Get removed selftext of thread
+			li Subreddits!
+			li Maybe for specific users	
+		h2.contact Links/Contact
+		p(style='margin-bottom:8px;')
+			| For feedback and bug reports:
+		ul
+			li
+				| email: removeddit (at) gmail.com
+			li
+				| reddit: 
+				a(href='https://www.reddit.com/user/Jubbeart/') /u/JubbeArt
+		p
+			a(href='https://github.com/JubbeArt/removeddit') Code on Github.

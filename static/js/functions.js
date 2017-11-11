@@ -2,8 +2,8 @@
 
 // Little display-bar in the upper right corner
 var Status = (function(){
-	var loadingText = document.getElementById("loading-text");
-	var statusImage = document.getElementById("loading-image");
+	var loadingText = document.getElementById("status-text");
+	var statusImage = document.getElementById("status-image");
 	var loadingImg = "/static/images/loading.gif";
 	var successImg = "/static/images/done.png";
 	var errorImg = "/static/images/error.png";
@@ -54,7 +54,7 @@ var Reddit = (function() {
 	
 return {
 	init: init,
-	subreddit: window.location.pathname.split("/")[2],
+	subreddit: _.defaultTo(window.location.pathname.split("/")[2], 'all'),
 	threadID: window.location.pathname.split("/")[4],
 	permalink: window.location.pathname.split("/")[6],
 	fetchToken: function() {		
@@ -70,14 +70,14 @@ return {
 			if(response.ok) {
 				return response.json();
 			} else {
-				return Promise.reject("Can't connect to Reddit API (401)");
+				return Promise.reject("Can't connect to Reddit API");
 			}
 		})
 		.then(function(json) {
 			init.headers.Authorization = "bearer " + json.access_token;
 		})
 		.catch(function(error) {
-			return Promise.reject("Can't connect to Reddit API (401)");
+			return Promise.reject("Can't connect to Reddit API");
 		});		
 	}
 }})();
@@ -115,6 +115,7 @@ return {
 var URLs = (function(){
 	var reddit = "https://oauth.reddit.com";
 	var pushshift = "https://api.pushshift.io";
+	var elastic = "https://elastic.pushshift.io";
 	var maxItemsPerRequest = 100;
 
 	return {
@@ -123,13 +124,15 @@ var URLs = (function(){
 			var dataChunks = _.chunk(data, chunkSize);
 			return _.map(dataChunks, function(chunk) { return url + chunk; })
 		},
-		pushshiftComments:pushshift+"/reddit/comment/search?ids=",
-		pushshiftIDs:	pushshift+"/reddit/submission/comment_ids/"+Reddit.threadID,
-		thread:		reddit+"/r/"+Reddit.subreddit+"/comments/"+Reddit.threadID,
-		moreChildren:	reddit+"/api/morechildren?link_id=t3_"+Reddit.threadID+"&children=",
-		singleComments:	reddit+"/r/"+Reddit.subreddit+"/api/info/?id="
+		pushshiftComments:	pushshift+"/reddit/comment/search?ids=",
+		pushshiftIDs:		pushshift+"/reddit/submission/comment_ids/"+Reddit.threadID,
+		thread:			reddit+"/r/"+Reddit.subreddit+"/comments/"+Reddit.threadID,
+		moreChildren:		reddit+"/api/morechildren?link_id=t3_"+Reddit.threadID+"&children=",
+		singleComments:	reddit+"/r/"+Reddit.subreddit+"/api/info/?id=",
+		subreddit:		reddit+"/r/"+Reddit.subreddit,
+		elasticThreads: 	elastic+"/rs/submissions/_search?source="
 	};
-})()
+})();
 
 
 // HTML parsing
@@ -140,7 +143,65 @@ return {
 		tmpDiv.innerHTML = htmlString
 		return tmpDiv.childNodes.length === 0 ? "" : tmpDiv.childNodes[0].nodeValue
 	}
-}})();
+};
+})();
+
+
+var Time = (function(){
+return {
+	utc: function() {
+		return Math.floor(_.now()/1000);
+	},
+
+	toUTC: function(timeString) {
+		var parts = timeString.split(/[a-zA-Z]+/);
+		var times = 1;
+
+		if(parts.length === 2 && parts[0] !== "") {
+			times = _.parseInt(parts[0]);
+		}
+
+		if(_.includes(timeString, "hour")) return times * 3600;
+		if(_.includes(timeString, "day")) return times * 86400;
+		if(_.includes(timeString, "week")) return times * 604800;
+		if(_.includes(timeString, "month")) return times * 2592000;
+		if(_.includes(timeString, "year")) return times * 31536000;
+		
+		return Time.utc();
+	},
+	
+	difference: function(utc) {
+		return Time.utc() - utc;
+	}
+};
+})();
+
+var GetVars = (function(){
+return {
+	get: function(variable) {
+		var urlParts = window.location.href.split("?");
+		if(urlParts.length <= 1) {
+			return undefined;
+		}
+
+		var getVariables = urlParts[1].split("&");
+		
+		for(var i = 0, len = getVariables.length; i < len; i++) {
+			var keyAndValue = getVariables[i].split("=");
+			
+			if(keyAndValue[0] === variable) {
+				return keyAndValue[1];
+			}
+		}
+
+		return undefined;
+	},
+
+	set: function(variable, value) {
+		window.location.href = window.location.href.split("?")[0] + "?"+variable+"="+value;
+	}
+};
+})();
 
 
 // For text formatting
@@ -150,7 +211,7 @@ return {
 	parse: function(text){
 		return markdown.render(text)
 	},	
-	// UTC -> "Reddit time format" (5 hours ago, just now, etc...)
+	// UTC -> "Reddit time format" (e.g. 5 hours ago, just now, etc...)
 	prettyDate: function(createdUTC){
 		var currentUTC = Math.floor((new Date()).getTime() / 1000);
 		var secondDiff = currentUTC - createdUTC;
@@ -158,8 +219,8 @@ return {
 		
 		if(dayDiff < 0)	return "";
 		if(dayDiff == 0) {
-			if(secondDiff < 10)	return "just now";
-			if(secondDiff < 60)	return secondDiff + " seconds ago";
+			if(secondDiff < 10)		return "just now";
+			if(secondDiff < 60)		return secondDiff + " seconds ago";
 			if(secondDiff < 120)	return "a minute ago";
 			if(secondDiff < 3600)	return Math.floor(secondDiff / 60) + " minutes ago";
 			if(secondDiff < 7200)	return "an hour ago";
@@ -170,8 +231,14 @@ return {
 		if(dayDiff < 365)	return Math.floor(dayDiff / 30) + " months ago";
 		return Math.floor(dayDiff / 365) + " years ago";
 	},
-	// 12000 => 1.2k
+	// e.g. 12000 => 12k
 	prettyScore: function(score) {
-		return score >= 10000 ? (score / 1000).toFixed(1) + "k" : score;
+		if(score >= 100000) {
+			return (score / 1000).toFixed(0) + "k";
+		} else if(score >= 10000) {
+			return (score / 1000).toFixed(1) + "k";
+		}
+
+		return  score;
 	}
 }})();

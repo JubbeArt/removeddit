@@ -1,2 +1,4 @@
 .secret
 .vscode/settings.json
+.sass-cache/
+*.css.map
