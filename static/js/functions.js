@@ -31,6 +31,7 @@ return {
 // Check browser support
 var isSupported = self.fetch && self._ && self.Promise;
 
+// If not supported show error
 if(!isSupported) {
 	(function() {
 		var isMissing = [];
@@ -39,6 +40,7 @@ if(!isSupported) {
 		if(!self.Promise) isMissing.push("promise");
 		if(!self._) isMissing.push("lodash");
 
+		// And a link with an error report to reddit... maybe not best way but its something
 		var url = "https://www.reddit.com/message/compose/?to=Jubbeart";
 		url += "&subject="+encodeURIComponent("Missing dependencies: " + isMissing.join(" "));
 		url += "&message="+encodeURIComponent("Comment (optional): ");
@@ -112,6 +114,7 @@ return {
 	}
 }})();
 
+
 var URLs = (function(){
 	var reddit = "https://oauth.reddit.com";
 	var pushshift = "https://api.pushshift.io";
@@ -147,6 +150,7 @@ return {
 })();
 
 
+// UTC time handling, very usefull when dealing with elasticsearch
 var Time = (function(){
 return {
 	utc: function() {
@@ -161,11 +165,11 @@ return {
 			times = _.parseInt(parts[0]);
 		}
 
-		if(_.includes(timeString, "hour")) return times * 3600;
-		if(_.includes(timeString, "day")) return times * 86400;
-		if(_.includes(timeString, "week")) return times * 604800;
-		if(_.includes(timeString, "month")) return times * 2592000;
-		if(_.includes(timeString, "year")) return times * 31536000;
+		if(_.includes(timeString, "hour")) 	return times * 3600;
+		if(_.includes(timeString, "day")) 		return times * 86400;
+		if(_.includes(timeString, "week")) 	return times * 604800;
+		if(_.includes(timeString, "month")) 	return times * 2592000;
+		if(_.includes(timeString, "year")) 	return times * 31536000;
 		
 		return Time.utc();
 	},
@@ -176,6 +180,7 @@ return {
 };
 })();
 
+// The get variables used in the url
 var GetVars = (function(){
 return {
 	get: function(variable) {
@@ -195,10 +200,6 @@ return {
 		}
 
 		return undefined;
-	},
-
-	set: function(variable, value) {
-		window.location.href = window.location.href.split("?")[0] + "?"+variable+"="+value;
 	}
 };
 })();
