@@ -1,5 +1,5 @@
 # Removeddit
-[Removeddit](https://removeddit.com) is a site for viewing removed and deleted comments from [Reddit](https://www.reddit.com).
+[Removeddit](https://removeddit.com) is a site for viewing removed and deleted comments/posts from [Reddit](https://www.reddit.com).
 Usage: go to any reddit thread and change the `reddit` in the URL to `removeddit`.
 The site will only display the removed comments and thier parents, not the full thread.
 
@@ -10,7 +10,7 @@ Using [Ubuntu 16.04](http://releases.ubuntu.com/16.04/) and [nginx](https://www.
 ```
 sudo git clone https://github.com/JubbeArt/removeddit.git /var/www/removeddit
 sudo apt install -y nginx
-sudo cp /var/www/removeddit/config/basic /etc/nginx/sites-available/default
+sudo cp /var/www/removeddit/server-config/basic /etc/nginx/sites-available/default
 ```
 
 Create a reddit app [here](https://www.reddit.com/prefs/apps/), select **installed app**. For "redirect url" it doesn't really matter in this case, you can pick `http://localhost`.
@@ -44,13 +44,13 @@ In the same file you also want to change `gzip on` to `gzip off` (read more [her
 ## Nginx server config
 Copy the ssl config and create a soft link. Create folder for logs and also remove the default config
 ```
-sudo cp /var/www/removeddit/config/ssl /etc/nginx/sites-available/removeddit.com
+sudo cp /var/www/removeddit/server-config/ssl /etc/nginx/sites-available/removeddit.com
 sudo ln -s /etc/nginx/sites-available/removeddit.com /etc/nginx/sites-enabled/removeddit.com
 sudo mkdir /var/log/nginx/removeddit
 sudo rm /etc/nginx/sites-enabled/default
 ```
 
-Change both the "server_name" in the config to your domain name.
+Change the "server_name" for both server blocks in the config to your own domain name.
 
 ## SSL with Let's encrypt
 Read the full guide [here](https://certbot.eff.org/#ubuntutyakkety-nginx). Start of by installing the Let's Encrypt client [certbot](https://certbot.eff.org/)
@@ -64,13 +64,13 @@ sudo apt install -y python-certbot-nginx
 Copy the Let's Encrypt config file for our site 
 ```
 sudo mkdir /etc/letsencrypt/configs
-cp /var/www/removeddit/config/letsencrypt.conf /etc/letsencrypt/configs/removeddit.com.conf
+cp /var/www/removeddit/server-config/letsencrypt.conf /etc/letsencrypt/configs/removeddit.com.conf
 ```
 
 In this config file change the domains and the email address for your own. The emails tells you when the certificates are close to expiring.
 
 This is when the webmasters start praying to God, for only He can deside the fate of the certbot. 
-Forgive me, Father, for I have sinned. Just don't fuck up certs you asshole.
+Forgive me Father, for I have committed.
 ```
 sudo certbot --config /etc/letsencrypt/configs/removeddit.com.conf certonly
 ```
