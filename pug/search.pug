@@ -1,4 +1,8 @@
 extends base.pug
 
-block main
-	h1 Comming soon
+block vars
+	- var script = true
+
+append script
+	script(src='/static/js/libraries/js.cookie.js')
+	script(src='/static/js/search.js')

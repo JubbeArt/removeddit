@@ -16,12 +16,9 @@ return {
 		var timeDifference = Time.difference(Time.toUTC(Vars.getTime()));
 		SubredditHTML.createInfo(Reddit.subreddit, Vars.getTime());
 
-		Reddit.fetchToken()
-		.then(function(){
-			return fetch(ElasticSearch.subreddit(Reddit.subreddit, timeDifference, Vars.getPage()))
-			.catch(function(error){
+		fetch(ElasticSearch.subreddit(Reddit.subreddit, timeDifference, Vars.getPage()))
+		.catch(function(error){
 				return Promise.reject("Could not get removed posts");
-			});
 		})
 		.then(function(response){
 			if(response.ok) {
@@ -33,7 +30,7 @@ return {
 		.then(Fetch2.json)
 		.then(function(json){
 			var sourceArray = json.hits.hits;
-			var pageNr = (Vars.getPage() - 1) * 25 + 1;
+			var pageNr = (Vars.getPage() - 1) * Vars.postPerPage + 1;
 			for(var i = 0, len = sourceArray.length; i < len; i++) { 
 				SubredditHTML.createThread(sourceArray[i]._source, pageNr+i);	
 			}
@@ -57,6 +54,7 @@ var Vars = (function(){
 	var page;
 
 return {
+	postPerPage: 50,
 	isAll: _.toLower(Reddit.subreddit) === 'all',
 	loadTime: function(){
 		var tmpTime = _.defaultTo(GetVars.get("t"), Cookies.get("t"));
@@ -110,15 +108,15 @@ return {
 		'},'+
 		'"_source":["author","url","subreddit","link_flair_text","score","title","created_utc","selftext","num_comments","domain","permalink","id","thumbnail","thumbnail_height","thumbnail_width"],'+
 		'"sort":[{"score":"desc"}],'+
-		'"from":'+(page-1)*25+','+
-		'"size":25}';
+		'"from":'+(page-1)*Vars.postPerPage+','+
+		'"size":'+Vars.postPerPage+'}';
 	}	
-}
+};
 })();
 
 var SubredditHTML = (function(){
 	var mainDiv = document.getElementById("main");
-return {	
+return {
 	createThread: function(thread, postRank) {	
 		var threadDiv = document.createElement("div");
 		threadDiv.className = "thread";
@@ -172,7 +170,6 @@ return {
 		infoDiv.className = "subreddit-info";
 		infoDiv.innerHTML = 'top post of <a href="https://www.reddit.com/r/'+subreddit+'">/r/'+subreddit+'</a> from:'; 
 		
-
 		var values = ["hour", "12hour", "day", "week", "month", "6month", "year", "all"];
 		var display = ["past hour", "past 12 hours", "past day", "past week", "past month", "past 6 months", "past year", "all time"];
 		var options = "";
@@ -196,7 +193,7 @@ return {
 		pagination.id = "pagination";
 
 		var start = Math.max(Vars.getPage()-3, 1);
-		var end = Math.min(start + 9, Math.ceil(totalPosts/25));
+		var end = Math.min(start + 9, Math.ceil(totalPosts/Vars.postPerPage));
 		var links = "Page: ";
 		var hrefBase = document.location.href.split("?")[0] + "?t=" + Vars.getTime() + "&page=";
 
