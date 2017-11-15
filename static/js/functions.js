@@ -4,28 +4,25 @@
 var Status = (function(){
 	var loadingText = document.getElementById("status-text");
 	var statusImage = document.getElementById("status-image");
-	var loadingImg = "/static/images/loading.gif";
-	var successImg = "/static/images/done.png";
-	var errorImg = "/static/images/error.png";
 
-return {
-	loading: function(msg) {
-		statusImage.src = loadingImg;
-		loadingText.innerHTML = msg;
-	},
-		
-	success: function(msg) {
-		msg = _.defaultTo(msg, "");
-		statusImage.src = successImg;
-		loadingText.innerHTML = msg;
-	},
+	return {
+		loading: function(msg) {
+			statusImage.src = "/static/images/loading.gif";
+			loadingText.innerHTML = msg;
+		},
+			
+		success: function(msg) {
+			statusImage.src = "/static/images/done.png";
+			loadingText.innerHTML = _.defaultTo(msg, "");
+		},
 
-	error: function(msg) {
-		statusImage.src = errorImg;
-		loadingText.innerHTML = "<b>"+msg+"</b>";
-		console.error(msg);
-	}
-}})();
+		error: function(msg) {
+			statusImage.src = "/static/images/error.png";
+			loadingText.innerHTML = "<b>"+msg+"</b>";
+			console.error(msg);
+		}
+	};
+})();
 
 
 // Check browser support
@@ -49,104 +46,69 @@ if(!isSupported) {
 	})();
 }
 
-
-// Reddit API
-var Reddit = (function() {
-	var init = {headers: {"Authorization": ""}};
+var Reddit = (function() {	
+	var subreddit = _.defaultTo(window.location.pathname.split("/")[2], 'all');
 	
-return {
-	init: init,
-	subreddit: _.defaultTo(window.location.pathname.split("/")[2], 'all'),
-	threadID: window.location.pathname.split("/")[4],
-	permalink: window.location.pathname.split("/")[6],
-	fetchToken: function() {		
-		return fetch("https://www.reddit.com/api/v1/access_token", {
-			headers: {
-				"Authorization": "Basic " + btoa(clientID + ":"),
-				"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"
-			},
-			method: "POST",
-			body: "grant_type="+encodeURIComponent("https://oauth.reddit.com/grants/installed_client")+"&device_id=DO_NOT_TRACK_THIS_DEVICE"
-		})
-		.then(function(response) { 
-			if(response.ok) {
-				return response.json();
-			} else {
-				return Promise.reject("Can't connect to Reddit API");
-			}
-		})
-		.then(function(json) {
-			init.headers.Authorization = "bearer " + json.access_token;
-		})
-		.catch(function(error) {
-			return Promise.reject("Can't connect to Reddit API");
-		});		
-	}
-}})();
-
-
-// Helper functions for fetch
-var Fetch2 = (function(){
-return {
-	multiple: function(urls, init, jsonPath, flattening) {
-		flattening = _.defaultTo(flattening, true);
-		jsonPath = _.defaultTo(jsonPath, null);
-		
-		return Promise.all(_.map(urls, function(url) { 
-			return fetch(url, init)
-			.then(Fetch2.json)
-			.then(function(jsonArray) {
-				if(! _.isNil(jsonPath)) {
-					return _.get(jsonArray, jsonPath);
-				}
-				return jsonArray;
-			});
-		}))
-		.then(function(dataArray) {
-			if(flattening) {
-				return _.flatten(dataArray);
-			}
-			return dataArray;
-		});
-	},
-	json: function(response) {
-		return response.json();
-	}
-}})();
-
-
-var URLs = (function(){
-	var reddit = "https://oauth.reddit.com";
-	var pushshift = "https://api.pushshift.io";
-	var elastic = "https://elastic.pushshift.io";
-	var maxItemsPerRequest = 100;
-
 	return {
-		format: function(url, data, chunkSize) {
-			chunkSize = _.defaultTo(chunkSize, maxItemsPerRequest);
-			var dataChunks = _.chunk(data, chunkSize);
-			return _.map(dataChunks, function(chunk) { return url + chunk; })
-		},
-		pushshiftComments:	pushshift+"/reddit/comment/search?ids=",
-		pushshiftIDs:		pushshift+"/reddit/submission/comment_ids/"+Reddit.threadID,
-		thread:			reddit+"/r/"+Reddit.subreddit+"/comments/"+Reddit.threadID,
-		moreChildren:		reddit+"/api/morechildren?link_id=t3_"+Reddit.threadID+"&children=",
-		singleComments:	reddit+"/r/"+Reddit.subreddit+"/api/info/?id=",
-		subreddit:		reddit+"/r/"+Reddit.subreddit,
-		elasticThreads: 	elastic+"/rs/submissions/_search?source="
+		subreddit:	subreddit,
+		isAll:		_.toLower(subreddit) === 'all',
+		threadID:		window.location.pathname.split("/")[4],
+		permalink:	window.location.pathname.split("/")[6]
 	};
 })();
 
+var Fetch2 = (function(){
+	return {
+		get: function(url, error){
+			return fetch(url)
+			.catch(function(error){
+				return Promise.reject(error);
+			})
+			.then(function(response){
+				if(response.ok) {
+					return response;
+				} else {
+					return Promise.reject(error);
+				}
+			});
+		},
+
+		json: function(response) {
+			return response.json();
+		},
+
+		handleError: function(error) {
+			if(_.includes(_.toLower(error), "error")) {
+				Status.error(error);
+			} else {
+				Status.error("Error: "+error);
+			}
+		}
+	};
+})();
+
+var ElasticSearch = (function() {
+	var elastic = "https://elastic.pushshift.io";
+	//var elasticThreads: elastic+"/rs/submissions/_search?source="
+	
+return {
+	subreddit: function(){},
+	thread: function(){},
+	comment: function(){}
+
+};
+})();
 
 // HTML parsing
 var HTML = (function (){
-return {
-	parse: function(htmlString) {
-		var tmpDiv = document.createElement('div')
-		tmpDiv.innerHTML = htmlString
-		return tmpDiv.childNodes.length === 0 ? "" : tmpDiv.childNodes[0].nodeValue
-	}
-};
+	return {
+		parse: function(htmlString) {
+			var tmpDiv = document.createElement('div');
+			tmpDiv.innerHTML = htmlString;
+			return tmpDiv.childNodes.length === 0 ? "" : tmpDiv.childNodes[0].nodeValue;
+		},
+		main: document.getElementById("main")
+	};
 })();
 
 
@@ -161,6 +123,7 @@ return {
 		var parts = timeString.split(/[a-zA-Z]+/);
 		var times = 1;
 
+		// Number before the time (e.g. 2years or 12hour)
 		if(parts.length === 2 && parts[0] !== "") {
 			times = _.parseInt(parts[0]);
 		}
@@ -174,34 +137,27 @@ return {
 		return Time.utc();
 	},
 	
-	difference: function(utc) {
-		return Time.utc() - utc;
+	difference: function(timeString) {
+		return Time.utc() - Time.toUTC(timeString);
 	}
 };
 })();
 
 // The get variables used in the url
 var GetVars = (function(){
-return {
-	get: function(variable) {
-		var urlParts = window.location.href.split("?");
-		if(urlParts.length <= 1) {
+	return {
+		get: function(key) {
+			var pairs = _.defaultTo(window.location.href.split("?")[1], "").split("&");
+			
+			for(var i = 0, len = pairs.length; i < len; i++) {
+				if(pairs[i].split("=")[0] === key) {
+					return pairs[i].split("=")[1];
+				}
+			}
+
 			return undefined;
 		}
-
-		var getVariables = urlParts[1].split("&");
-		
-		for(var i = 0, len = getVariables.length; i < len; i++) {
-			var keyAndValue = getVariables[i].split("=");
-			
-			if(keyAndValue[0] === variable) {
-				return keyAndValue[1];
-			}
-		}
-
-		return undefined;
-	}
-};
+	};
 })();
 
 
@@ -242,4 +198,5 @@ return {
 
 		return  score;
 	}
-}})();
+};
+})();

@@ -323,7 +323,7 @@ var ThreadHTML = (function(){
 					<a class="grey-link" href="https://www.reddit.com'+thread.permalink+'"><b>reddit</b></a> \
 					</div>' +
 				(thread.media !== null ? HTML.parse(thread.media_embed.content) : '') +
-				(_.includes(imageHosts, thread.domain) && _.has(thread, "preview") ? '<a href="'+thread.url+'"><img id="thread-image" src="'+thread.preview.images[0].source.url+'"></a>' : '') +
+				(_.includes(imageHosts, thread.domain) && _.has(thread, "preview") ? '<a href="'+thread.url+'"><img class="thread-image" src="'+thread.preview.images[0].source.url+'"></a>' : '') +
 			'</div> \
 		';
 		mainDiv.appendChild(threadDiv);

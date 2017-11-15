@@ -342,3 +342,57 @@ header #status #status-image {
 #pagination span, #pagination a {
   margin: 5px;
 }
+
+.search-box {
+  font-size: 16px;
+}
+.search-box .search-row {
+  padding: 10px 6px 11px;
+  border-bottom: 1px dotted #ccc;
+  min-height: 26px;
+}
+.search-box .search-left {
+  font-weight: bold;
+  display: inline-block;
+  width: 190px;
+  vertical-align: middle;
+}
+.search-box input[type="text"] {
+  font-size: 17px;
+  width: 400px;
+  border-radius: 2px;
+  padding-left: 3px;
+}
+.search-box .radioButton {
+  background: #8a8888;
+  color: black;
+  border-radius: 3px;
+  display: inline-block;
+  margin-right: 9px;
+  transition: all 0.3s;
+}
+.search-box .radioButton label {
+  padding: 7px 10px 7px 3px;
+  display: inline-block;
+}
+.search-box .radioButton input {
+  margin: 0 0 0 5px;
+  height: 35px;
+  display: inline-block;
+  vertical-align: top;
+}
+.search-box select {
+  padding: 3px;
+  font-size: 15px;
+  border-radius: 2px;
+}
+.search-box input[type="submit"] {
+  margin: 16px auto 0px;
+  display: block;
+  padding: 9px 16px;
+  font-size: 18px;
+  background: #239f2b;
+  border: 0;
+  border-radius: 2px;
+  color: white;
+}
