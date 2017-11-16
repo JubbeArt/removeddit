@@ -1,0 +1,11 @@
+{
+	"query":{
+		"term":{
+			"link_id":<%= id %>
+		}
+	},
+	"_source":[
+		"author","body","created_utc","parent_id","score"
+	],
+	"size":50
+}

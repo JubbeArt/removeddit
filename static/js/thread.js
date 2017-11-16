@@ -4,282 +4,121 @@ var app = (function(){
 return {
 	loadPage: function() {
 		// Just fucking crach if the user is retarded
-		if(_.isUndefined(Reddit.threadID) || _.isUndefined(Reddit.subreddit)) {
+		if(_.isNil(Reddit.threadID)) {
 			Status.error("Missing necessary parts of the URL");
 			return;
 		}
 	
 		Status.loading("Loading thread...");
-		Reddit.fetchToken()
-		.then(function(){
-			return Promise.all([
-				fetch(URLs.thread, Reddit.init)
-				.then(Fetch2.json)
-				.then(ThreadHTML.createThread)
-				.catch(function(error) {
-					return Promise.reject("Could not get thread from Reddit");
-				}), 
+		var urlData = {id: parseInt(Reddit.threadID, 36)};
 
-				fetch(URLs.pushshiftIDs)
-				.then(Fetch2.json)
-				.then(_.property("data"))
-				.catch(function(error) {
-					return Promise.reject("Could not get removed comment IDs");
-				}), 
-			])
-		})
-		.then(function(results) {
-			var thread = results[0];
-			Comments.allIDs = results[1];
-
-			Status.loading("Loading comments from reddit...");
-			HandleIDs.normal(thread);
-			return HandleIDs.morechildren()
-			.catch(function(error){
-				return Promise.reject("Could not get comments from Reddit (moreChildren)");
-			});		
-		})
-		.then(function(){
-			return Promise.all(_.map(_.uniq(Comments.countinuethread), function(id) { 
-				return fetch(URLs.thread+"/_/"+id.split("_")[1], Reddit.init)
-				.then(Fetch2.json)
-				.catch(function(error){ return Promise.reject("Could not get comments from Reddit (continueThisThread)") })
-			}))
-			.catch(function(error){
-				return Promise.reject("Could not get comments from Reddit (continueThisThread)");
-			});			
-		})
-		.then(function(smallerThreads){
-			_.forEach(smallerThreads, function(thread){
-				HandleIDs.normal(thread);
+		Promise.all([
+			Fetch2.get(ElasticSearch.threadURL+_.templates.elasticThread(urlData), "Could not get thread")
+			.then(Fetch2.json)
+			.then(function(json){
+				HTML.main.innerHTML += _.templates.thread({thread: json.hits.hits[0]._source});
+				return json;
 			})
-			Status.loading("Getting removed comments...");
-			HandleIDs.removed();
-			ThreadHTML.createCommentInfo(Comments.removed.length);
-			return Fetch2.multiple(URLs.format(URLs.pushshiftComments, Comments.removed), null, "data")
-			.catch(function(error){
-				return Promise.reject("Could not get removed comments");
-			});			
+			.catch(Fetch2.handleError),
+			
+			Fetch2.get(ElasticSearch.commentURL+_.templates.elasticComments(urlData), "Could not get removed comments")
+			.then(Fetch2.json)
+			.catch(Fetch2.handleError)
+		])
+		.then(function(promises){
+			var commentData = {
+				removedComments: promises[1].hits.total,
+				totalComments: promises[0].hits.hits[0]._source.num_comments
+			};
+
+			HTML.main.innerHTML += _.templates.threadInfo(commentData);
+			Comments.addComments(promises[1]);
+			Status.loading("Getting remaining comments...");
 		})
-		.then(function(removedComments){
-			Status.loading("Generating comments...");
-			return Comments.generate(removedComments);
+		.then(function getRemainingComments() {
+			return Fetch2.get(ElasticSearch.commentURL+_.templates.elasticCommentIDs({ids:Comments.missing}), "Could not get remaining comments")
+			.then(Fetch2.json)
+			.then(function(json){ 
+				Comments.addComments(json);
+				
+				if(Comments.missing.length !== 0) {
+					getRemainingComments();
+				}
+			});
+		})
+		.then(function(){	
+			// Make sure to get the permalink comment (even if it's not related to removed/deleted stuff)
+			if(Comments.isPermalink && !_.includes(Comments.IDs, Comments.getRoot())) {
+				var urlData = {ids: [Comments.to10(Comments.getRoot())]};
+				return Fetch2.get(ElasticSearch.commentURL+_.templates.elasticCommentIDs(urlData), "Could not find the specific comment asked for")
+				.then(Fetch2.json)
+				.then(function(json){ 
+					console.log(json.hits.hits)
+					Comments.addComments(json);
+				});	
+			}
 		})
 		.then(function(){
+			HTML.main.innerHTML += '<div id="'+Reddit.threadID+'"></div>';
+			Status.loading("Generating comments...");
+			_.forEach(Comments.IDs, function(id){
+				HTML.main.innerHTML += _.templates.comment({id:id, comment:Comments.lookup[id]});
+			});
+			// generate comments
 			Status.success();
 		})
-		.catch(function(error) {
-			if(_.includes(_.toLower(error), "error")) {
-				Status.error(error);
-			} else {
-				Status.error("Error: "+error);
-			}
-		});
+		.catch(Fetch2.handleError);
 	}
 }})();
 
-// ------------------------------------------------------------------------------
-// ----------------------- Store and genrates comments --------------------------
-// ------------------------------------------------------------------------------
+
 var Comments = (function() {
-	var totalComments;
-	var lookup = {};
-	var toBeCreated = [];
-
-	var getParentComments = function(toLookup){	
-		var newCommentsToLookup = [];
-		var commentsToFetch = [];
-
-		_.forEach(toLookup, function(id){
-			var parentID = lookup[id].parent_id.split("_")[1];
-	
-			if(parentID === Reddit.threadID) {} // Has no parent (is parent of thread)
-			else if(_.includes(Comments.toBeCreated, parentID)) {} // Parent already exists, do nothing
-			else if(_.includes(newCommentsToLookup, parentID)) {} // Parent already exists (this iteration)
-			else if(_.has(lookup, parentID)) {
-					newCommentsToLookup.push(parentID);
-			} else{
-				commentsToFetch.push(parentID);
-			}
-	
-			Comments.toBeCreated.push(id);
-		});
-	
-		return new Promise(function(resolve, reject){	
-			if(_.uniq(commentsToFetch).length !== 0) {
-				fetch(URLs.singleComments + _.join(_.map(_.uniq(commentsToFetch),function(comments){
-					return "t1_" + comments;
-				})), Reddit.init)
-				.then(Fetch2.json)
-				.then(function(json){
-					_.forEach(json.data.children, function(comment) {
-						lookup[comment.data.id] = comment.data;
-						newCommentsToLookup.push(comment.data.id);
-					});
-				})
-				.then(function(){
-					resolve();
-				});
-				
-			} else {
-				resolve();		
-			}
-		})
-		.then(function(){
-			if(newCommentsToLookup.length !== 0) {
-				return getParentComments(newCommentsToLookup)
-			}
-		});
-		
-	};
-
 return {
-	ids: [], // The comments we found
-	morechildren: [],
-	countinuethread: [],
-	
-	allIDs: [], // All the comments that we were suppose to find
-	removed: [],
-	deleted: [],
-	toBeCreated: toBeCreated,
-	lookup: lookup,
+	IDs: [], // The comments we found
+	lookup: {},
+	missing: [],
 
-	getTotalComments: function() { return totalComments; },
-	setTotalComments: function(total) { totalComments = total; },
-
-	getRoot: function() {
-		if(Reddit.permalink !== undefined && Reddit.permalink === "") {
-			return Reddit.threadID;
-		}
-
-		if(Reddit.permalink === undefined) {
-			return Reddit.threadID;
-		}
-
-		if(_.has(Comments.lookup, Reddit.permalink)) {
-			return Comments.lookup[Reddit.permalink].parent_id.split("_")[1];
-		}			
-		return "";
+	to36: function(id){
+		return parseInt(id).toString(36);
 	},
-	generate: function(removedComments) {
-		removedComments.forEach(function(comment){
-			if(_.includes(Comments.deleted, comment.id)) {
-				comment["deleted"] = true;
-			} else {
-				comment["removed"] = true;	
-			}
-			
-			Comments.lookup[comment.id] = comment;
+
+	to10: function(id){
+		return parseInt(id, 36);
+	},
+
+	addComments: function(json){
+		Comments.IDs = _.union(Comments.IDs, _.map(json.hits.hits, function(comment){
+			return Comments.to36(comment._id);
+		}));
+
+		_.forEach(json.hits.hits, function(comment){
+			comment._source.parent_id = _.isNil(comment._source.parent_id) ? Reddit.threadID : Comments.to36(comment._source.parent_id);
+			Comments.lookup[Comments.to36(comment._id)] = comment._source;
 		});
+
+		Comments.missing = _.reduce(json.hits.hits, function(array, comment){
+			if(comment._source.parent_id !== Reddit.threadID && !_.includes(Comments.IDs, comment._source.parent_id)) {
+				array.push(Comments.to10(comment._source.parent_id));
+			}
+			return array;
+		}, []);
+	},
 	
-		Comments.removed = _.map(removedComments, function(comment){
-			return comment.id;
-		});
-				
-		return getParentComments(Comments.removed)
-		.then(function(){	
-			ThreadHTML.createCommentSection();	
-			ThreadHTML.createComments();
-		})
-	}
-}})();
-
-
-
-// ------------------------------------------------------------------------------
-// ----------------- Handle comments from different requests --------------------
-// ------------------------------------------------------------------------------
-var HandleIDs = (function(){
-	var normal = function(thread){
-		return _.flatten(_.map(thread[1].data.children, Extract.normal))
-	};
-
-	var morechildren = function(){
-		return Promise.all(_.map(_.uniq(Comments.morechildren), function(idArray){				
-			return Fetch2.multiple(URLs.format(URLs.moreChildren, idArray), Reddit.init);
-		}))
-		.then(function(responseArrays){
-			Comments.morechildren.length = 0;
-			_.forEach(responseArrays, function(responseArray){
-				_.forEach(responseArray, function(response){
-					_.forEach(response.jquery[10][3][0], function(comment){
-						Extract.normal(comment);
-					})
-				});
-			});
-		}).then(function(){
-			if(Comments.morechildren.length !== 0) {
-				return morechildren();
-			}	
-		});
-	};
-
-	var removed = function(){
-		Comments.removed = _.difference(Comments.allIDs, Comments.ids);
-
-		Comments.ids.forEach(function(id){
-			if(! _.has(Comments.lookup, id)) {
-				return;
-			}
-	
-			if(Comments.lookup[id].body === "[removed]") {
-				Comments.removed.push(id);
-			} else if (Comments.lookup[id].body === "[deleted]"){
-				Comments.removed.push(id);
-				Comments.deleted.push(id);
-			}
-		});
-
-		Comments.removed = _.uniq(Comments.removed);
-	};
-
-	return {
-		normal: normal,
-		morechildren: morechildren,
-		removed: removed
-	};
-})();
-
-
-// ------------------------------------------------------------------------------
-// ----------------------- Extract ID from comments -----------------------------
-// ------------------------------------------------------------------------------
-var Extract = (function(){
-	var normal = function(comment){
-		var data = comment.data;
-		
-		if(comment.kind == "more") { // "Show more"-comment			
-			if(data.id === "_") {	// = "continue this thread" comment
-				Comments.countinuethread.push(data.parent_id);
-			} else if(data.children.length < data.count){ // "Load more"-comment (that is missing some of its children)
-				Comments.morechildren.push(data.children);
-			}
-			Comments.ids.push.apply(Comments.ids, data.children);
-		} else { // Normal comment
-			if(data.replies) {
-				data.replies.data.children.forEach(function(child){
-					normal(child);
-				});
-				delete data.replies;
-			}
-			
-			Comments.ids.push(data.id);
-			Comments.lookup[data.id] = data;
+	getRoot: function() {
+		if(Reddit.permalink !== undefined && Reddit.permalink !== "") {
+			return Reddit.permalink;
 		}
-	};
 	
-	return {
-		normal: normal
-	};	
+		return Reddit.threadID;
+	},
+
+	isPermalink: (Reddit.permalink !== undefined && Reddit.permalink !== "")
+};
 })();
 
-
-// ------------------------------------------------------------------------------
-// ---------------------------- Generating HTML ---------------------------------
-// ------------------------------------------------------------------------------
+/*
 
 var ThreadHTML = (function(){
-	var mainDiv = document.getElementById("main");
 	// I actually haven't found a better way of doing this... 
 	// Imgur has image-links with no indication that they are actually images
 	var imageHosts = ["i.redd.it", "flickr.com", "i.imgur.com", "imgur.com", "m.imgur.com"];
@@ -330,24 +169,6 @@ var ThreadHTML = (function(){
 		return data;
 	};
 
-	var createCommentInfo = function(totalRemovedComments){
-		var div = document.createElement("div");
-		div.innerHTML = ' \
-			<div id="comment-info"> \
-				removed comments: '+totalRemovedComments+'/'+Comments.getTotalComments()+' ('+(100 * totalRemovedComments / Comments.getTotalComments()).toFixed(1)+'%) \
-			</div> \
-			<div id="comment-sort">sorted by: top</div> \
-		';
-		
-		mainDiv.appendChild(div);
-	};
-
-	var createCommentSection = function(){
-		var div = document.createElement("div");
-		div.id = Comments.getRoot();
-		mainDiv.appendChild(div);		
-	};
-
 	var createComments = function(){
 		var commentsToCreate = _.sortBy(_.uniq(Comments.toBeCreated), function(id) {
 			return Comments.lookup[id].score;
@@ -379,39 +200,7 @@ var ThreadHTML = (function(){
 		}
 	};
 
-	var createComment = function(comment){
-		var isRemoved = _.has(comment,"removed");
-		var isDeleted = _.has(comment,"deleted");
-
-		// Sorry
-		var commentCss = "comment-" + (isRemoved ? "removed" : (isDeleted ? "deleted" : (comment.depth % 2 == 0 ? "even" : "odd")));
-
-		var commentDiv = document.createElement("div");
-		commentDiv.id = comment.id;
-		commentDiv.className = "comment " + commentCss;
-		commentDiv.innerHTML = ' \
-			<div class="comment-head"> \
-				<a href="javascript:void(0)" class="author">[–]</a> \
-				<a href="https://www.reddit.com/user/'+comment.author+'" class="author comment-author">'+comment.author+(isDeleted ? " (deleted by user)" : "")+'</a> \
-				<span class="comment-score">'+Format.prettyScore(comment.score)+' point'+((comment.score == 1) ? '': 's')+'</span> \
-				<span class="comment-time">'+Format.prettyDate(comment.created_utc)+'</span> \
-			</div> \
-			<div class="comment-body">'+(comment.body === "[removed]" && isRemoved ? "<p>[likely removed by automoderator]</p>" : Format.parse(comment.body))+'</div> \
-			<div class="comment-links"> \
-				<a href="/r/'+Reddit.subreddit+'/comments/'+Reddit.threadID+'/_/'+comment.id+'/">permalink</a> \
-				<a href="https://www.reddit.com/r/'+Reddit.subreddit+'/comments/'+Reddit.threadID+'/_/'+comment.id+'/">reddit</a> \
-		</div>';
-
-		return commentDiv;
-	};
-	
-	return {
-		createThread: createThread,
-		createCommentInfo: createCommentInfo,
-		createCommentSection: createCommentSection,
-		createComments: createComments
-	}
-})();
+})();*/
 
 if(isSupported) {
 	app.loadPage();

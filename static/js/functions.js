@@ -89,14 +89,13 @@ var Fetch2 = (function(){
 
 var ElasticSearch = (function() {
 	var elastic = "https://elastic.pushshift.io";
-	//var elasticThreads: elastic+"/rs/submissions/_search?source="
-	
-return {
-	subreddit: function(){},
-	thread: function(){},
-	comment: function(){}
 
-};
+	return {
+		thread: function(){},
+		comment: function(){},
+		threadURL: elastic+"/rs/submissions/_search?source=",
+		commentURL: elastic+"/rc//comments/_search?source="
+	};
 })();
 
 // HTML parsing

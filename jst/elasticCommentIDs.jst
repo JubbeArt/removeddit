@@ -1,0 +1,10 @@
+{
+	"query":{
+		"ids":{
+			"values":[<%= ids.join() %>]
+		}
+	},
+	"_source":[
+		"author","body","created_utc","parent_id","score"
+	]
+}

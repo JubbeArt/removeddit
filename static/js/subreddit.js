@@ -4,10 +4,17 @@ var app = (function(){
 return {
 	loadPage: function() {
 		Status.loading("Loading subreddit...");
-		document.title = Reddit.isAll ? 'all subreddits' : Reddit.subreddit;
+		document.title = Reddit.isAll ? "all subreddits" : Reddit.subreddit;
 		HTML.main.innerHTML += _.templates.subredditInfo({subreddit: Reddit.subreddit, time: Vars.time});
 
-		Fetch2.get(ElasticSearch.subreddit(Reddit.subreddit, Time.difference(Vars.time), Vars.page), "Could not get removed posts")
+		var urlData = {
+			subreddit:	Reddit.subreddit, 
+			time:		Time.difference(Vars.time), 
+			page:		Vars.page,
+			postPerPage:	Vars.postPerPage
+		};
+
+		Fetch2.get(ElasticSearch.threadURL+_.templates.elasticSubreddit(urlData), "Could not get removed posts")
 		.then(Fetch2.json)
 		.then(function(json){
 			var startPostNr = (Vars.page - 1) * Vars.postPerPage + 1;
@@ -36,30 +43,6 @@ var Vars = (function(){
 			document.location.href = document.location.href.split("?")[0] + "?t=" + event.value;
 		}
 	};
-})();
-
-var ElasticSearch = (function(){
-return {
-	subreddit: function(subreddit, time, page){
-		var condition = '[{"term":{"subreddit":"'+_.toLower(subreddit)+'"}},'+
-		'{"range":{"created_utc":{"gt":'+time+'}}}]';
-
-		if(Reddit.isAll) {
-			condition = '{"range":{"created_utc":{"gt":'+time+'}}}';
-		}
-
-		return 'https://elastic.pushshift.io/rs/submissions/_search?source={'+
-		'"query":{'+
-			'"bool":{'+
-				'"must":'+condition+
-			'}'+
-		'},'+
-		'"_source":["author","url","subreddit","link_flair_text","score","title","created_utc","selftext","num_comments","domain","permalink","id","thumbnail","thumbnail_height","thumbnail_width"],'+
-		'"sort":[{"score":"desc"}],'+
-		'"from":'+(page-1)*Vars.postPerPage+','+
-		'"size":'+Vars.postPerPage+'}';
-	}	
-};
 })();
 
 if(isSupported) {

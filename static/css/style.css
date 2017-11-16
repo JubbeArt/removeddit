@@ -165,6 +165,21 @@ header #status #status-image {
   background-color: #161616;
 }
 
+#comment-info {
+  color: #ca302c;
+  margin-top: 10px;
+  font-weight: bold;
+  padding-bottom: 5px;
+  border-bottom: 1px dotted #808080;
+  font-size: 16px;
+}
+
+#comment-sort {
+  color: #808080;
+  font-size: 12px;
+  margin: 5px 0 10px;
+}
+
 .thread {
   display: flex;
   flex-grow: 1;
@@ -234,6 +249,7 @@ header #status #status-image {
   margin-left: 3px;
 }
 .thread .link-flair {
+  display: inline-block;
   color: #c8c8c8;
   background-color: #404040;
   margin-right: 5px;
@@ -292,21 +308,6 @@ header #status #status-image {
 .thread .grey-link, .thread .grey-link:link, .thread .grey-link:visited, .thread .grey-link:hover, .thread .grey-link:focus, .thread .grey-link:active {
   color: #828282;
   margin-right: 4px;
-}
-
-#comment-info {
-  color: #ca302c;
-  margin-top: 10px;
-  font-weight: bold;
-  padding-bottom: 5px;
-  border-bottom: 1px dotted #808080;
-  font-size: 16px;
-}
-
-#comment-sort {
-  color: #808080;
-  font-size: 12px;
-  margin: 5px 0 10px;
 }
 
 .post-rank {

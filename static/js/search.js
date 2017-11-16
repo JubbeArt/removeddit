@@ -25,17 +25,6 @@ return {
 	}
 };
 })();
-/*
-Comments:
-text			(body)		string
-title 		(title)		string
-subreddit		(subreddit)	string
-author		(author)		string
-over_18		(over_18)		sfw,nsfw,both *
-locked		(locked)		bool *
-between		(after/before)	"date"
-sort 		(sort)		asc,desc
-*/
 
 var Vars = (function(){
 	var lookup = {};

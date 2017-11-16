@@ -1,13 +1,132 @@
-#comment-info 
-	color: #ca302c
-	margin-top: 10px
-	font-weight: bold
-	padding-bottom: 5px
-	border-bottom: 1px dotted #808080
-	font-size: 16px
+.thread
+	display: flex
+	flex-grow: 1
+	margin-bottom: 7px
+
+	.thumbnail
+		width: 70px
+		margin-right: 3px
+
+		img
+			border-radius: 1px
+
+	.thumbnail-default
+		background-image: url("https://www.redditstatic.com/sprite-reddit.6Om8v6KMv28.png")
+		background-position: 0px -1099px
+		background-repeat: no-repeat
+		height: 50px
+
+	.thumbnail-self
+		background-image: url("https://www.redditstatic.com/sprite-reddit.6Om8v6KMv28.png")
+		background-position: 0px -1267px
+		background-repeat: no-repeat
+		height: 50px
+	
+	.thumbnail-image 
+		background-image: url("https://www.redditstatic.com/sprite-reddit.6Om8v6KMv28.png")
+		background-position: 0px -1043px
+		background-repeat: no-repeat
+		height: 50px
+
+	.thumbnail-nsfw
+		background-image: url("https://www.redditstatic.com/sprite-reddit.6Om8v6KMv28.png")
+		background-position: 0px -1155px
+		background-repeat: no-repeat
+		height: 50px
+	.thread-score-box
+		margin: 0 7px
+		width: 43px
+
+	.vote 
+		background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAcCAMAAADC4sagAAABFFBMVEUjJCQiIiIjIyMkIiIkJCQlJSUlJicmJiYnIyEnJycnKCsoKCgpLC8rIyErKyssMDUvLy8wJCAwMDAxMTEyMjI0NDQ2NjY3JR83Nzc5OTk7Ozs8PDw9PT0+Pj4/Pz9AQEBBQUFCQkJDQ0NGRkZISEhKSkpKV2tLS0tMTExOTk5PT09QYHdSUlJTU1NVVVVWVlZXV1dXaINYWFhaWlpabYlbW1tecpBgYGBhYWFid5dkZGRle5xlfJ1pgKRrhKhshKlshapuLhZwirFyjbV0j7h4lL97mcZ9MBR/nsyCo9OOMxGcNQ+eNg+kNw6sOA2vOAy0OQy7Ogq/OwrBOwrDPAnLPQjPPQfTPgfbPwXjQQTrQgPzQwLKxGgxAAAAAXRSTlMAQObYZgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlJREFUOMu9lF1TwjAQRTcMvmeQOi1QPmxFBQTxW1ERUUFEUVRU/P//w9yGmBTFyZPnpXNmbju76W6IJM8Uw49rLa6Tz4mpq/mCqY3Gvqnj6XQ61lp0mGd8favCwx2tow8wUlpwGWOZrNJKjXO+UVc6fJcMZzV7IswSOU/qej0l0rwyq33wphhAM1kWkcy70GB7mUfUNqG9V02PyPMTMs2Wig5RaTctwzxVXyPqvJh0VkJBIKJ4huncCRAvHOEZyGKegO4a6UDrIdLGCT4C6/QDsE7fA+v0HdAadWqk0SH9D3sgXkm4uJIDYKTFnwwXd3kMrNOnwDp9BmzS5QuTshN1iDRwfkxV9VJTJXLzSWYM+NzEEjWvFE2oGvCE7/2yDeL8riWzM8xmorRazLlNI2rdgNb3ZYLF1Es/t8VE7X6/39Yqlt4tLLwhiLq3XVNLfumP24fo3Opm+wLGCVa252Y8tQAAAABJRU5ErkJggg==)
+		background-repeat: no-repeat
+		margin-left: auto
+		margin-right: auto
+		width: 15px
+		height: 14px
+		cursor: pointer
+
+	.upvote 
+		background-position: -15px 0px
+		margin-top: 2px
+
+	.downvote 
+		background-position: -15px -14px
+		margin-top: 2px
+	
+	.thread-score 
+		color: #646464
+		font-size: 13px
+		font-weight: bold
+		text-align: center
+
+	.thread-content 
+		flex: 1
+		float: left
+		margin-left: 3px
+	
+	.link-flair 
+		display: inline-block
+		color: #c8c8c8
+		background-color: #404040
+		margin-right: 5px
+		border: 1px solid #4d4d4d
+		border-radius: 2px
+		padding: 0 2px
+		font-size: 10px
+	
+	.thread-title 
+		color: #a6a6a6
+		margin-right: 5px
+	
+	.thread-title:hover 
+		text-decoration: none
+	
+	.domain 
+		color: #888
+		font-size: 10px
+	
+	.thread-selftext 
+		border: 1px solid #666
+		border-radius: 7px
+		margin: 5px 0 7px
+		padding: 5px 10px
+		max-width: 840px
+		color: #ddd
+		font-size: 14px
+
+		p
+			margin: 5px 0
+			line-height: 20px
+		
+		a:hover
+			text-decoration: none
+
+		p:first-child 
+			margin-top: 0px
 
 
-#comment-sort 
-	color: #808080
-	font-size: 12px
-	margin: 5px 0 10px
+		p:last-child 
+			margin-bottom: 0px
+
+	
+	.thread-image 
+		max-width: 768px
+		max-height: 768px
+	
+	.thread-info 
+		color: #828282
+		font-size: 10px
+		margin-top: 2px
+	
+
+	.total-comments 
+		color: #828282
+		font-size: 10px
+		margin: 4px 0
+	
+
+	.grey-link, .grey-link:link, .grey-link:visited, .grey-link:hover, .grey-link:focus, .grey-link:active  
+		color: #828282
+		margin-right: 4px
+	

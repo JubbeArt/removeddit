@@ -1,5 +1,7 @@
 <div class="thread">
+<%	if(typeof postNr !== "undefined") { %>
 	<span class="post-rank"><%= postNr %></span>
+<%	} %>
 	<div class="thread-score-box">
 		<div class="vote upvote"></div>
 		<div class="thread-score"><%= Format.prettyScore(thread.score) %></div>
@@ -17,10 +19,11 @@
 		</a>
 <%	} %>
 	<div class="thread-content">
+
+		<a class="thread-title" href="<%= url %>"><%= thread.title %></a>
 <%	if(!_.isNil(thread.link_flair_text)){ %>
 		<span class="link-flair"><%= thread.link_flair_text %></span>
 <%	} %>	
-		<a class="thread-title" href="<%= url %>"><%= thread.title %></a>
 		<span class="domain">(<%= thread.domain %>)</span>
 		<div class="thread-info">
 			submitted <span class="thread-time"><%= Format.prettyDate(thread.created_utc) %></span> by
