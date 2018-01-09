@@ -1,0 +1,43 @@
+{
+  "name": "removeddit",
+  "version": "1.0.0",
+  "description": "View removed comments from reddit",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JubbeArt/removeddit.git"
+  },
+  "keywords": [
+    "reddit",
+    "comments",
+    "removed",
+    "deleted"
+  ],
+  "author": "Jesper Wrang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JubbeArt/removeddit/issues"
+  },
+  "homepage": "https://github.com/JubbeArt/removeddit#readme",
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.37",
+    "@babel/core": "^7.0.0-beta.37",
+    "@babel/preset-react": "^7.0.0-beta.37",
+    "babel-loader": "^7.1.2",
+    "clean-webpack-plugin": "^0.1.17",
+    "copy-webpack-plugin": "^4.3.1",
+    "gh-pages": "^1.1.0",
+    "uglifyjs-webpack-plugin": "^1.1.6",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.10.0",
+    "webpack-merge": "^4.1.1"
+  }
+}
