@@ -4,7 +4,10 @@
   "description": "View removed comments from reddit",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server --config webpack.dev.js",
+    "build": "webpack --config webpack.dev.js",
+    "build-prod": "webpack --config webpack.prod.js",
+    "gh-pages": "npm run build-prod && node publish.js"
   },
   "repository": {
     "type": "git",
