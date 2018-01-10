@@ -2,6 +2,9 @@ import SnuOwnd from 'libraries/snuownd.js'
 
 const markdown = SnuOwnd.getParser()
 
+// JSON parsing for fetch
+export const json = x => x.json()
+
 // Parse comments
 export const parse = text => {
 	return markdown.render(text)

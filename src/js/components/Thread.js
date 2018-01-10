@@ -2,11 +2,27 @@ import React from 'react'
 import {prettyScore} from 'utils'
 
 export default class Thread extends React.Component {
+	constructor() {
+		super()
+
+		this.state = {
+			url: '',
+			thumbnailWidth: 70,
+			thumbnailHeight: 70,
+			thumbnail: '',
+			position: 0,
+			score: 0
+
+		}
+	}
+
+
+
 	render () {
 		const url = this.props.url.replace('reddit.com', 'removeddit.com')
 		let thumbnail
-		let thumbnailWidth = this.props.thread.thumbnail_width ? this.props.thread.thumbnail_width * 0.5 : 70
-		let thumbnailHeight = this.props.thread.thumbnail_height ? this.props.thread.thumbnail_height * 0.5 : 70
+		const thumbnailWidth = this.props.thread.thumbnail_width ? this.props.thread.thumbnail_width * 0.5 : 70
+		const thumbnailHeight = this.props.thread.thumbnail_height ? this.props.thread.thumbnail_height * 0.5 : 70
 
 		if(['self', 'default', 'image', 'nsfw'].includes(this.props.thread.thumbnail)) {
 			thumbnail = <a href={url} className='thumbnail thumbnail-<%= thread.thumbnail%>'></a>
@@ -17,7 +33,6 @@ export default class Thread extends React.Component {
 				</a>
 			)
 		}
-			
 
 		return (
 			<div className='thread'>
