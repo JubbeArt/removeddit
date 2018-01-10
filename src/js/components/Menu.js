@@ -4,19 +4,19 @@ export default class Menu extends React.Component {
 	render () {
 		return (
 			<header>
-				<div id="header">
+				<div id='header'>
 					<h1>
-						<a href="/">Removeddit</a>
+						<Link to='/'>Removeddit</Link>
 					</h1>
 					<nav>
-						<a href="/r/all">subreddit</a>
-						<a href="/r/bestof/comments/7c8jof/">thread</a>
-						<a href="/about/">about</a>
+						<Link to='/r/all'>subreddit</Link>
+						<Link to='/r/bestof/comments/7c8jof/'>thread</Link>
+						<Link to='/about/'>about</Link>
 					</nav>
 				</div>
-				<div id="status">
-					<p id="status-text"></p>
-					<img id="status-image" src="/images/loading.gif"/>
+				<div id='status'>
+					<p id='status-text'></p>
+					<img id='status-image' src='/images/loading.gif'/>
 				</div>
 			</header>
 		)

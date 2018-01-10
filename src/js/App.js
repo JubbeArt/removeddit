@@ -18,6 +18,7 @@ export default class App extends React.Component {
 					<Switch>			
 						<IndexRoute component={Thread} />
 						<Route path='/about' component={About}/>
+						<Route path='/r/:subreddit/comments' component={Thread}/>
 						{/* <Route path='/:board/:pageNr' component={Board} />
 						<Route path='/:board/thread/:thread' component={Thread}/>
 						<Route component={Home} /> */}
