@@ -3,12 +3,6 @@
   "version": "1.0.0",
   "description": "View removed comments from reddit",
   "main": "src/index.js",
-  "scripts": {
-    "start": "webpack-dev-server --config webpack.dev.js",
-    "build": "webpack --config webpack.dev.js",
-    "build-prod": "webpack --config webpack.prod.js",
-    "gh-pages": "npm run build-prod && node publish.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JubbeArt/removeddit.git"
@@ -25,19 +19,35 @@
     "url": "https://github.com/JubbeArt/removeddit/issues"
   },
   "homepage": "https://github.com/JubbeArt/removeddit#readme",
+  "scripts": {
+    "start": "webpack-dev-server --config webpack.dev.js",
+    "build": "webpack --config webpack.dev.js",
+    "build-prod": "webpack --config webpack.prod.js",
+    "gh-pages": "npm run build-prod && node publish.js"
+  },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0-beta.37",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.37",
     "@babel/core": "^7.0.0-beta.37",
+    "@babel/plugin-transform-async-to-generator": "^7.0.0-beta.37",
+    "@babel/preset-es2015": "^7.0.0-beta.37",
     "@babel/preset-react": "^7.0.0-beta.37",
-    "babel-loader": "^7.1.2",
+    "babel-loader": "^8.0.0-beta.0",
     "clean-webpack-plugin": "^0.1.17",
     "copy-webpack-plugin": "^4.3.1",
+    "css-loader": "^0.28.8",
+    "extract-text-webpack-plugin": "^3.0.2",
     "gh-pages": "^1.1.0",
+    "html-loader": "^0.5.4",
+    "html-webpack-plugin": "^2.30.1",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.6",
     "uglifyjs-webpack-plugin": "^1.1.6",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.10.0",

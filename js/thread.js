@@ -3,12 +3,6 @@
 var app = (function(){		
 return {
 	loadPage: function() {
-		// Just fucking crach if the user is retarded
-		if(_.isNil(Reddit.threadID)) {
-			Status.error("Missing necessary parts of the URL");
-			return;
-		}
-	
 		Status.loading("Loading thread...");
 		var urlData = {id: parseInt(Reddit.threadID, 36)};
 
@@ -42,7 +36,7 @@ return {
 				Comments.addComments(json);
 				
 				if(Comments.missing.length !== 0) {
-					getRemainingComments();
+					return getRemainingComments();
 				}
 			});
 		})
@@ -53,7 +47,6 @@ return {
 				return Fetch2.get(ElasticSearch.commentURL+_.templates.elasticCommentIDs(urlData), "Could not find the specific comment asked for")
 				.then(Fetch2.json)
 				.then(function(json){ 
-					console.log(json.hits.hits)
 					Comments.addComments(json);
 				});	
 			}
@@ -61,10 +54,7 @@ return {
 		.then(function(){
 			HTML.main.innerHTML += '<div id="'+Reddit.threadID+'"></div>';
 			Status.loading("Generating comments...");
-			_.forEach(Comments.IDs, function(id){
-				HTML.main.innerHTML += _.templates.comment({id:id, comment:Comments.lookup[id]});
-			});
-			// generate comments
+			Comments.generate();
 			Status.success();
 		})
 		.catch(Fetch2.handleError);
@@ -77,7 +67,8 @@ return {
 	IDs: [], // The comments we found
 	lookup: {},
 	missing: [],
-
+	isPermalink: (Reddit.permalink !== undefined && Reddit.permalink !== ""),
+	
 	to36: function(id){
 		return parseInt(id).toString(36);
 	},
@@ -85,8 +76,9 @@ return {
 	to10: function(id){
 		return parseInt(id, 36);
 	},
-
+	
 	addComments: function(json){
+
 		Comments.IDs = _.union(Comments.IDs, _.map(json.hits.hits, function(comment){
 			return Comments.to36(comment._id);
 		}));
@@ -112,7 +104,49 @@ return {
 		return Reddit.threadID;
 	},
 
-	isPermalink: (Reddit.permalink !== undefined && Reddit.permalink !== "")
+	generate: function(){
+		//console.log("asdf ",_.includes(Comments.ids, "dms36h7"))
+		Comments.IDs = _.sortBy(_.uniq(Comments.IDs), function(id) {
+			return Comments.lookup[id].score;
+		});
+
+		var createdComments = [];
+
+		if(Comments.isPermalink) {
+			var urlData = {
+				id: Comments.permalink,
+				comment: Comments.lookup[Reddit.permalink]
+			}
+			document.getElementById(Reddit.threadID).innerHTML += _.templates.comment(urlData);
+			createdComments.push(Reddit.permalink);
+		} else {
+			createdComments.push(Reddit.threadID);
+		}
+
+		var didSomething;
+	
+		while(Comments.IDs.length > 0) {
+			didSomething = false;
+	
+			for(var i = Comments.IDs.length - 1; i >= 0; i--) {
+				var id = Comments.IDs[i];
+				var parentID = Comments.lookup[id].parent_id;
+	
+				if(_.includes(createdComments, parentID)) {
+					document.getElementById(parentID).innerHTML += (_.templates.comment({id:id, comment: Comments.lookup[id]}));
+					createdComments.push(id);
+					Comments.IDs.splice(i, 1);
+					didSomething = true;
+				}
+			}
+	
+			// Fail safe (parents missing for the rest of the comments, shouldn't happend but oh well :D)
+			if(!didSomething) {
+				console.error("Didn't generate all comments correctly");
+				break;
+			}
+		}
+	}
 };
 })();
 
@@ -169,36 +203,7 @@ var ThreadHTML = (function(){
 		return data;
 	};
 
-	var createComments = function(){
-		var commentsToCreate = _.sortBy(_.uniq(Comments.toBeCreated), function(id) {
-			return Comments.lookup[id].score;
-		});
-
-		var createdComments = [Comments.getRoot()];
-		var didSomething = false;
 	
-		while(commentsToCreate.length > 0) {
-			didSomething = false;
-	
-			for(var i = commentsToCreate.length - 1; i >= 0; i--) {
-				var id = commentsToCreate[i];
-				var parentID = Comments.lookup[id].parent_id.split("_")[1];
-	
-				if(_.includes(createdComments, parentID)) {
-					document.getElementById(parentID).appendChild(createComment(Comments.lookup[id]));
-					createdComments.push(id);
-					commentsToCreate.splice(i, 1);
-					didSomething = true;
-				}
-			}
-	
-			// Fail safe (parents missing for the rest of the comments, shouldn't happend but oh well :D)
-			if(!didSomething) {
-				console.error("Didn't generate all comments correctly");
-				break;
-			}
-		}
-	};
 
 })();*/
 
