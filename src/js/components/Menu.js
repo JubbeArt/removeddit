@@ -1,4 +1,5 @@
 import React from 'react'
+import StatusBox from 'components/StatusBox'
 
 export default class Menu extends React.Component {
 	render () {
@@ -9,15 +10,12 @@ export default class Menu extends React.Component {
 						<Link to='/'>Removeddit</Link>
 					</h1>
 					<nav>
-						<Link to='/r/all'>subreddit</Link>
+						<Link to='/r/all'>/r/all</Link>
 						<Link to='/r/bestof/comments/7c8jof/'>thread</Link>
 						<Link to='/about/'>about</Link>
 					</nav>
 				</div>
-				<div id='status'>
-					<p id='status-text'></p>
-					<img id='status-image' src='/images/loading.gif'/>
-				</div>
+				<StatusBox text={this.props.statusText} image={this.props.statusImage} />
 			</header>
 		)
 	}

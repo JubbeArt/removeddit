@@ -1,5 +1,5 @@
 import React from 'react'
-import {prettyScore} from 'utils'
+import {prettyScore, statusImages, redditThumbnails} from 'utils'
 
 export default class Thread extends React.Component {
 	constructor() {
@@ -12,11 +12,12 @@ export default class Thread extends React.Component {
 			thumbnail: '',
 			position: 0,
 			score: 0
-
 		}
 	}
 
-
+	handleStateChange(text, image) {
+		this.props.onStateChange(text, image)
+	}
 
 	render () {
 		const url = this.props.url.replace('reddit.com', 'removeddit.com')

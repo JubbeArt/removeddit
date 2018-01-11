@@ -2,6 +2,15 @@ import SnuOwnd from 'libraries/snuownd.js'
 
 const markdown = SnuOwnd.getParser()
 
+export const redditThumbnails = ['self', 'default', 'image', 'nsfw']
+
+// Images for the status box in right side of header
+export const statusImages = {
+	loading: '/images/loading.gif',
+	error: '/images/error.png',
+	success: '/images/done.png'
+}
+
 // JSON parsing for fetch
 export const json = x => x.json()
 
