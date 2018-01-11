@@ -2,6 +2,7 @@ import SnuOwnd from 'libraries/snuownd.js'
 
 const markdown = SnuOwnd.getParser()
 
+// Default thumbnails for reddit threads
 export const redditThumbnails = ['self', 'default', 'image', 'nsfw']
 
 // Images for the status box in right side of header

@@ -35,6 +35,5 @@ const fetchToken = () => {
 export default {
 	comments(subreddit, threadID) {
 		return fetchToken()
-	}
-	
+	}	
 }
