@@ -12,15 +12,8 @@ ReactDOM.render(
 	document.getElementById("app")
 )
 
-// console.log(store.getState())
+// import {setStatusLoading} from 'state'
+// store.dispatch(setStatusLoading('hi'))
 
-import {setStatusError} from 'state'
-// store.subscribe(() => console.log(store.getState()))
-
- store.dispatch(setStatusError('Hello world'))
-  store.dispatch(setStatusError('Hi again :)'))
-
-
-// import {json} from 'utils'
-// import {test} from 'pushshift'
-// test('7q2k2g').then(console.log)
+// import { getThread } from 'reddit'
+// getThread('videos', '7q4vxi')

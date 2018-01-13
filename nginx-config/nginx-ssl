@@ -13,24 +13,8 @@ server {
 	#ssl_certificate /etc/letsencrypt/live/removeddit.com/fullchain.pem;
 	#ssl_certificate_key /etc/letsencrypt/live/removeddit.com/privkey.pem;
 	
-	location ~* /r/[a-zA-Z0-9]+/[a-zA-Z0-9] {
-		try_files /thread.html /thread.html =404;
-	}
-
-	location /r/ {
-		try_files /subreddit.html /subreddit.html =404;
-	}
-
-	location /static/ {
-		try_files $uri $uri/ =404;
-	}
-
-	location /about/ { 
-		try_files /about.html /about.html =404;
-	}
-
 	location / {
-		try_files /subreddit.html /subreddit.html =404;
+		try_files $uri $uri/ /index.html =404;
 	}	
 }
 

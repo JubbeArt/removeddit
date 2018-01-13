@@ -30,7 +30,7 @@ class App extends React.Component {
 					<Switch>			
 						<Route exact path='/' component={Thread} />
 						<Route path='/about' component={About}/>
-						<Route path='/r/:subreddit/comments' component={Thread}/>
+						<Route path='/r/:subreddit/comments/:threadID' component={Thread}/>
 					</Switch>
 				</>			
 			</BrowserRouter>

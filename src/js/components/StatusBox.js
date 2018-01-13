@@ -1,6 +1,8 @@
 import React from 'react'
+import {connect} from 'react-redux'
+import { setStatusLoading, setStatusSuccess, setStatusError } from 'state'
 
-export default class StatusBox extends React.Component {	
+class StatusBox extends React.Component {	
 	render() {
 		return (
 				<div id='status'>
@@ -12,3 +14,13 @@ export default class StatusBox extends React.Component {
 		)
 	}
 }
+
+const mapStateToProps = (state) => {
+	return {
+		text: state.status.text,
+		image: state.status.image
+
+	}
+}
+
+export default connect(mapStateToProps)(StatusBox)

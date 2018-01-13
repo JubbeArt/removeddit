@@ -1,0 +1,15 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /var/www/removeddit;
+	index index.html;
+	server_name _;
+
+	error_page 404 /index.html
+
+	location / {
+		try_files $uri $uri/ /index.html =404;
+	}
+}
+

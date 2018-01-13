@@ -1,7 +1,10 @@
 import clientID from './clientID'
 import {json} from 'utils'
 
+
 // Reddit API
+
+// Headers for general api calls
 const init = {
 	headers: {
 		'Authorization': ''
@@ -9,7 +12,9 @@ const init = {
 }
 
 let hasToken = false
+let baseCommentTree = {}
 
+// Headers for getting reddit api token
 const tokenInit = {
 	headers: {
 		'Authorization': 'Basic ' + btoa(clientID + ':'),
@@ -32,32 +37,24 @@ const fetchToken = () => {
 	})
 }
 
-export const getComments = (subreddit, threadID) => {
+export const getThread = (subreddit, threadID) => {
 	return fetchToken()
-	.then(() => {
-		return Promise.all([
-			fetch(URLs.thread, Reddit.init)
-			.then(Fetch2.json)
-			.then(ThreadHTML.createThread)
-			.catch(function(error) {
-				return Promise.reject("Could not get thread from Reddit");
-			}), 
+	.then(() => fetch(`https://oauth.reddit.com/r/${subreddit}/comments/${threadID}`, init))
+	.then(json)
+	.then(results => {
+		// Save the comments for later
+		baseCommentTree = results[1].data.children
 
-			fetch(URLs.pushshiftIDs)
-			.then(Fetch2.json)
-			.then(_.property("data"))
-			.catch(function(error) {
-				return Promise.reject("Could not get removed comment IDs");
-			}), 
-		])
+		// Return the thread
+		return results[0].data.children[0].data
 	})
 }
-	
-// 		.then(function(results) {
-// 			var thread = results[0];
-// 			Comments.allIDs = results[1];
 
-// 			Status.loading("Loading comments from reddit...");
+export const getCommentIDs = () => {
+	
+
+}
+
 // 			HandleIDs.normal(thread);
 // 			return HandleIDs.morechildren()
 // 			.catch(function(error){
