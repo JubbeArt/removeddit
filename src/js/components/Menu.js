@@ -1,8 +1,10 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import StatusBox from 'components/StatusBox'
+import { setStatusLoading, setStatusSuccess, setStatusError } from 'state'
+import {connect} from 'react-redux'
 
-export default class Menu extends React.Component {
+class Menu extends React.Component {
 	render () {
 		return (
 			<header>
@@ -15,9 +17,24 @@ export default class Menu extends React.Component {
 						<Link to='/about/'>about</Link>
 					</nav>
 				</div>
-				<StatusBox />
+				<StatusBox {...this.props.status} />
 			</header>
 		)
 	}
- 
 }
+
+const mapStateToProps = (state) => {
+	return {
+		status: state.status
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		 setStatusSuccess: text => dispatch(setStatusSuccess(text)),
+		 setStatusLoading: text => dispatch(setStatusLoading(text)),
+		 setStatusError: text => dispatch(setStatusError(text)),
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Menu)

@@ -2,23 +2,18 @@ import SnuOwnd from 'libraries/snuownd.js'
 
 const markdown = SnuOwnd.getParser()
 
+// Change bases
+export const toBase36 = number => parseInt(number).toString(36)
+export const toBase10 = numberString => parseInt(numberString, 36)
+
 // Default thumbnails for reddit threads
 export const redditThumbnails = ['self', 'default', 'image', 'nsfw']
-
-// Images for the status box in right side of header
-export const statusImages = {
-	loading: '/images/loading.gif',
-	error: '/images/error.png',
-	success: '/images/done.png'
-}
 
 // JSON parsing for fetch
 export const json = x => x.json()
 
 // Parse comments
-export const parse = text => {
-	return markdown.render(text)
-}
+export const parse = text => markdown.render(text)
 
 // UTC -> "Reddit time format" (e.g. 5 hours ago, just now, etc...)
 export const prettyDate = createdUTC => {
@@ -26,7 +21,7 @@ export const prettyDate = createdUTC => {
 	const secondDiff = currentUTC - createdUTC
 	const dayDiff = Math.floor(secondDiff / 86400)
 	
-	if(dayDiff < 0)	return ""
+	if(dayDiff < 0)				return ""
 	if(dayDiff == 0) {
 		if(secondDiff < 10)		return "just now"
 		if(secondDiff < 60)		return secondDiff + " seconds ago"

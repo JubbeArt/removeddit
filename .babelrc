@@ -4,6 +4,7 @@
 		"@babel/preset-es2015"
 	],
 	"plugins": [
-		"@babel/plugin-transform-async-to-generator"
+		"@babel/plugin-transform-async-to-generator",
+		"@babel/plugin-proposal-object-rest-spread"
 	]
 }

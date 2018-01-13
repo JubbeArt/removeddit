@@ -9,7 +9,7 @@ import {
 import Menu from 'components/Menu'
 import {About, Thread, Subreddit} from 'pages'
 
-export default class App extends React.Component {
+class App extends React.Component {
 	constructor(props) {
 		super(props)
 
@@ -26,7 +26,7 @@ export default class App extends React.Component {
 		return (
 			<BrowserRouter basename={__dirname}>
 				<>
-					<Menu />
+					<Menu status={this.props.status}/>
 					<Switch>			
 						<Route exact path='/' component={Thread} />
 						<Route path='/about' component={About}/>
@@ -37,3 +37,5 @@ export default class App extends React.Component {
 		)
 	}
 }
+
+export default App

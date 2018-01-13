@@ -16,7 +16,7 @@ const tokenInit = {
 		'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
 	},
 	method: 'POST',
-	body: 'grant_type='+encodeURIComponent('https://oauth.reddit.com/grants/installed_client')+'&device_id=DO_NOT_TRACK_THIS_DEVICE'
+	body: `grant_type=${encodeURIComponent('https://oauth.reddit.com/grants/installed_client')}&device_id=DO_NOT_TRACK_THIS_DEVICE`
 }
 
 const fetchToken = () => {
@@ -32,30 +32,27 @@ const fetchToken = () => {
 	})
 }
 
-export default {
-	comments(subreddit, threadID) {
-		return fetchToken()
-	}
-}	
+export const getComments = (subreddit, threadID) => {
+	return fetchToken()
+	.then(() => {
+		return Promise.all([
+			fetch(URLs.thread, Reddit.init)
+			.then(Fetch2.json)
+			.then(ThreadHTML.createThread)
+			.catch(function(error) {
+				return Promise.reject("Could not get thread from Reddit");
+			}), 
 
-// 		Reddit.fetchToken()
-// 		.then(function(){
-// 			return Promise.all([
-// 				fetch(URLs.thread, Reddit.init)
-// 				.then(Fetch2.json)
-// 				.then(ThreadHTML.createThread)
-// 				.catch(function(error) {
-// 					return Promise.reject("Could not get thread from Reddit");
-// 				}), 
-
-// 				fetch(URLs.pushshiftIDs)
-// 				.then(Fetch2.json)
-// 				.then(_.property("data"))
-// 				.catch(function(error) {
-// 					return Promise.reject("Could not get removed comment IDs");
-// 				}), 
-// 			])
-// 		})
+			fetch(URLs.pushshiftIDs)
+			.then(Fetch2.json)
+			.then(_.property("data"))
+			.catch(function(error) {
+				return Promise.reject("Could not get removed comment IDs");
+			}), 
+		])
+	})
+}
+	
 // 		.then(function(results) {
 // 			var thread = results[0];
 // 			Comments.allIDs = results[1];

@@ -69,13 +69,7 @@ return {
 	missing: [],
 	isPermalink: (Reddit.permalink !== undefined && Reddit.permalink !== ""),
 	
-	to36: function(id){
-		return parseInt(id).toString(36);
-	},
-
-	to10: function(id){
-		return parseInt(id, 36);
-	},
+	
 	
 	addComments: function(json){
 
