@@ -8,8 +8,3 @@ ReactDOM.render(
 	<App />, 
 	document.getElementById("app")
 )
-
-
-// import Reddit from './reddit'
-
-// Reddit.comments(1,2).then(() => console.log('lololololololol'))

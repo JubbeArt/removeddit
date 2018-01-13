@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 import StatusBox from 'components/StatusBox'
 
 export default class Menu extends React.Component {
@@ -11,11 +12,10 @@ export default class Menu extends React.Component {
 					</h1>
 					<nav>
 						<Link to='/r/all'>/r/all</Link>
-						<Link to='/r/bestof/comments/7c8jof/'>thread</Link>
 						<Link to='/about/'>about</Link>
 					</nav>
 				</div>
-				<StatusBox text={this.props.statusText} image={this.props.statusImage} />
+				<StatusBox />
 			</header>
 		)
 	}
