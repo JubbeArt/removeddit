@@ -23,6 +23,7 @@
     "start": "webpack-dev-server --config webpack.dev.js",
     "build": "webpack --config webpack.dev.js",
     "build-prod": "webpack --config webpack.prod.js",
+    "clean": "rm -r node_modules && rm package-lock.json",
     "gh-pages": "npm run build-prod && node publish.js"
   },
   "dependencies": {
@@ -32,7 +33,6 @@
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
-    "superagent": "^3.8.2",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {

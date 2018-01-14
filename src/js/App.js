@@ -27,11 +27,13 @@ class App extends React.Component {
 			<BrowserRouter basename={__dirname}>
 				<>
 					<Menu status={this.props.status}/>
-					<Switch>			
-						<Route exact path='/' component={Thread} />
-						<Route path='/about' component={About}/>
-						<Route path='/r/:subreddit/comments/:threadID' component={Thread}/>
-					</Switch>
+					<div className='main'>
+						<Switch>			
+							<Route exact path='/' component={Thread} />
+							<Route path='/about' component={About}/>
+							<Route path='/r/:subreddit/comments/:threadID' component={Thread}/>
+						</Switch>
+					</div>
 				</>			
 			</BrowserRouter>
 		)
