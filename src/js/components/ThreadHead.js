@@ -1,12 +1,12 @@
 import React from 'react'
-import {prettyScore, prettyDate, redditThumbnails} from 'utils'
+import {prettyScore, prettyDate, parse, redditThumbnails} from 'utils'
 
 export default (props) => {
 	if(!props.title) {
 		return <div></div>
 	}
 
-	const url = props.url.replace('reddit.com', 'removeddit.com')
+	const url = props.url.replace('https://www.reddit.com', '')
 	const userLink = props.author !== '[deleted]' ? `https://www.reddit.com/user/${props.author}` : ''
 
 	let thumbnail
@@ -34,7 +34,7 @@ export default (props) => {
 			</div>
 			{thumbnail}
 			<div className='thread-content'>
-				<a className='thread-title' href={props.url}>{props.title}</a>
+				<a className='thread-title' href={url}>{props.title}</a>
 				{props.link_flair_text && 
 				<span className='link-flair'>{props.link_flair_text}</span>}
 				<span className='domain'>({props.domain})</span>
@@ -43,13 +43,15 @@ export default (props) => {
 					<a className='thread-author author' href={userLink}>{props.author}</a>
 					&nbsp;to <a className='subreddit-link author' href={`/r/${props.subreddit}`}>/r/{props.subreddit}</a>
 				</div>
+				{props.selftext &&
+				<div className='thread-selftext user-text' dangerouslySetInnerHTML={{__html: parse(props.selftext)}}></div>}
 				<div className='total-comments'>
 					<a className='grey-link' href={props.permalink}>
 						<b>{props.num_comments} comments</b>
-					</a>
+					</a>&nbsp;
 					<a className='grey-link' href={`https://www.reddit.com${props.permalink}`}>
 						<b>reddit</b>
-					</a>
+					</a>&nbsp;
 					<a className='grey-link' href={`https://snew.github.io${props.permalink}`}>
 						<b>ceddit</b>
 					</a>
