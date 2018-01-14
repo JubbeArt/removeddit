@@ -3,32 +3,31 @@ import ThreadHead from 'components/ThreadHead'
 import { getThread } from 'reddit'
 
 export default class Thread extends React.Component {
-	constructor(props) {
-		super(props)
+  constructor(props) {
+    super(props)
 
-		this.state = {
-			thread: {}
-		}
-	}
+    this.state = {
+      thread: {},
+    }
+  }
 
-	componentDidMount() {
-		getThread(this.props.match.params.subreddit, this.props.match.params.threadID)
-		.then(thread => {
-			this.setState({thread})
-			
-			// check if thread is deleted
-			//if(thread.)
-			return thread		
-		})
-		
-	}
+  componentDidMount() {
+    getThread(this.props.match.params.subreddit, this.props.match.params.threadID)
+      .then(thread => {
+        this.setState({ thread })
 
-	render () {
-		return (
-			<>
-				<ThreadHead {...this.state.thread} />
-				<h1>lol</h1>
-			</>
-		)
-	}
+        // check if thread is deleted
+        // if(thread.)
+        return thread
+      })
+  }
+
+  render() {
+    return (
+      <>
+        <ThreadHead {...this.state.thread} />
+        <h1>lol</h1>
+      </>
+    )
+  }
 }

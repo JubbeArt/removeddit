@@ -24,7 +24,8 @@
     "build": "webpack --config webpack.dev.js",
     "build-prod": "webpack --config webpack.prod.js",
     "clean": "rm -r node_modules && rm package-lock.json",
-    "gh-pages": "npm run build-prod && node publish.js"
+    "gh-pages": "npm run build-prod && node publish.js",
+    "es": "eslint --init"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0-beta.37",
@@ -42,10 +43,16 @@
     "@babel/plugin-transform-async-to-generator": "^7.0.0-beta.37",
     "@babel/preset-es2015": "^7.0.0-beta.37",
     "@babel/preset-react": "^7.0.0-beta.37",
+    "babel-eslint": "^8.2.1",
     "babel-loader": "^8.0.0-beta.0",
     "clean-webpack-plugin": "^0.1.17",
     "copy-webpack-plugin": "^4.3.1",
     "css-loader": "^0.28.8",
+    "eslint": "^4.15.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.5.1",
     "extract-text-webpack-plugin": "^3.0.2",
     "gh-pages": "^1.1.0",
     "html-loader": "^0.5.4",
