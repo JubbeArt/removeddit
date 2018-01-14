@@ -16,11 +16,11 @@ let baseCommentTree = {}
 // Headers for getting reddit api token
 const tokenInit = {
   headers: {
-    Authorization: `Basic ${btoa(clientID + ':')}`,
+    Authorization: `Basic ${btoa(`${clientID}:`)}`,
     'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
   },
   method: 'POST',
-  body: `grant_type=${encodeURIComponent('https://oauth.reddit.com/grants/installed_client')}&device_id=DO_NOT_TRACK_THIS_DEVICE`
+  body: `grant_type=${encodeURIComponent('https://oauth.reddit.com/grants/installed_client')}&device_id=DO_NOT_TRACK_THIS_DEVICE`,
 }
 
 const fetchToken = () => {
@@ -59,17 +59,17 @@ export const getCommentIDs = () => {
 //       return HandleIDs.morechildren()
 //       .catch(function(error){
 //         return Promise.reject("Could not get comments from Reddit (moreChildren)");
-//       });    
+//       });
 //     })
 //     .then(function(){
-//       return Promise.all(_.map(_.uniq(Comments.countinuethread), function(id) { 
+//       return Promise.all(_.map(_.uniq(Comments.countinuethread), function(id) {
 //         return fetch(URLs.thread+"/_/"+id.split("_")[1], Reddit.init)
 //         .then(Fetch2.json)
 //         .catch(function(error){ return Promise.reject("Could not get comments from Reddit (continueThisThread)") })
 //       }))
 //       .catch(function(error){
 //         return Promise.reject("Could not get comments from Reddit (continueThisThread)");
-//       });      
+//       });
 //     })
 //     .then(function(smallerThreads){
 //       _.forEach(smallerThreads, function(thread){
@@ -81,7 +81,7 @@ export const getCommentIDs = () => {
 //       return Fetch2.multiple(URLs.format(URLs.pushshiftComments, Comments.removed), null, "data")
 //       .catch(function(error){
 //         return Promise.reject("Could not get removed comments");
-//       });      
+//       });
 //     })
 //     .then(function(removedComments){
 //       Status.loading("Generating comments...");
@@ -108,13 +108,13 @@ export const getCommentIDs = () => {
 //   var lookup = {};
 //   var toBeCreated = [];
 
-//   var getParentComments = function(toLookup){  
+//   var getParentComments = function(toLookup){
 //     var newCommentsToLookup = [];
 //     var commentsToFetch = [];
 
 //     _.forEach(toLookup, function(id){
 //       var parentID = lookup[id].parent_id.split("_")[1];
-  
+
 //       if(parentID === Reddit.threadID) {} // Has no parent (is parent of thread)
 //       else if(_.includes(Comments.toBeCreated, parentID)) {} // Parent already exists, do nothing
 //       else if(_.includes(newCommentsToLookup, parentID)) {} // Parent already exists (this iteration)
@@ -123,11 +123,11 @@ export const getCommentIDs = () => {
 //       } else{
 //         commentsToFetch.push(parentID);
 //       }
-  
+
 //       Comments.toBeCreated.push(id);
 //     });
-  
-//     return new Promise(function(resolve, reject){  
+
+//     return new Promise(function(resolve, reject){
 //       if(_.uniq(commentsToFetch).length !== 0) {
 //         fetch(URLs.singleComments + _.join(_.map(_.uniq(commentsToFetch),function(comments){
 //           return "t1_" + comments;
@@ -142,9 +142,9 @@ export const getCommentIDs = () => {
 //         .then(function(){
 //           resolve();
 //         });
-        
+
 //       } else {
-//         resolve();    
+//         resolve();
 //       }
 //     })
 //     .then(function(){
@@ -152,14 +152,14 @@ export const getCommentIDs = () => {
 //         return getParentComments(newCommentsToLookup)
 //       }
 //     });
-    
+
 //   };
 
 // return {
 //   ids: [], // The comments we found
 //   morechildren: [],
 //   countinuethread: [],
-  
+
 //   allIDs: [], // All the comments that we were suppose to find
 //   removed: [],
 //   deleted: [],
@@ -180,7 +180,7 @@ export const getCommentIDs = () => {
 
 //     if(_.has(Comments.lookup, Reddit.permalink)) {
 //       return Comments.lookup[Reddit.permalink].parent_id.split("_")[1];
-//     }      
+//     }
 //     return "";
 //   },
 //   generate: function(removedComments) {
@@ -188,24 +188,23 @@ export const getCommentIDs = () => {
 //       if(_.includes(Comments.deleted, comment.id)) {
 //         comment["deleted"] = true;
 //       } else {
-//         comment["removed"] = true;  
+//         comment["removed"] = true;
 //       }
-      
+
 //       Comments.lookup[comment.id] = comment;
 //     });
-  
+
 //     Comments.removed = _.map(removedComments, function(comment){
 //       return comment.id;
 //     });
-        
+
 //     return getParentComments(Comments.removed)
-//     .then(function(){  
-//       ThreadHTML.createCommentSection();  
+//     .then(function(){
+//       ThreadHTML.createCommentSection();
 //       ThreadHTML.createComments();
 //     })
 //   }
 // }})();
-
 
 
 // // ------------------------------------------------------------------------------
@@ -217,7 +216,7 @@ export const getCommentIDs = () => {
 //   };
 
 //   var morechildren = function(){
-//     return Promise.all(_.map(_.uniq(Comments.morechildren), function(idArray){        
+//     return Promise.all(_.map(_.uniq(Comments.morechildren), function(idArray){
 //       return Fetch2.multiple(URLs.format(URLs.moreChildren, idArray), Reddit.init);
 //     }))
 //     .then(function(responseArrays){
@@ -232,7 +231,7 @@ export const getCommentIDs = () => {
 //     }).then(function(){
 //       if(Comments.morechildren.length !== 0) {
 //         return morechildren();
-//       }  
+//       }
 //     });
 //   };
 
@@ -243,7 +242,7 @@ export const getCommentIDs = () => {
 //       if(! _.has(Comments.lookup, id)) {
 //         return;
 //       }
-  
+
 //       if(Comments.lookup[id].body === "[removed]") {
 //         Comments.removed.push(id);
 //       } else if (Comments.lookup[id].body === "[deleted]"){
@@ -269,8 +268,8 @@ export const getCommentIDs = () => {
 // var Extract = (function(){
 //   var normal = function(comment){
 //     var data = comment.data;
-    
-//     if(comment.kind == "more") { // "Show more"-comment      
+
+//     if(comment.kind == "more") { // "Show more"-comment
 //       if(data.id === "_") {  // = "continue this thread" comment
 //         Comments.countinuethread.push(data.parent_id);
 //       } else if(data.children.length < data.count){ // "Load more"-comment (that is missing some of its children)
@@ -284,15 +283,15 @@ export const getCommentIDs = () => {
 //         });
 //         delete data.replies;
 //       }
-      
+
 //       Comments.ids.push(data.id);
 //       Comments.lookup[data.id] = data;
 //     }
 //   };
-  
+
 //   return {
 //     normal: normal
-//   };  
+//   };
 // })();
 
 
@@ -300,7 +299,7 @@ export const getCommentIDs = () => {
 // // ---------------------------- Generating HTML ---------------------------------
 // // ------------------------------------------------------------------------------
 
-  
+
 //   var createComments = function(){
 //     var commentsToCreate = _.sortBy(_.uniq(Comments.toBeCreated), function(id) {
 //       return Comments.lookup[id].score;
@@ -308,14 +307,14 @@ export const getCommentIDs = () => {
 
 //     var createdComments = [Comments.getRoot()];
 //     var didSomething = false;
-  
+
 //     while(commentsToCreate.length > 0) {
 //       didSomething = false;
-  
+
 //       for(var i = commentsToCreate.length - 1; i >= 0; i--) {
 //         var id = commentsToCreate[i];
 //         var parentID = Comments.lookup[id].parent_id.split("_")[1];
-  
+
 //         if(_.includes(createdComments, parentID)) {
 //           document.getElementById(parentID).appendChild(createComment(Comments.lookup[id]));
 //           createdComments.push(id);
@@ -323,7 +322,7 @@ export const getCommentIDs = () => {
 //           didSomething = true;
 //         }
 //       }
-  
+
 //       // Fail safe (parents missing for the rest of the comments, shouldn't happend but oh well :D)
 //       if(!didSomething) {
 //         console.error("Didn't generate all comments correctly");
@@ -332,5 +331,3 @@ export const getCommentIDs = () => {
 //     }
 //   };
 
-
-  

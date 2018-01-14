@@ -1,5 +1,5 @@
 import React from 'react'
-import { prettyScore, prettyDate, parse, redditThumbnails } from 'utils'
+import { prettyScore, prettyDate, parse, redditThumbnails, isDeleted } from 'utils'
 
 export default (props) => {
   if (!props.title) {
@@ -7,7 +7,7 @@ export default (props) => {
   }
 
   const url = props.url.replace('https://www.reddit.com', '')
-  const userLink = props.author !== '[deleted]' ? `https://www.reddit.com/user/${props.author}` : undefined
+  const userLink = isDeleted(props.author) ? undefined : `https://www.reddit.com/user/${props.author}`
 
   let thumbnail
   const thumbnailWidth = props.thumbnail_width ? props.thumbnail_width * 0.5 : 70

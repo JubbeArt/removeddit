@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { store } from 'state'
 import App from 'App'
+// import { setStatusLoading } from 'state'
 
 import '../sass/main.sass'
 
@@ -13,8 +14,4 @@ ReactDOM.render(
   document.getElementById('app')
 )
 
-// import {setStatusLoading} from 'state'
 // store.dispatch(setStatusLoading('hi'))
-
-// import { getThread } from 'reddit'
-// getThread('videos', '7q4vxi')

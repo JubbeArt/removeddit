@@ -25,6 +25,10 @@ export const getThread = threadID => {
     fetch(threadURL + JSON.stringify(elasticQuery))
       .then(json)
       .then(jsonData => jsonData.hits.hits[0]._source)
+      .then(thread => {
+        thread.id = toBase36(thread.id)
+        return thread
+      })
   )
 }
 

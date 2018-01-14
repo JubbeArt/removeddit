@@ -1,7 +1,11 @@
 import React from 'react'
 
-export default (props) => (
-  <div id={props.root}>
-    {props.children}
-  </div>
-)
+export default (props) => {
+  const { children } = props
+  return (
+    <div>
+      <h1>{props.root}</h1>
+      <h1>{children}</h1>
+    </div>
+  )
+}
