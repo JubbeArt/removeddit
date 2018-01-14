@@ -14,7 +14,7 @@ export default props => (
       <Menu status={props.status} />
       <div className='main'>
         <Switch>
-          <Route exact path='/' component={Thread} />
+          <Route exact path='/' component={About} />
           <Route path='/about' component={About} />
           <Route path='/r/:subreddit/comments/:threadID' component={Thread} />
         </Switch>

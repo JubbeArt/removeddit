@@ -6,6 +6,9 @@ const markdown = SnuOwnd.getParser()
 export const toBase36 = number => parseInt(number, 10).toString(36)
 export const toBase10 = numberString => parseInt(numberString, 36)
 
+// Reddits way of indicating that something is deleted/removed
+export const isDeleted = testString => testString === '[deleted]'
+
 // Default thumbnails for reddit threads
 export const redditThumbnails = ['self', 'default', 'image', 'nsfw']
 

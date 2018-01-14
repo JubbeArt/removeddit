@@ -2,14 +2,14 @@ import React from 'react'
 import { prettyScore, prettyDate, parse } from 'utils'
 
 export default (props) => {
-  let commentStyle = 'comment comment-'
+  let commentStyle = 'comment '
 
   if (props.removed) {
     commentStyle += 'removed'
   } else if (props.deleted) {
     commentStyle += 'deleted'
   } else {
-    commentStyle += props.depth % 2 === 0 ? 'even' : 'odd'
+    commentStyle += props.depth % 2 === 0 ? 'comment-even' : 'comment-odd'
   }
 
   const innerHTML = (props.body === '[removed]' && props.removed) ? '<p>[removed too quickly to be archived]</p>' : parse(props.body)

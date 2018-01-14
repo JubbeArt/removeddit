@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default (props) => {
-  let pageination = <div></div>
+  let pageination = <></>
 
   for (let i = props.start; i <= props.end; i++) {
     if (props.currentPage === i) {

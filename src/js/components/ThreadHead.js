@@ -3,11 +3,11 @@ import { prettyScore, prettyDate, parse, redditThumbnails } from 'utils'
 
 export default (props) => {
   if (!props.title) {
-    return <></>
+    return <div />
   }
 
   const url = props.url.replace('https://www.reddit.com', '')
-  const userLink = props.author !== '[deleted]' ? `https://www.reddit.com/user/${props.author}` : ''
+  const userLink = props.author !== '[deleted]' ? `https://www.reddit.com/user/${props.author}` : undefined
 
   let thumbnail
   const thumbnailWidth = props.thumbnail_width ? props.thumbnail_width * 0.5 : 70
@@ -24,7 +24,7 @@ export default (props) => {
   }
 
   return (
-    <div className='thread'>
+    <div className={`thread ${props.removed && 'removed'}`}>
       {props.position &&
       <span className='post-rank'>{props.position}</span>}
       <div className='thread-score-box'>
@@ -39,7 +39,7 @@ export default (props) => {
         <span className='link-flair'>{props.link_flair_text}</span>}
         <span className='domain'>({props.domain})</span>
         <div className='thread-info'>
-          submitted <span className='thread-time'>{prettyDate(props.created_utc)}</span> by&nbsp;			
+          submitted <span className='thread-time'>{prettyDate(props.created_utc)}</span> by&nbsp;
           <a className='thread-author author' href={userLink}>{props.author}</a>
           &nbsp;to <a className='subreddit-link author' href={`/r/${props.subreddit}`}>/r/{props.subreddit}</a>
         </div>

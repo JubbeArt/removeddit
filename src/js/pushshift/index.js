@@ -1,7 +1,7 @@
 import { json, toBase10, toBase36 } from 'utils'
 
 const baseURL = 'https://elastic.pushshift.io'
-const submissionURL = `${baseURL}/rs/submissions/_search?source=`
+const threadURL = `${baseURL}/rs/submissions/_search?source=`
 const commentURL = `${baseURL}/rc/comments/_search?source=`
 const commentIDsURL = 'https://api.pushshift.io/reddit/submission/comment_ids/'
 
@@ -11,6 +11,22 @@ export const getCommentIDs = threadID => (
     .then(json)
     .then(results => results.data)
 )
+
+export const getThread = threadID => {
+  const elasticQuery = {
+    query: {
+      term: {
+        id: toBase10(threadID),
+      },
+    },
+  }
+
+  return (
+    fetch(threadURL + JSON.stringify(elasticQuery))
+      .then(json)
+      .then(jsonData => jsonData.hits.hits[0]._source)
+  )
+}
 
 export const test = threadID => {
   const elasticQuery = {

@@ -1,30 +1,41 @@
 $background: #262626
-$red: #ca302c
+$red: #c70300
 $blue: #00007d
 $link: #8cb3d9
 $author: #6a98af
+$removed: #840c09
+$deleted: #00007d
 
 html, body 
-	margin: 0
-	padding: 0
-	background-color: $background
-	font-family: verdana, arial, helvetica, sans-serif
+  margin: 0
+  padding: 0
+  background-color: $background
+  font-family: verdana, arial, helvetica, sans-serif
 
 .main
-	margin: 15px
+  margin: 15px
+
+.removed
+	background-color: $removed
+
+.deleted
+	background-color: $deleted
 
 a
-	color: #8cb3d9
-	
+  color: $link
+  
 a:link, a:visited, a:active
-	text-decoration: none
+  text-decoration: none
 
 a:hover
-	text-decoration: underline
+  text-decoration: underline
 
 .author
-	color: $author
+  color: $author
 
+.author:not([href])
+  color: inherit
+  text-decoration: none
 
 @import header
 @import about

@@ -1,6 +1,8 @@
 import React from 'react'
 import ThreadHead from 'components/ThreadHead'
 import { getThread } from 'reddit'
+import { getThread as getRemovedThread } from 'pushshift'
+import { isDeleted } from 'utils'
 
 export default class Thread extends React.Component {
   constructor(props) {
@@ -12,22 +14,29 @@ export default class Thread extends React.Component {
   }
 
   componentDidMount() {
-    getThread(this.props.match.params.subreddit, this.props.match.params.threadID)
+    const { subreddit, threadID } = this.props.match.params
+
+    getThread(subreddit, threadID)
       .then(thread => {
         this.setState({ thread })
 
-        // check if thread is deleted
-        // if(thread.)
-        return thread
+        // Fetch the thread from pushshift if it was deleted/removed
+        if (isDeleted(thread.selftext)) {
+          getRemovedThread(threadID)
+            .then(removedThread => {
+              removedThread.removed = true
+              this.setState({ thread: removedThread })
+            })
+        }
       })
   }
 
   render() {
     return (
-      <>
+      <div>
         <ThreadHead {...this.state.thread} />
         <h1>lol</h1>
-      </>
+      </div>
     )
   }
 }
