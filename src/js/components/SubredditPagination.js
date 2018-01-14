@@ -1,14 +1,22 @@
-// {/* <div id="pagination">
-// 	Page: 
-// 	<% if(start > 1) { %>
-// 		<a href="<%= urlBase+1 %>">1</a> ... 
-// 	<% } 
+import React from 'react'
 
-// 	for(var i = start; i <= end; i++) {	
-// 		if(currentPage === i) { %>
-// 			<span><%= i %></span>
-// 	<%	} else { %>
-// 			<a href="<%= urlBase+i %>"><%= i %></a>
-// 	<%	}
-// 	} %>
-// </div> */}
+export default (props) => {
+	let pageination = <></>
+
+	for(var i = start; i <= end; i++) {	
+		if(currentPage === i) {
+			pageination += <span>{i}</span>
+		} else {
+			pageination += <a href={`${props.url+i}`}>{i}</a>
+		}
+	}
+	return (
+		<div id="pagination">
+			Page: 
+			{start > 1 &&	
+			<><a href={`${props.url+1}`}>1</a>
+			<span> ...</span></>}
+			{pageination}
+		</div>
+	)
+}
