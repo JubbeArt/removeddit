@@ -1,61 +1,80 @@
-import { json } from 'utils'
-import clientID from './clientID'
+import { json, flatten } from 'utils'
+import { fetchToken, redditAuth } from 'reddit/token'
 
-// Reddit API
-
-// Headers for general api calls
-const init = {
-  headers: {
-    Authorization: '',
-  },
-}
-
-let hasToken = false
-let baseCommentTree = {}
-
-// Headers for getting reddit api token
-const tokenInit = {
-  headers: {
-    Authorization: `Basic ${btoa(`${clientID}:`)}`,
-    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-  },
-  method: 'POST',
-  body: `grant_type=${encodeURIComponent('https://oauth.reddit.com/grants/installed_client')}&device_id=DO_NOT_TRACK_THIS_DEVICE`,
-}
-
-const fetchToken = () => {
-  if (hasToken) {
-    return Promise.resolve()
-  }
-
-  return (
-    fetch('https://www.reddit.com/api/v1/access_token', tokenInit)
-      .then(json)
-      .then(jsonData => {
-        init.headers.Authorization = `bearer ${jsonData.access_token}`;
-        hasToken = true
-      })
-  )
-}
+let cachedThread = {}
+export const lookup = {}
 
 export const getThread = (subreddit, threadID) => (
   fetchToken()
-    .then(() => fetch(`https://oauth.reddit.com/r/${subreddit}/comments/${threadID}`, init))
+    .then(() => fetch(`https://oauth.reddit.com/r/${subreddit}/comments/${threadID}`, redditAuth))
     .then(json)
     .then(results => {
       // Save the comments for later
-      baseCommentTree = results[1].data.children
+      cachedThread = results
 
       // Return the thread
       return results[0].data.children[0].data
     })
 )
 
-export const getCommentIDs = () => {
+const handleThreadComment = (comment, results) => {
+  if (comment.kind === 't1') {
+    // Has comment replies
+    if (comment.data.replies) {
+      // Handle all replies in the same way
+      comment.data.replies.data.children.forEach(reply => handleThreadComment(reply, results))
+      delete comment.data.replies
+    }
+
+    // Add to the return object
+    results.ids.push(comment.data.id)
+    // Store commment in lookup table
+    lookup[comment.data.id] = comment.data
+  } else if (comment.kind === 'more') {
+    if (comment.data.id === '_') {
+      // "continue this thread" comment
+      results.continueThisThreadIDs.push(comment.data.parent_id);
+    } else if (comment.data.children.length < comment.data.count) {
+      // "Load more"-comment (that is missing some of its children)
+      results.morechildrenIDs.push(comment.data.children)
+    }
+
+    // Always add the "more"-comments children
+    results.ids.push(...comment.data.children)
+  } else {
+    console.error('WTF', comment.kind)
+  }
+
+  return results
+}
+
+const handleMoreChildren = () => {
 
 }
 
-//       HandleIDs.normal(thread);
+const handleThread = thread => {
+  const comments = thread[1].data.children
+
+  // Ugly "hack", using this object as a pointer for storing comments.
+  // Not very js-like
+  const results = {
+    ids: [],
+    continueThisThreadIDs: [],
+    morechildrenIDs: [],
+  }
+
+  comments.map(comment => handleThreadComment(comment, results))
+  const { ids, continueThisThreadIDs, morechildrenIDs } = results
+
+  console.log(ids)
+  console.log(continueThisThreadIDs)
+  console.log(morechildrenIDs)
+
+  handleMoreChildren()
+}
+
+export const getCommentIDs = () => handleThread(cachedThread)
+
 //       return HandleIDs.morechildren()
 //       .catch(function(error){
 //         return Promise.reject("Could not get comments from Reddit (moreChildren)");
@@ -260,40 +279,6 @@ export const getCommentIDs = () => {
 //     removed: removed
 //   };
 // })();
-
-
-// // ------------------------------------------------------------------------------
-// // ----------------------- Extract ID from comments -----------------------------
-// // ------------------------------------------------------------------------------
-// var Extract = (function(){
-//   var normal = function(comment){
-//     var data = comment.data;
-
-//     if(comment.kind == "more") { // "Show more"-comment
-//       if(data.id === "_") {  // = "continue this thread" comment
-//         Comments.countinuethread.push(data.parent_id);
-//       } else if(data.children.length < data.count){ // "Load more"-comment (that is missing some of its children)
-//         Comments.morechildren.push(data.children);
-//       }
-//       Comments.ids.push.apply(Comments.ids, data.children);
-//     } else { // Normal comment
-//       if(data.replies) {
-//         data.replies.data.children.forEach(function(child){
-//           normal(child);
-//         });
-//         delete data.replies;
-//       }
-
-//       Comments.ids.push(data.id);
-//       Comments.lookup[data.id] = data;
-//     }
-//   };
-
-//   return {
-//     normal: normal
-//   };
-// })();
-
 
 // // ------------------------------------------------------------------------------
 // // ---------------------------- Generating HTML ---------------------------------

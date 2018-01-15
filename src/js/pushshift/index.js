@@ -32,6 +32,7 @@ export const getThread = threadID => {
   )
 }
 
+// getComments (handle more than 100, try 50, 25 etc....)
 export const test = threadID => {
   const elasticQuery = {
     query: {

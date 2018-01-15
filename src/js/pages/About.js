@@ -6,9 +6,9 @@ export default props => (
       <h2 className='about'>About</h2>
       <p>
         Display
-        <b className='removed' title='Removed by mods'>removed</b>
+        <b className='removed-text' title='Removed by mods'> removed </b>
         (by mods) and
-        <b className='deleted' title='Deleted by users'>deleted</b>
+        <b className='deleted-text' title='Deleted by users'> deleted </b>
         (by users) comments/threads from  Reddit.
       </p>
       <p>

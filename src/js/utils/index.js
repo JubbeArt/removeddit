@@ -2,6 +2,12 @@ import SnuOwnd from 'libraries/snuownd.js'
 
 const markdown = SnuOwnd.getParser()
 
+// Flatten arrays one level
+export const flatten = arr => arr.reduce(
+  (accumulator, value) => accumulator.concat(value),
+  []
+)
+
 // Change bases
 export const toBase36 = number => parseInt(number, 10).toString(36)
 export const toBase10 = numberString => parseInt(numberString, 36)
@@ -18,7 +24,7 @@ export const json = x => x.json()
 // Parse comments
 export const parse = text => markdown.render(text)
 
-// UTC -> "Reddit time format" (e.g. 5 hours ago, just now, etc...)
+// UTC to "Reddit time format" (e.g. 5 hours ago, just now, etc...)
 export const prettyDate = createdUTC => {
   const currentUTC = Math.floor((new Date()).getTime() / 1000)
   const secondDiff = currentUTC - createdUTC
