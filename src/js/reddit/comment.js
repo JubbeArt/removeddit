@@ -36,7 +36,6 @@ const handleThreadComment = (comment, results) => {
 }
 
 const handleMoreChildren = (results, threadID) => (
-  // console.log(results.morechildrenIDs.map(idArray => idArray))
   Promise.all(results.morechildrenIDs.map(idArray =>
     fetchMultiple(`https://oauth.reddit.com/api/morechildren?link_id=t3_${threadID}&children=`, idArray, redditAuth)))
     .then(responsesArrays => Promise.all(responsesArrays.map(jsonMultiple)))
@@ -79,8 +78,8 @@ const handleThread = thread => {
   const { subreddit, id: threadID } = extractPost(thread)
 
   return Promise.all([
-    ...results.continueThisThreadIDs.map(id => getThread(subreddit, threadID, id)),
-    // .then(subthreads => subthreads.map(subthread => handleThread(subthread)))),
+    ...results.continueThisThreadIDs.map(id => getThread(subreddit, threadID, id)
+      .then(subthread => handleThread(subthread))),
     handleMoreChildren(results, threadID),
   ])
     .then(resultsArray => {
@@ -89,6 +88,8 @@ const handleThread = thread => {
     // from all 'continue this thread' posts
       console.log(resultsArray)
       resultsArray.pop()
+      console.log(results)
+      console.log(resultsArray)
     })
   // zip
   // )

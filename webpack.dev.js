@@ -6,4 +6,5 @@ module.exports = merge(common, {
   devServer: {
     historyApiFallback: true,
   },
+  devtool: 'cheap-module-eval-source-map',
 });
