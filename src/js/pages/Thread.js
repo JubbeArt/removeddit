@@ -4,6 +4,7 @@ import CommentSection from 'components/CommentSection'
 import {
   getThread,
   getCommentIDs,
+  extractHead,
 } from 'reddit'
 import {
   getThread as getRemovedThread,
@@ -23,12 +24,13 @@ export default class Thread extends React.Component {
 
   componentDidMount() {
     const { subreddit, threadID } = this.props.match.params
-
+    console.timeEnd('scripts loaded')
     let pushshiftCommentIDs
 
     Promise.all([
       // Get thread from reddit
       getThread(subreddit, threadID)
+        .then(extractHead)
         .then(thread => {
           this.setState({ thread })
 
@@ -40,15 +42,15 @@ export default class Thread extends React.Component {
                 this.setState({ thread: removedThread })
               })
           }
-        }),
+        })
+        // Get comment ids from reddit
+        .then(() => getCommentIDs(subreddit, threadID)),
 
       // Get comment ids from pushshift
       getAllCommentIDs(threadID)
         .then(commentIDs => { pushshiftCommentIDs = commentIDs }),
     ])
       .then(() => {
-        // Get comment ids from reddit
-        getCommentIDs()
         // .then(console.log)
       })
   }

@@ -8,6 +8,30 @@ export const flatten = arr => arr.reduce(
   []
 )
 
+export const unique = arr => arr.filter((value, index) => arr.indexOf(value) === index)
+
+// Take on big array and split it into an array of chunks with correct size
+export const chunk = (arr, size) => {
+  const chunks = []
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size))
+  }
+  return chunks
+}
+
+// JSON parsing for fetch
+export const json = x => x.json()
+
+// Make multiple requests to the same url, with an array of data (usually comment IDs)
+// This is needed since there is a limit on how long a url can be
+export const fetchMultiple = (url, arr, header, size = 100) => {
+  const subArrays = chunk(arr, size)
+
+  return Promise.all(subArrays.map(subArr => fetch(url + subArr.join(), header)))
+}
+
+export const jsonMultiple = responses => Promise.all(responses.map(json))
+
 // Change bases
 export const toBase36 = number => parseInt(number, 10).toString(36)
 export const toBase10 = numberString => parseInt(numberString, 36)
@@ -17,9 +41,6 @@ export const isDeleted = testString => testString === '[deleted]'
 
 // Default thumbnails for reddit threads
 export const redditThumbnails = ['self', 'default', 'image', 'nsfw']
-
-// JSON parsing for fetch
-export const json = x => x.json()
 
 // Parse comments
 export const parse = text => markdown.render(text)

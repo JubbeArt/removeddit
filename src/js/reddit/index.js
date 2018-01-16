@@ -1,79 +1,5 @@
-import { json, flatten } from 'utils'
-import { fetchToken, redditAuth } from 'reddit/token'
-
-let cachedThread = {}
-export const lookup = {}
-
-export const getThread = (subreddit, threadID) => (
-  fetchToken()
-    .then(() => fetch(`https://oauth.reddit.com/r/${subreddit}/comments/${threadID}`, redditAuth))
-    .then(json)
-    .then(results => {
-      // Save the comments for later
-      cachedThread = results
-
-      // Return the thread
-      return results[0].data.children[0].data
-    })
-)
-
-const handleThreadComment = (comment, results) => {
-  if (comment.kind === 't1') {
-    // Has comment replies
-    if (comment.data.replies) {
-      // Handle all replies in the same way
-      comment.data.replies.data.children.forEach(reply => handleThreadComment(reply, results))
-      delete comment.data.replies
-    }
-
-    // Add to the return object
-    results.ids.push(comment.data.id)
-    // Store commment in lookup table
-    lookup[comment.data.id] = comment.data
-  } else if (comment.kind === 'more') {
-    if (comment.data.id === '_') {
-      // "continue this thread" comment
-      results.continueThisThreadIDs.push(comment.data.parent_id);
-    } else if (comment.data.children.length < comment.data.count) {
-      // "Load more"-comment (that is missing some of its children)
-      results.morechildrenIDs.push(comment.data.children)
-    }
-
-    // Always add the "more"-comments children
-    results.ids.push(...comment.data.children)
-  } else {
-    console.error('WTF', comment.kind)
-  }
-
-  return results
-}
-
-const handleMoreChildren = () => {
-
-}
-
-const handleThread = thread => {
-  const comments = thread[1].data.children
-
-  // Ugly "hack", using this object as a pointer for storing comments.
-  // Not very js-like
-  const results = {
-    ids: [],
-    continueThisThreadIDs: [],
-    morechildrenIDs: [],
-  }
-
-  comments.map(comment => handleThreadComment(comment, results))
-  const { ids, continueThisThreadIDs, morechildrenIDs } = results
-
-  console.log(ids)
-  console.log(continueThisThreadIDs)
-  console.log(morechildrenIDs)
-
-  handleMoreChildren()
-}
-
-export const getCommentIDs = () => handleThread(cachedThread)
+export { getThread, extractPost } from './thread'
+export { getCommentIDs } from './comment'
 
 //       return HandleIDs.morechildren()
 //       .catch(function(error){
@@ -229,11 +155,6 @@ export const getCommentIDs = () => handleThread(cachedThread)
 // // ------------------------------------------------------------------------------
 // // ----------------- Handle comments from different requests --------------------
 // // ------------------------------------------------------------------------------
-// var HandleIDs = (function(){
-//   var normal = function(thread){
-//     return _.flatten(_.map(thread[1].data.children, Extract.normal))
-//   };
-
 //   var morechildren = function(){
 //     return Promise.all(_.map(_.uniq(Comments.morechildren), function(idArray){
 //       return Fetch2.multiple(URLs.format(URLs.moreChildren, idArray), Reddit.init);
