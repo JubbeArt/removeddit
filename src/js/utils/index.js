@@ -1,4 +1,4 @@
-import SnuOwnd from 'libraries/snuownd.js'
+import SnuOwnd from 'snuownd'
 
 const markdown = SnuOwnd.getParser()
 

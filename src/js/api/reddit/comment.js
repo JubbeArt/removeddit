@@ -1,4 +1,4 @@
-import { json, fetchMultiple, jsonMultiple, unique } from 'utils'
+import { fetchMultiple, jsonMultiple, unique } from 'utils'
 import { getAuth } from './auth'
 import { getThread } from './thread'
 
@@ -17,7 +17,7 @@ export const getCommentIDs = (
   getComments(subreddit, threadID, commentID)
     .then(comments => handleComments(comments, subreddit, threadID, commentID, results))
     .then(() => debug(results))
-    .then(() => results.ids)
+    .then(() => unique(results.ids))
 )
 
 const getComments = (subreddit, threadID, commentID) => (

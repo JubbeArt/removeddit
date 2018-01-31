@@ -1,10 +1,9 @@
-import { json, toBase10, toBase36 } from 'utils'
+import { json, toBase10, toBase36, chunk, flatten } from 'utils'
 
 const baseURL = 'https://elastic.pushshift.io'
 const threadURL = `${baseURL}/rs/submissions/_search?source=`
 const commentURL = `${baseURL}/rc/comments/_search?source=`
 const commentIDsURL = 'https://api.pushshift.io/reddit/submission/comment_ids/'
-
 
 export const getCommentIDs = threadID => (
   fetch(commentIDsURL + threadID)
@@ -32,28 +31,35 @@ export const getThread = threadID => {
   )
 }
 
-// getComments (handle more than 100, try 50, 25 etc....)
-export const test = threadID => {
+export const getComments = commentIDs => (
+  Promise.all(chunk(commentIDs, 100).map(fetchComments)).then(flatten)
+)
+
+const fetchComments = commentIDs => {
   const elasticQuery = {
     query: {
-      term: {
-        link_id: toBase10(threadID),
+      ids: {
+        values: commentIDs.map(toBase10),
       },
     },
-    size: 10000,
+    _source: [
+      'author', 'body', 'created_utc', 'parent_id', 'score',
+    ],
   }
 
   return (
     fetch(commentURL + JSON.stringify(elasticQuery))
       .then(json)
-      .then(results => {
-        results.hits.hits.map(result => {
-          result._source.link_id = toBase36(result._source.link_id)
-          result._source.parent_id = toBase36(result._source.parent_id)
-          result._source.id = toBase36(result._id)
+      .then(jsonData => jsonData.hits.hits)
+      .then(comments => comments.map(comment => {
+        comment._source.id = toBase36(comment._id)
 
-          return result._source
-        })
-      })
+        if (!comment._source.parent_id) {
+          console.log('MISSING PARENT ID')
+        }
+
+        comment._source.parent_id = toBase36(comment._source.parent_id)
+        return comment._source
+      }))
   )
 }
