@@ -1,25 +1,5 @@
-export { getThread, extractPost } from './thread'
+export { getPost } from './thread'
 export { getCommentIDs } from './comment'
-
-//       return HandleIDs.morechildren()
-//       .catch(function(error){
-//         return Promise.reject("Could not get comments from Reddit (moreChildren)");
-//       });
-//     })
-//     .then(function(){
-//       return Promise.all(_.map(_.uniq(Comments.countinuethread), function(id) {
-//         return fetch(URLs.thread+"/_/"+id.split("_")[1], Reddit.init)
-//         .then(Fetch2.json)
-//         .catch(function(error){ return Promise.reject("Could not get comments from Reddit (continueThisThread)") })
-//       }))
-//       .catch(function(error){
-//         return Promise.reject("Could not get comments from Reddit (continueThisThread)");
-//       });
-//     })
-//     .then(function(smallerThreads){
-//       _.forEach(smallerThreads, function(thread){
-//         HandleIDs.normal(thread);
-//       })
 //       Status.loading("Getting removed comments...");
 //       HandleIDs.removed();
 //       ThreadHTML.createCommentInfo(Comments.removed.length);
@@ -50,7 +30,6 @@ export { getCommentIDs } from './comment'
 // // ------------------------------------------------------------------------------
 // var Comments = (function() {
 //   var totalComments;
-//   var lookup = {};
 //   var toBeCreated = [];
 
 //   var getParentComments = function(toLookup){
@@ -100,16 +79,10 @@ export { getCommentIDs } from './comment'
 
 //   };
 
-// return {
-//   ids: [], // The comments we found
-//   morechildren: [],
-//   countinuethread: [],
-
 //   allIDs: [], // All the comments that we were suppose to find
 //   removed: [],
 //   deleted: [],
 //   toBeCreated: toBeCreated,
-//   lookup: lookup,
 
 //   getTotalComments: function() { return totalComments; },
 //   setTotalComments: function(total) { totalComments = total; },
@@ -151,30 +124,6 @@ export { getCommentIDs } from './comment'
 //   }
 // }})();
 
-
-// // ------------------------------------------------------------------------------
-// // ----------------- Handle comments from different requests --------------------
-// // ------------------------------------------------------------------------------
-//   var morechildren = function(){
-//     return Promise.all(_.map(_.uniq(Comments.morechildren), function(idArray){
-//       return Fetch2.multiple(URLs.format(URLs.moreChildren, idArray), Reddit.init);
-//     }))
-//     .then(function(responseArrays){
-//       Comments.morechildren.length = 0;
-//       _.forEach(responseArrays, function(responseArray){
-//         _.forEach(responseArray, function(response){
-//           _.forEach(response.jquery[10][3][0], function(comment){
-//             Extract.normal(comment);
-//           })
-//         });
-//       });
-//     }).then(function(){
-//       if(Comments.morechildren.length !== 0) {
-//         return morechildren();
-//       }
-//     });
-//   };
-
 //   var removed = function(){
 //     Comments.removed = _.difference(Comments.allIDs, Comments.ids);
 
@@ -194,12 +143,6 @@ export { getCommentIDs } from './comment'
 //     Comments.removed = _.uniq(Comments.removed);
 //   };
 
-//   return {
-//     normal: normal,
-//     morechildren: morechildren,
-//     removed: removed
-//   };
-// })();
 
 // // ------------------------------------------------------------------------------
 // // ---------------------------- Generating HTML ---------------------------------

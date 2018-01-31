@@ -28,23 +28,26 @@ export default class Thread extends React.Component {
     let pushshiftCommentIDs
 
     Promise.all([
-      // Get thread from reddit
-      getThread(subreddit, threadID)
-        .then(extractHead)
-        .then(thread => {
-          this.setState({ thread })
 
-          // Fetch the thread from pushshift if it was deleted/removed
-          if (isDeleted(thread.selftext)) {
-            getRemovedThread(threadID)
-              .then(removedThread => {
-                removedThread.removed = true
-                this.setState({ thread: removedThread })
-              })
-          }
-        })
-        // Get comment ids from reddit
-        .then(() => getCommentIDs(subreddit, threadID)),
+
+      // OUTDATED
+      // Get thread from reddit
+      // getThread(subreddit, threadID)
+      //   .then(extractHead)
+      //   .then(thread => {
+      //     this.setState({ thread })
+
+      //     // Fetch the thread from pushshift if it was deleted/removed
+      //     if (isDeleted(thread.selftext)) {
+      //       getRemovedThread(threadID)
+      //         .then(removedThread => {
+      //           removedThread.removed = true
+      //           this.setState({ thread: removedThread })
+      //         })
+      //     }
+      //   })
+      //   // Get comment ids from reddit
+      //   .then(() => getCommentIDs(subreddit, threadID)),
 
       // Get comment ids from pushshift
       getAllCommentIDs(threadID)

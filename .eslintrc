@@ -38,7 +38,10 @@
                 ]
             }
         ],
-        "jsx-quotes": "off",
+        "jsx-quotes": [
+            "error", 
+            "prefer-single"
+        ],
         "max-len": "warn",
         "no-param-reassign": "warn",
         "no-plusplus": [
@@ -54,6 +57,11 @@
         "react/jsx-filename-extension": "off",
         "react/no-danger": "off",
         "react/prop-types": "off",
-        "semi": "off"
+        "semi": [
+            "error",
+            "never"
+        ],
+        "no-use-before-define": "off",
+        "import/first": "off"
     }
 }
