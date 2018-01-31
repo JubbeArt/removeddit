@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default (props) => {
-  let pageination = <></>
+  let pageination = <React.Fragment />
 
   for (let i = props.start; i <= props.end; i++) {
     if (props.currentPage === i) {
@@ -11,13 +11,14 @@ export default (props) => {
     }
   }
   return (
-    <div id="pagination">
+    <div id='pagination'>
       Page:
       {props.start > 1 &&
-      <>
+      <React.Fragment>
         <a href={`${props.url + 1}`}>1</a>
         <span> ...</span>
-      </>}
+      </React.Fragment>
+    }
       {pageination}
     </div>
   )

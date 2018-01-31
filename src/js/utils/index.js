@@ -8,7 +8,11 @@ export const flatten = arr => arr.reduce(
   []
 )
 
+// Same as: array => Set => array
 export const unique = arr => arr.filter((value, index) => arr.indexOf(value) === index)
+
+// Everything in arr1 that is not in arr2
+export const difference = (arr1, arr2) => arr1.filter(x => !arr2.includes(x))
 
 // Take on big array and split it into an array of chunks with correct size
 export const chunk = (arr, size) => {

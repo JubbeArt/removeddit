@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-var app = (function(){
-return {
-	loadPage: function() {
+let app = (function () {
+  return {
+    loadPage() {
 		Status.loading("Loading subreddit...");
 		document.title = Reddit.isAll ? "all subreddits" : Reddit.subreddit;
 		HTML.main.innerHTML += _.templates.subredditInfo({subreddit: Reddit.subreddit, time: Vars.time});
@@ -30,21 +30,7 @@ return {
 			Status.success();		
 		})
 		.catch(Fetch2.handleError);
-	}
-};
-})();
+	},
+  }
+}());
 
-var Vars = (function(){
-	return {
-		postPerPage: 50,
-		time: _.defaultTo(GetVars.get("t"), Reddit.isAll ? "12hour" : "day"),
-		page: _.defaultTo(_.parseInt(GetVars.get("page")), 1),
-		reload: function(event) {
-			document.location.href = document.location.href.split("?")[0] + "?t=" + event.value;
-		}
-	};
-})();
-
-if(isSupported) {
-	app.loadPage();
-}
