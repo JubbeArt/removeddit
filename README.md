@@ -1,12 +1,24 @@
 # Removeddit
-[Removeddit](https://removeddit.com) is a site for viewing removed and deleted comments/posts from [Reddit](https://www.reddit.com).
-Usage: go to any reddit thread and change the `reddit` in the URL to `removeddit`.
-The site will only display the removed comments and thier parents, not the full thread.
+[Removeddit](https://removeddit.com) is a site for viewing removed stuff from [Reddit](https://www.reddit.com).
+Just go to a reddit thread and change the `reddit` in the URL to `removeddit` to see all removed comments.
 
-This is a done by comparing the comments found from Reddit API and comments from [Jason Baumgartners](https://pushshift.io/) [Pushshift Reddit API](https://github.com/pushshift/api). The frontend is written with a fuckton of promises and some [Lodash](https://lodash.com/). You can use this code however you want, as long as it's non-commercial (and preferably open source).
+This is a done by comparing the comments found from Reddit API and comments being stored in [Jason Baumgartners](https://pushshift.io/) [Pushshift Reddit API](https://github.com/pushshift/api). The frontend is written in react with redux for state management. There's also a seperate [backend](https://github.com/JubbeArt/removeddit-api) used for storing removed threads and banned subreddits.
 
-# The "I just want to get this shit running" guide
+# Development
+```
+sudo git clone https://github.com/JubbeArt/removeddit.git && cd removeddit
+sudo apt install npm
+npm install
+npm start
+```
+
+Visit http://localhost:8080 and make sure the site is running. Subreddits and the banned subreddit list will not work unless you also set up a backend. This might change in the future if I decide to open up my backend on removeddit.com/api. Contact me if you want this feature and we can discuss it. 
+
+# Production
+**THIS WILL BE UPDATED LATER WHEN THE PROJECT IN REWRITTEN**
+
 Using [Ubuntu 16.04](http://releases.ubuntu.com/16.04/) and [nginx](https://www.nginx.com/resources/wiki/)
+
 ```
 sudo git clone https://github.com/JubbeArt/removeddit.git /var/www/removeddit
 sudo apt install -y nginx
