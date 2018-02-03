@@ -1,7 +1,7 @@
 import { json, toBase10, toBase36, chunk, flatten } from 'utils'
 
 const baseURL = 'https://elastic.pushshift.io'
-const threadURL = `${baseURL}/rs/submissions/_search?source=`
+const postURL = `${baseURL}/rs/submissions/_search?source=`
 const commentURL = `${baseURL}/rc/comments/_search?source=`
 const commentIDsURL = 'https://api.pushshift.io/reddit/submission/comment_ids/'
 
@@ -11,7 +11,7 @@ export const getCommentIDs = threadID => (
     .then(results => results.data)
 )
 
-export const getThread = threadID => {
+export const getPost = threadID => {
   const elasticQuery = {
     query: {
       term: {
@@ -21,12 +21,12 @@ export const getThread = threadID => {
   }
 
   return (
-    fetch(threadURL + JSON.stringify(elasticQuery))
+    fetch(postURL + JSON.stringify(elasticQuery))
       .then(json)
       .then(jsonData => jsonData.hits.hits[0]._source)
-      .then(thread => {
-        thread.id = toBase36(thread.id)
-        return thread
+      .then(post => {
+        post.id = toBase36(post.id)
+        return post
       })
   )
 }
@@ -55,7 +55,7 @@ const fetchComments = commentIDs => {
         comment._source.id = toBase36(comment._id)
 
         if (!comment._source.parent_id) {
-          console.log('MISSING PARENT ID')
+          console.error('MISSING PARENT ID')
         }
 
         comment._source.parent_id = toBase36(comment._source.parent_id)

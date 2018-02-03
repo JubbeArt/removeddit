@@ -8,10 +8,10 @@ import {
 import Header from 'components/Header'
 import { About, Thread, Subreddit } from 'pages'
 
-export default props => (
+export default () => (
   <BrowserRouter basename={__dirname}>
     <React.Fragment>
-      <Header status={props.status} />
+      <Header />
       <div className='main'>
         <Switch>
           <Route exact path='/' component={About} />

@@ -98,3 +98,8 @@ const handleMoreChildren = (threadID, commentID, results) => (
 const debug = results => {
   console.log(JSON.parse(JSON.stringify(results)))
 }
+
+// GET REMAINING COMMENTS
+export const getRemainingComments = commentIDs => {
+
+}

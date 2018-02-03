@@ -1,23 +1,24 @@
 import React from 'react'
-import ThreadHead from 'components/ThreadHead'
+import Post from 'components/Post'
 import CommentSection from 'components/CommentSection'
 import {
-  getThread,
+  getPost,
   getCommentIDs,
-  extractHead,
-} from 'reddit'
+} from 'api/reddit'
 import {
-  getThread as getRemovedThread,
+  getPost as getRemovedPost,
   getCommentIDs as getAllCommentIDs,
-} from 'pushshift'
+  getComments as getRemovedComments,
+} from 'api/pushshift'
 import { isDeleted } from 'utils'
+import { difference } from '../utils/index'
 
 export default class Thread extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      thread: {},
+      post: {},
       comments: [],
     }
   }
@@ -25,44 +26,42 @@ export default class Thread extends React.Component {
   componentDidMount() {
     const { subreddit, threadID } = this.props.match.params
     console.timeEnd('scripts loaded')
-    let pushshiftCommentIDs
 
     Promise.all([
-
-
-      // OUTDATED
       // Get thread from reddit
-      // getThread(subreddit, threadID)
-      //   .then(extractHead)
-      //   .then(thread => {
-      //     this.setState({ thread })
-
-      //     // Fetch the thread from pushshift if it was deleted/removed
-      //     if (isDeleted(thread.selftext)) {
-      //       getRemovedThread(threadID)
-      //         .then(removedThread => {
-      //           removedThread.removed = true
-      //           this.setState({ thread: removedThread })
-      //         })
-      //     }
-      //   })
-      //   // Get comment ids from reddit
-      //   .then(() => getCommentIDs(subreddit, threadID)),
+      getPost(subreddit, threadID)
+        .then(post => {
+          this.setState({ post })
+          // Fetch the thread from pushshift if it was deleted/removed
+          if (isDeleted(post.selftext)) {
+            // getRemovedPost(threadID)
+            //   .then(removedPost => {
+            //     removedPost.removed = true
+            //     this.setState({ post: removedPost })
+            //   })
+          }
+        })
+      // Get comment ids from reddit
+        .then(() => getCommentIDs(subreddit, threadID)),
 
       // Get comment ids from pushshift
-      getAllCommentIDs(threadID)
-        .then(commentIDs => { pushshiftCommentIDs = commentIDs }),
+      getAllCommentIDs(threadID),
     ])
-      .then(() => {
-        // .then(console.log)
+      .then(results => {
+        const foundIDs = results[0]
+        const allIDs = results[1]
+
+        const removedIDs = difference(allIDs, foundIDs)
+        // Get removed comments from pushshift
+        return getRemovedComments(removedIDs)
       })
   }
 
   render() {
     return (
       <div>
-        <ThreadHead {...this.state.thread} />
-        <CommentSection root={this.state.thread.id} comments={this.state.comments} />
+        <Post {...this.state.post} />
+        <CommentSection root={this.state.post.id} comments={this.state.comments} />
       </div>
     )
   }
