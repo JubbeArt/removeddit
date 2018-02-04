@@ -14,8 +14,3 @@ export const fetchComments = (commentIDs, auth) => (
     .then(results => results.data.children)
     .then(commentsData => commentsData.map(commentData => commentData.data))
 )
-
-const debug = results => {
-  console.log(JSON.parse(JSON.stringify(results)))
-}
-

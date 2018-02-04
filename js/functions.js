@@ -1,17 +1,3 @@
-
-// HTML parsing
-const HTML = (function () {
-  return {
-    parse(htmlString) {
-      const tmpDiv = document.createElement('div')
-      tmpDiv.innerHTML = htmlString
-      return tmpDiv.childNodes.length === 0 ? '' : tmpDiv.childNodes[0].nodeValue
-    },
-    main: document.getElementById('main'),
-  }
-}())
-
-
 // UTC time handling, very usefull when dealing with elasticsearch
 var Time = (function () {
   return {

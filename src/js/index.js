@@ -13,31 +13,3 @@ import '../sass/main.sass'
 //   </Provider>,
 //   document.getElementById('app')
 // )
-import { getComments } from 'api/reddit'
-import { getComments as getAllComments } from 'api/pushshift'
-
-getAllComments('6z1hch')
-  // .then(comments => comments.filter((val, i) => i < 100))
-  .then(comments => {
-    const ids = comments.map(comment => comment.id)
-    // push to state
-    return getComments(ids)
-  })
-//
-// .then(getComments)
-  .then(redditComments => {
-    const removed = []
-    const deleted = []
-
-    redditComments.forEach(comment => {
-      if (comment.body === '[removed]') {
-        removed.push(comment.id)
-      } else if (comment.body === '[deleted]') {
-        deleted.push(comment.id)
-      }
-    })
-
-    console.log('deleted', deleted)
-    console.log('removed', removed)
-  })
-
