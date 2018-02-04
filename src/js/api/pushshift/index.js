@@ -44,11 +44,13 @@ export const getComments = threadID => {
       .then(comments => comments.map(comment => {
         comment._source.id = toBase36(comment._id)
 
+        // Missing parent id === direct reply to thread
         if (!comment._source.parent_id) {
-          console.error('MISSING PARENT ID')
+          comment._source.parent_id = threadID
+        } else {
+          comment._source.parent_id = toBase36(comment._source.parent_id)
         }
 
-        comment._source.parent_id = toBase36(comment._source.parent_id)
         return comment._source
       }))
   )

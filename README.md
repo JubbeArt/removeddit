@@ -5,6 +5,8 @@ Just go to a reddit thread and change the `reddit` in the URL to `removeddit` to
 This is a done by comparing the comments found from Reddit API and comments being stored in [Jason Baumgartners](https://pushshift.io/) [Pushshift Reddit API](https://github.com/pushshift/api). The frontend is written in react with redux for state management. There's also a seperate [backend](https://github.com/JubbeArt/removeddit-api) used for storing removed threads and banned subreddits.
 
 # Development
+Get lastest version of [Node](https://nodejs.org/en/download/current/)
+
 ```
 sudo git clone https://github.com/JubbeArt/removeddit.git && cd removeddit
 npm install

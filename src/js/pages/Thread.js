@@ -50,14 +50,18 @@ export default class Thread extends React.Component {
         const pushshiftComments = results[1]
         this.setState({ pushshiftComments })
 
+        // Extract ids from pushshift response
         const ids = pushshiftComments.map(comment => comment.id)
-
+        console.log('pushshift:', ids.length)
+        // Get all the comments from reddit
         return getRedditComments(ids)
       })
       .then(redditComments => {
+        console.log('reddit:', redditComments.length)
         const removed = []
         const deleted = []
 
+        // Check what as removed / deleted according to reddit
         redditComments.forEach(comment => {
           if (isRemoved(comment.body)) {
             removed.push(comment.id)
@@ -76,11 +80,13 @@ export default class Thread extends React.Component {
   }
 
   render() {
+    console.log('loading', this.state.loadingComments)
+
     return (
       <div>
         <Post {...this.state.post} />
         {
-          this.state.loadingComments &&
+          !this.state.loadingComments &&
           <CommentSection
             root={this.state.post.id}
             comments={this.state.pushshiftComments}

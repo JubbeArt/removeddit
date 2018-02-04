@@ -83,3 +83,28 @@ export const prettyScore = score => {
 
   return score
 }
+
+// Sorting for comments
+export const topSort = (commentA, commentB) => {
+  if (commentA.score > commentB.score) return -1
+  if (commentA.score < commentB.score) return 1
+  return 0
+}
+
+export const bottomSort = (commentA, commentB) => {
+  if (commentA.score < commentB.score) return -1
+  if (commentA.score > commentB.score) return 1
+  return 0
+}
+
+export const newSort = (commentA, commentB) => {
+  if (commentA.created_utc < commentB.created_utc) return -1
+  if (commentA.created_utc > commentB.created_utc) return 1
+  return 0
+}
+
+export const oldSort = (commentA, commentB) => {
+  if (commentA.created_utc < commentB.created_utc) return -1
+  if (commentA.created_utc > commentB.created_utc) return 1
+  return 0
+}
