@@ -2,8 +2,15 @@ import React from 'react'
 import Comment from 'components/Comment'
 import CommentInfo from 'components/CommentInfo'
 import SortBy from 'components/SortBy'
-import { topSort, bottomSort, newSort, oldSort } from 'utils'
-
+import { connect } from 'react-redux'
+import {
+  SORT_TOP, SORT_BOTTOM, SORT_NEW, SORT_OLD,
+  SHOW_ALL, SHOW_REMOVED_DELETED, SHOW_REMOVED, SHOW_DELETED,
+} from 'state'
+import {
+  topSort, bottomSort, newSort, oldSort,
+  showRemovedAndDeleted, showRemoved, showDeleted,
+} from 'utils'
 
 const arrayToLookup = (commentList, removed, deleted) => {
   const lookup = {}
@@ -51,10 +58,30 @@ const sortCommentTree = (comments, sortFunction) => {
   })
 }
 
+const filerCommentTree = (comments, filterFunction) => {
+  // comments.forEach()
+}
+
 const commentSection = (props) => {
   const commentTree = unflatten(props.comments, props.root, props.removed, props.deleted)
-  sortCommentTree(commentTree, newSort)// props.comments.sort(topSort)
 
+  if (props.show === SHOW_REMOVED_DELETED) {
+    filerCommentTree(commentTree, showRemovedAndDeleted)
+  } else if (props.show === SHOW_REMOVED) {
+    filerCommentTree(commentTree, showRemoved)
+  } else if (props.show === SHOW_DELETED) {
+    filerCommentTree(commentTree, showDeleted)
+  }
+
+  if (props.sort === SORT_TOP) {
+    sortCommentTree(commentTree, topSort)
+  } else if (props.sort === SORT_BOTTOM) {
+    sortCommentTree(commentTree, bottomSort)
+  } else if (props.sort === SORT_NEW) {
+    sortCommentTree(commentTree, newSort)
+  } else if (props.sort === SORT_OLD) {
+    sortCommentTree(commentTree, oldSort)
+  }
 
   console.log('COMMENT SECTION RENDERED')
   console.log(props.root)
@@ -77,5 +104,10 @@ const commentSection = (props) => {
   )
 }
 
+const mapStateToProps = state => ({
+  sort: state.commentSection.sort,
+  show: state.commentSection.show,
+})
 
-export default commentSection
+
+export default connect(mapStateToProps)(commentSection)

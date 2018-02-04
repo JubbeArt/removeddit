@@ -98,8 +98,8 @@ export const bottomSort = (commentA, commentB) => {
 }
 
 export const newSort = (commentA, commentB) => {
-  if (commentA.created_utc < commentB.created_utc) return -1
-  if (commentA.created_utc > commentB.created_utc) return 1
+  if (commentA.created_utc > commentB.created_utc) return -1
+  if (commentA.created_utc < commentB.created_utc) return 1
   return 0
 }
 
@@ -108,3 +108,8 @@ export const oldSort = (commentA, commentB) => {
   if (commentA.created_utc > commentB.created_utc) return 1
   return 0
 }
+
+// Filter comments
+export const showRemoved = comment => isRemoved(comment.body)
+export const showDeleted = comment => isDeleted(comment.body)
+export const showRemovedAndDeleted = comment => isRemoved(comment.body) || isDeleted(comment.body)
