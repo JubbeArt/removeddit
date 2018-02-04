@@ -41,6 +41,11 @@ const unflatten = (comments, root, removed, deleted) => {
     if (parentID === root) {
       commentTree.push(comment)
     } else {
+      if (lookup[parentID] === undefined) {
+        console.error('MISSING PARENT ID:', parentID, 'for comment', comment)
+        return
+      }
+
       lookup[parentID].replies.push(comment)
     }
   })
@@ -58,19 +63,38 @@ const sortCommentTree = (comments, sortFunction) => {
   })
 }
 
-const filerCommentTree = (comments, filterFunction) => {
-  // comments.forEach()
+const filterCommentTree = (comments, filterFunction) => {
+  if (comments.length === 0) {
+    return false
+  }
+
+  let hasOkComment = false
+
+  // Reverse for loop since we are removing stuff
+  for (let i = comments.length - 1; i >= 0; i--) {
+    const comment = comments[i]
+    const isRepliesOk = filterCommentTree(comment.replies, filterFunction)
+    const isCommentOk = filterFunction(comment)
+
+    if (!isRepliesOk && !isCommentOk) {
+      comments.splice(i, 1)
+    } else {
+      hasOkComment = true
+    }
+  }
+
+  return hasOkComment
 }
 
 const commentSection = (props) => {
   const commentTree = unflatten(props.comments, props.root, props.removed, props.deleted)
 
   if (props.show === SHOW_REMOVED_DELETED) {
-    filerCommentTree(commentTree, showRemovedAndDeleted)
+    filterCommentTree(commentTree, showRemovedAndDeleted)
   } else if (props.show === SHOW_REMOVED) {
-    filerCommentTree(commentTree, showRemoved)
+    filterCommentTree(commentTree, showRemoved)
   } else if (props.show === SHOW_DELETED) {
-    filerCommentTree(commentTree, showDeleted)
+    filterCommentTree(commentTree, showDeleted)
   }
 
   if (props.sort === SORT_TOP) {
@@ -84,8 +108,7 @@ const commentSection = (props) => {
   }
 
   console.log('COMMENT SECTION RENDERED')
-  console.log(props.root)
-  console.log(commentTree)
+
   return (
     <div>
       <CommentInfo

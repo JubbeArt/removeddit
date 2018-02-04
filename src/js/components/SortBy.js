@@ -7,11 +7,12 @@ import {
 } from 'state'
 import { connect } from 'react-redux'
 
+
 const sortBy = props => (
   <div id='comment-sort'>
   sorted by:
     <span className='space' />
-    <select onChange={e => props.setSort(e.target.value)}>
+    <select onChange={e => props.setSort(e.target.value)} defaultValue={props.sort}>
       <option value={SORT_TOP}>top</option>
       <option value={SORT_BOTTOM}>bottom</option>
       <option value={SORT_NEW}>new</option>
@@ -20,7 +21,7 @@ const sortBy = props => (
     <span className='space' />
   show:
     <span className='space' />
-    <select onChange={e => props.setShow(e.target.value)}>
+    <select onChange={e => props.setShow(e.target.value)} defaultValue={props.show}>
       <option value={SHOW_ALL}>All comments</option>
       <option value={SHOW_REMOVED_DELETED}>Removed and deleted</option>
       <option value={SHOW_REMOVED}>Removed</option>

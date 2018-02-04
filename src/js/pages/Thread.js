@@ -48,13 +48,28 @@ export default class Thread extends React.Component {
     ])
       .then(results => {
         const pushshiftComments = results[1]
-        this.setState({ pushshiftComments })
+
 
         // Extract ids from pushshift response
         const ids = pushshiftComments.map(comment => comment.id)
         console.log('pushshift:', ids.length)
+
         // Get all the comments from reddit
-        return getRedditComments(ids)
+        return (
+          getRedditComments(ids)
+            .then(redditComments => {
+              pushshiftComments.forEach(comment => {
+                // Replace pushshift score with reddit (its usually more accurate)
+                const redditComment = redditComments.find(rComment => rComment.id === comment.id)
+                if (redditComment !== undefined) {
+                  comment.score = redditComment.score
+                }
+              })
+
+              this.setState({ pushshiftComments })
+              return redditComments
+            })
+        )
       })
       .then(redditComments => {
         console.log('reddit:', redditComments.length)
@@ -80,8 +95,6 @@ export default class Thread extends React.Component {
   }
 
   render() {
-    console.log('loading', this.state.loadingComments)
-
     return (
       <div>
         <Post {...this.state.post} />

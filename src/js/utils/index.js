@@ -84,6 +84,14 @@ export const prettyScore = score => {
   return score
 }
 
+// Retrieve, store and delete stuff in the local storage
+export const get = (key, defaultValue) => (
+  localStorage.getItem(key) !== null ? JSON.parse(localStorage.getItem(key)) : defaultValue
+)
+
+export const put = (key, value) => localStorage.setItem(key, JSON.stringify(value))
+
+
 // Sorting for comments
 export const topSort = (commentA, commentB) => {
   if (commentA.score > commentB.score) return -1
@@ -110,6 +118,6 @@ export const oldSort = (commentA, commentB) => {
 }
 
 // Filter comments
-export const showRemoved = comment => isRemoved(comment.body)
-export const showDeleted = comment => isDeleted(comment.body)
-export const showRemovedAndDeleted = comment => isRemoved(comment.body) || isDeleted(comment.body)
+export const showRemoved = comment => comment.removed === true
+export const showDeleted = comment => comment.deleted === true
+export const showRemovedAndDeleted = comment => comment.removed === true || comment.deleted === true
