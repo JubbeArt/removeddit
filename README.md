@@ -7,7 +7,6 @@ This is a done by comparing the comments found from Reddit API and comments bein
 # Development
 ```
 sudo git clone https://github.com/JubbeArt/removeddit.git && cd removeddit
-sudo apt install npm
 npm install
 npm start
 ```

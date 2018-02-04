@@ -62,6 +62,7 @@
             "never"
         ],
         "no-use-before-define": "off",
-        "import/first": "off"
+        "import/first": "off",
+        "prefer-destructuring": "off"
     }
 }

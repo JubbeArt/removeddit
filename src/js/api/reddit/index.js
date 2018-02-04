@@ -1,5 +1,5 @@
 export { getPost } from './thread'
-export { getCommentIDs } from './comment'
+export { getComments } from './comment'
 //       Status.loading("Getting removed comments...");
 //       HandleIDs.removed();
 //       ThreadHTML.createCommentInfo(Comments.removed.length);

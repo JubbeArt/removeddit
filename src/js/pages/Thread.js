@@ -3,15 +3,13 @@ import Post from 'components/Post'
 import CommentSection from 'components/CommentSection'
 import {
   getPost,
-  getCommentIDs,
+  getComments as getRedditComments,
 } from 'api/reddit'
 import {
   getPost as getRemovedPost,
-  getCommentIDs as getAllCommentIDs,
-  getComments as getRemovedComments,
+  getComments as getPushshiftComments,
 } from 'api/pushshift'
-import { isDeleted } from 'utils'
-import { difference } from '../utils/index'
+import { isDeleted, isRemoved } from 'utils'
 
 export default class Thread extends React.Component {
   constructor(props) {
@@ -19,7 +17,11 @@ export default class Thread extends React.Component {
 
     this.state = {
       post: {},
-      comments: [],
+      pushshiftComments: [],
+      redditComments: [],
+      removed: [],
+      deleted: [],
+      loadingComments: true,
     }
   }
 
@@ -34,26 +36,42 @@ export default class Thread extends React.Component {
           this.setState({ post })
           // Fetch the thread from pushshift if it was deleted/removed
           if (isDeleted(post.selftext)) {
-            // getRemovedPost(threadID)
-            //   .then(removedPost => {
-            //     removedPost.removed = true
-            //     this.setState({ post: removedPost })
-            //   })
+            getRemovedPost(threadID)
+              .then(removedPost => {
+                removedPost.removed = true
+                this.setState({ post: removedPost })
+              })
           }
-        })
-      // Get comment ids from reddit
-        .then(() => getCommentIDs(subreddit, threadID)),
-
+        }),
       // Get comment ids from pushshift
-      getAllCommentIDs(threadID),
+      getPushshiftComments(threadID),
     ])
       .then(results => {
-        const foundIDs = results[0]
-        const allIDs = results[1]
+        const pushshiftComments = results[1]
+        this.setState({ pushshiftComments })
 
-        const removedIDs = difference(allIDs, foundIDs)
-        // Get removed comments from pushshift
-        return getRemovedComments(removedIDs)
+        const ids = pushshiftComments.map(comment => comment.id)
+
+        return getRedditComments(ids)
+      })
+      .then(redditComments => {
+        const removed = []
+        const deleted = []
+
+        redditComments.forEach(comment => {
+          if (isRemoved(comment.body)) {
+            removed.push(comment.id)
+          } else if (isDeleted(comment.body)) {
+            deleted.push(comment.id)
+          }
+        })
+
+        this.setState({
+          removed,
+          deleted,
+          redditComments,
+          loadingComments: false,
+        })
       })
   }
 
@@ -61,7 +79,15 @@ export default class Thread extends React.Component {
     return (
       <div>
         <Post {...this.state.post} />
-        <CommentSection root={this.state.post.id} comments={this.state.comments} />
+        {
+          this.state.loadingComments &&
+          <CommentSection
+            root={this.state.post.id}
+            comments={this.state.pushshiftComments}
+            removed={this.state.removed}
+            deleted={this.state.deleted}
+          />
+        }
       </div>
     )
   }
