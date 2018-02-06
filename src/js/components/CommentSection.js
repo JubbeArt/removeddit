@@ -50,6 +50,11 @@ const unflatten = (comments, root, removed, deleted) => {
     }
   })
 
+  if (lookup[root] !== undefined) {
+    lookup[root].replies = commentTree
+    return [lookup[root]]
+  }
+
   return commentTree
 }
 

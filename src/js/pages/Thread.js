@@ -95,13 +95,19 @@ export default class Thread extends React.Component {
   }
 
   render() {
+    let root = this.state.post.id
+
+    if (this.props.match.params.commentID !== undefined) {
+      root = this.props.match.params.commentID
+    }
+
     return (
       <div>
         <Post {...this.state.post} />
         {
           !this.state.loadingComments &&
           <CommentSection
-            root={this.state.post.id}
+            root={root}
             comments={this.state.pushshiftComments}
             removed={this.state.removed}
             deleted={this.state.deleted}

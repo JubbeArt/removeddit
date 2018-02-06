@@ -38,3 +38,18 @@ export const getThread = (subreddit, threadID, commentID = '') => {
       })
   )
 }
+
+
+export const getThreads = threadIDs => {
+  const threadString = threadIDs.map(id => `t3_${id}`).join()
+
+  return (
+    getAuth()
+      .then(auth => fetch(`https://oauth.reddit.com/api/info?id=${threadString}`, auth))
+      .then(json)
+      .then(response => {
+        const threads = response.data.children
+        return threads.map(threadData => threadData.data)
+      })
+  )
+}

@@ -15,22 +15,24 @@ npm start
 
 Visit http://localhost:8080 and make sure the site is running. Subreddits and the banned subreddit list will not work unless you also set up a backend. This might change in the future if I decide to open up my backend on removeddit.com/api. Contact me if you want this feature and we can discuss it. 
 
-# Production
+# Production (basic setup)
 **THIS WILL BE UPDATED LATER WHEN THE PROJECT IN REWRITTEN**
 
 Using [Ubuntu 16.04](http://releases.ubuntu.com/16.04/) and [nginx](https://www.nginx.com/resources/wiki/)
 
 ```
-sudo git clone https://github.com/JubbeArt/removeddit.git /var/www/removeddit
+cd /srv
+sudo git clone https://github.com/JubbeArt/removeddit.git /srv/removeddit/site
+chown -R www-data:www-data /srv/removeddit
 sudo apt install -y nginx
-sudo cp /var/www/removeddit/server-config/basic /etc/nginx/sites-available/default
+sudo cp /srv/removeddit/site/production/nginx-basic /etc/nginx/sites-available/default
 ```
 
 Create a reddit app [here](https://www.reddit.com/prefs/apps/), select **installed app**. For "redirect url" it doesn't really matter in this case, you can pick `http://localhost`.
 
 Copy the **client ID** for your app set it as a variable in `id.js`, e.g. with 
 ```
-sudo nano /var/www/removeddit/static/js/id.js
+sudo nano /srv/removeddit/site/..../id.js
 # Insert with ctrl-shift-v
 # Save with ctrl-o, exit with ctrl-x
 ```
@@ -57,7 +59,7 @@ In the same file you also want to change `gzip on` to `gzip off` (read more [her
 ## Nginx server config
 Copy the ssl config and create a soft link. Create folder for logs and also remove the default config
 ```
-sudo cp /var/www/removeddit/server-config/ssl /etc/nginx/sites-available/removeddit.com
+sudo cp /srv/removeddit/site/production/nginx-ssl /etc/nginx/sites-available/removeddit.com
 sudo ln -s /etc/nginx/sites-available/removeddit.com /etc/nginx/sites-enabled/removeddit.com
 sudo mkdir /var/log/nginx/removeddit
 sudo rm /etc/nginx/sites-enabled/default
@@ -77,13 +79,12 @@ sudo apt install -y python-certbot-nginx
 Copy the Let's Encrypt config file for our site 
 ```
 sudo mkdir /etc/letsencrypt/configs
-cp /var/www/removeddit/server-config/letsencrypt.conf /etc/letsencrypt/configs/removeddit.com.conf
+cp /srv/removeddit/site/production/letsencrypt.conf /etc/letsencrypt/configs/removeddit.com.conf
 ```
 
 In this config file change the domains and the email address for your own. The emails tells you when the certificates are close to expiring.
 
-This is when the webmasters start praying to God, for only He can deside the fate of the certbot. 
-Forgive me Father, for I have committed.
+Pray to God and do this
 ```
 sudo certbot --config /etc/letsencrypt/configs/removeddit.com.conf certonly
 ```
@@ -108,6 +109,6 @@ Add the following lines at the bottom
 30 4 * * * certbot renew --post-hook "systemctl reload nginx"
 ```
 
-Then just restart nginx and that should do it! 
+Then just restart nginx and that should do it!
 
 This guide was mostly written for myself, you learn a shitton writing guides, highly recommended. Hopefully you learned something too.

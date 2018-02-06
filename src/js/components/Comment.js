@@ -1,5 +1,5 @@
 import React from 'react'
-import { prettyScore, prettyDate, parse, sortComments } from 'utils'
+import { prettyScore, prettyDate, parse } from 'utils'
 
 const Comment = (props) => {
   let commentStyle = 'comment '
@@ -13,7 +13,7 @@ const Comment = (props) => {
   }
 
   const innerHTML = (props.body === '[removed]' && props.removed) ? '<p>[removed too quickly to be archived]</p>' : parse(props.body)
-  const permalink = `/r/${props.subreddit}/comments/${props.threadID}/_/${props.id}/`
+  const permalink = `/r/${props.subreddit}/comments/${props.link_id}/_/${props.id}/`
 
   return (
     <div id={props.id} className={commentStyle}>
