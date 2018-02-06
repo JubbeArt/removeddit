@@ -24,15 +24,13 @@ export default props => (
       </p>
       <p>
         Created by
-        <a href='https://github.com/JubbeArt/'>Jesper Wrang</a> and uses
-        <a href='https://pushshift.io/'>Jason Baumgartner</a> service for getting removed comments.
+        <a href='https://github.com/JubbeArt/'> Jesper Wrang </a> and uses
+        <a href='https://pushshift.io/'> Jason Baumgartner </a> service for getting removed comments.
       </p>
       <h2 className='todo'>TODO</h2>
       <ul>
         <li>Collapsing comments</li>
-        <li>Get removed selftext of thread</li>
-        <li>Subreddits!</li>
-        <li>Maybe for specific users  </li>
+        <li>Maybe for specific users </li>
       </ul>
       <h2 className='contact'>Links/Contact</h2>
       <p style={{ marginBottom: '8px' }}>For feedback and bug reports:</p>
