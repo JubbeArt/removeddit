@@ -54,8 +54,6 @@ add_header X-Content-Type-Options nosniff;
 add_header X-XSS-Protection "1; mode=block";
 ```
 
-In the same file you also want to change `gzip on` to `gzip off` (read more [here](https://github.com/h5bp/server-configs-nginx/issues/72)).
-
 ## Nginx server config
 Copy the ssl config and create a soft link. Create folder for logs and also remove the default config
 ```
