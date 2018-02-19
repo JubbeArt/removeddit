@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { prettyScore, prettyDate, parse, redditThumbnails, isDeleted } from 'utils'
 
 export default (props) => {
@@ -41,14 +42,14 @@ export default (props) => {
         <div className='thread-info'>
           submitted <span className='thread-time'>{prettyDate(props.created_utc)}</span> by&nbsp;
           <a className='thread-author author' href={userLink}>{props.author}</a>
-          &nbsp;to <a className='subreddit-link author' href={`/r/${props.subreddit}`}>/r/{props.subreddit}</a>
+          &nbsp;to <Link className='subreddit-link author' to={`/r/${props.subreddit}`}>/r/{props.subreddit}</Link>
         </div>
         {props.selftext &&
         <div className='thread-selftext user-text' dangerouslySetInnerHTML={{ __html: parse(props.selftext) }} />}
         <div className='total-comments'>
-          <a className='grey-link' href={props.permalink}>
+          <Link className='grey-link' to={props.permalink}>
             <b>{props.num_comments} comments</b>
-          </a>&nbsp;
+          </Link>&nbsp;
           <a className='grey-link' href={`https://www.reddit.com${props.permalink}`}>
             <b>reddit</b>
           </a>&nbsp;
