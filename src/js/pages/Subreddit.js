@@ -3,16 +3,8 @@ import { getRemovedThreadIDs } from 'api/removeddit'
 import { getThreads } from 'api/reddit'
 import Post from 'components/Post'
 
-const displaySubreddit = props => {
-  const subreddit = props.match.params.subreddit
-  if (subreddit === undefined) {
-    return 'all'
-  }
-  return subreddit
-}
-
 const getSubredditForAPI = props => {
-  const subreddit = props.match.params.subreddit
+  const { subreddit } = props.match.params
   if (subreddit === undefined) {
     return ''
   } else if (subreddit.toLowerCase() === 'all') {
@@ -45,16 +37,18 @@ export default class Subreddit extends React.Component {
   }
 
   render() {
-    const subreddit = `/r/${displaySubreddit(this.props)}`
+    const { subreddit = 'all' } = this.props.match.params
+    console.log(subreddit)
+    const subredditLink = `/r/${subreddit}`
 
     return (
       <React.Fragment>
         <div className='subreddit-box'>
-          <a href={subreddit} className='subreddit-title'>{subreddit}</a>
+          <a href={subredditLink} className='subreddit-title'>{subredditLink}</a>
           <span className='space' />
-          <a href={`https://www.reddit.com${subreddit}`} className='subreddit-title-link'>reddit</a>
+          <a href={`https://www.reddit.com${subredditLink}`} className='subreddit-title-link'>reddit</a>
           <span className='space' />
-          <a href={`https://snew.github.io${subreddit}`} className='subreddit-title-link'>ceddit</a>
+          <a href={`https://snew.github.io${subredditLink}`} className='subreddit-title-link'>ceddit</a>
         </div>
         {
         this.state.threads.map(thread => (

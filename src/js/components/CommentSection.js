@@ -92,6 +92,7 @@ const filterCommentTree = (comments, filterFunction) => {
 }
 
 const commentSection = (props) => {
+  console.time('render comment section')
   const commentTree = unflatten(props.comments, props.root, props.removed, props.deleted)
 
   if (props.show === SHOW_REMOVED_DELETED) {
@@ -111,8 +112,7 @@ const commentSection = (props) => {
   } else if (props.sort === SORT_OLD) {
     sortCommentTree(commentTree, oldSort)
   }
-
-  console.log('COMMENT SECTION RENDERED')
+  console.timeEnd('render comment section')
 
   return (
     <div>

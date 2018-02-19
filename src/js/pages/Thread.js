@@ -18,7 +18,6 @@ export default class Thread extends React.Component {
     this.state = {
       post: {},
       pushshiftComments: [],
-      redditComments: [],
       removed: [],
       deleted: [],
       loadingComments: true,
@@ -27,7 +26,6 @@ export default class Thread extends React.Component {
 
   componentDidMount() {
     const { subreddit, threadID } = this.props.match.params
-    console.timeEnd('scripts loaded')
 
     Promise.all([
       // Get thread from reddit
@@ -49,18 +47,22 @@ export default class Thread extends React.Component {
       .then(results => {
         const pushshiftComments = results[1]
 
-
         // Extract ids from pushshift response
         const ids = pushshiftComments.map(comment => comment.id)
-        console.log('pushshift:', ids.length)
+        console.log('Number of comments from Pushshift:', ids.length)
 
         // Get all the comments from reddit
         return (
           getRedditComments(ids)
             .then(redditComments => {
+              const redditCommentLookup = {}
+              redditComments.forEach(comment => {
+                redditCommentLookup[comment.id] = comment
+              })
+
               pushshiftComments.forEach(comment => {
                 // Replace pushshift score with reddit (its usually more accurate)
-                const redditComment = redditComments.find(rComment => rComment.id === comment.id)
+                const redditComment = redditCommentLookup[comment.id]
                 if (redditComment !== undefined) {
                   comment.score = redditComment.score
                 }
@@ -72,7 +74,7 @@ export default class Thread extends React.Component {
         )
       })
       .then(redditComments => {
-        console.log('reddit:', redditComments.length)
+        console.log('Number of comments from Reddit:', redditComments.length)
         const removed = []
         const deleted = []
 
@@ -88,7 +90,6 @@ export default class Thread extends React.Component {
         this.setState({
           removed,
           deleted,
-          redditComments,
           loadingComments: false,
         })
       })

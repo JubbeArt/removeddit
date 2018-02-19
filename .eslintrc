@@ -46,7 +46,6 @@
         ],
         "no-use-before-define": "off",
         "import/first": "off",
-        "prefer-destructuring": "off",
         "jsx-a11y/click-events-have-key-events": "off",
         "jsx-a11y/no-static-element-interactions": "off"
     }
