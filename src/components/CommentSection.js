@@ -5,11 +5,11 @@ import SortBy from 'components/SortBy'
 import { connect } from 'react-redux'
 import {
   SORT_TOP, SORT_BOTTOM, SORT_NEW, SORT_OLD,
-  SHOW_ALL, SHOW_REMOVED_DELETED, SHOW_REMOVED, SHOW_DELETED,
+  SHOW_ALL, SHOW_REMOVED_DELETED, SHOW_REMOVED, SHOW_DELETED
 } from 'state'
 import {
   topSort, bottomSort, newSort, oldSort,
-  showRemovedAndDeleted, showRemoved, showDeleted,
+  showRemovedAndDeleted, showRemoved, showDeleted
 } from 'utils'
 
 const arrayToLookup = (commentList, removed, deleted) => {
@@ -134,8 +134,7 @@ const commentSection = (props) => {
 
 const mapStateToProps = state => ({
   sort: state.commentSection.sort,
-  show: state.commentSection.show,
+  show: state.commentSection.show
 })
-
 
 export default connect(mapStateToProps)(commentSection)

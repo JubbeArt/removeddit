@@ -3,16 +3,16 @@ import Post from 'components/Post'
 import CommentSection from 'components/CommentSection'
 import {
   getPost,
-  getComments as getRedditComments,
+  getComments as getRedditComments
 } from 'api/reddit'
 import {
   getPost as getRemovedPost,
-  getComments as getPushshiftComments,
+  getComments as getPushshiftComments
 } from 'api/pushshift'
 import { isDeleted, isRemoved } from 'utils'
 
 export default class Thread extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -20,11 +20,11 @@ export default class Thread extends React.Component {
       pushshiftComments: [],
       removed: [],
       deleted: [],
-      loadingComments: true,
+      loadingComments: true
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { subreddit, threadID } = this.props.match.params
 
     Promise.all([
@@ -42,7 +42,7 @@ export default class Thread extends React.Component {
           }
         }),
       // Get comment ids from pushshift
-      getPushshiftComments(threadID),
+      getPushshiftComments(threadID)
     ])
       .then(results => {
         const pushshiftComments = results[1]
@@ -90,12 +90,12 @@ export default class Thread extends React.Component {
         this.setState({
           removed,
           deleted,
-          loadingComments: false,
+          loadingComments: false
         })
       })
   }
 
-  render() {
+  render () {
     let root = this.state.post.id
 
     if (this.props.match.params.commentID !== undefined) {

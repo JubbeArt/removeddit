@@ -24,7 +24,7 @@ export const chunk = (arr, size) => {
 }
 
 // JSON parsing for fetch
-export const json = x => x.json()
+export const json = response => response.json()
 
 // Make multiple requests to the same url, with an array of data (usually comment IDs)
 // This is needed since there is a limit on how long a url can be
@@ -53,7 +53,7 @@ export const redditThumbnails = ['self', 'default', 'image', 'nsfw']
 export const parse = text => markdown.render(text)
 
 // UTC to "Reddit time format" (e.g. 5 hours ago, just now, etc...)
-export const prettyDate = createdUTC => {
+export function prettyDate (createdUTC) {
   const currentUTC = Math.floor((new Date()).getTime() / 1000)
   const secondDiff = currentUTC - createdUTC
   const dayDiff = Math.floor(secondDiff / 86400)
@@ -74,7 +74,7 @@ export const prettyDate = createdUTC => {
 }
 
 // Reddit format for scores, e.g. 12000 => 12k
-export const prettyScore = score => {
+export function prettyScore (score) {
   if (score >= 100000) {
     return `${(score / 1000).toFixed(0)}k`
   } else if (score >= 10000) {
@@ -91,33 +91,34 @@ export const get = (key, defaultValue) => (
 
 export const put = (key, value) => localStorage.setItem(key, JSON.stringify(value))
 
+// Filter comments
+export const showFunctions = {
+  all: comment => true,
+  removedDeleted: comment => comment.removed === true || comment.deleted === true,
+  removed: comment => comment.removed === true,
+  deleted: comment => comment.deleted === true
+}
 
 // Sorting for comments
-export const topSort = (commentA, commentB) => {
-  if (commentA.score > commentB.score) return -1
-  if (commentA.score < commentB.score) return 1
-  return 0
+export const sortFunctions = {
+  top: (commentA, commentB) => {
+    if (commentA.score > commentB.score) return -1
+    if (commentA.score < commentB.score) return 1
+    return 0
+  },
+  bottom: (commentA, commentB) => {
+    if (commentA.score < commentB.score) return -1
+    if (commentA.score > commentB.score) return 1
+    return 0
+  },
+  new: (commentA, commentB) => {
+    if (commentA.created_utc > commentB.created_utc) return -1
+    if (commentA.created_utc < commentB.created_utc) return 1
+    return 0
+  },
+  old: (commentA, commentB) => {
+    if (commentA.created_utc < commentB.created_utc) return -1
+    if (commentA.created_utc > commentB.created_utc) return 1
+    return 0
+  }
 }
-
-export const bottomSort = (commentA, commentB) => {
-  if (commentA.score < commentB.score) return -1
-  if (commentA.score > commentB.score) return 1
-  return 0
-}
-
-export const newSort = (commentA, commentB) => {
-  if (commentA.created_utc > commentB.created_utc) return -1
-  if (commentA.created_utc < commentB.created_utc) return 1
-  return 0
-}
-
-export const oldSort = (commentA, commentB) => {
-  if (commentA.created_utc < commentB.created_utc) return -1
-  if (commentA.created_utc > commentB.created_utc) return 1
-  return 0
-}
-
-// Filter comments
-export const showRemoved = comment => comment.removed === true
-export const showDeleted = comment => comment.deleted === true
-export const showRemovedAndDeleted = comment => comment.removed === true || comment.deleted === true
