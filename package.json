@@ -19,13 +19,13 @@
     "url": "https://github.com/JubbeArt/removeddit/issues"
   },
   "homepage": "https://github.com/JubbeArt/removeddit#readme",
+  "standard": {
+    "globals": ["localStorage", "fetch"]
+  },
   "scripts": {
     "start": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
     "build-sass": "sass --style compressed public/sass/index.sass public/main.css"
-  },
-  "standard": {
-    "globals": ["localStorage", "fetch"]
   },
   "dependencies": {
     "lit-html": "^0.9.0",

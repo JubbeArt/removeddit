@@ -1,4 +1,4 @@
-import { chunk, flatten, json } from 'utils'
+import { chunk, flatten } from '../../utils'
 import { getAuth } from './auth'
 
 export const getComments = commentIDs => (
@@ -10,7 +10,7 @@ export const getComments = commentIDs => (
 
 export const fetchComments = (commentIDs, auth) => (
   fetch(`https://oauth.reddit.com/api/info?id=${commentIDs.map(id => `t1_${id}`).join()}`, auth)
-    .then(json)
+    .then(response => response.json())
     .then(results => results.data.children)
     .then(commentsData => commentsData.map(commentData => commentData.data))
 )

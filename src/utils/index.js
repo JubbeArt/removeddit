@@ -1,6 +1,6 @@
-import SnuOwnd from 'snuownd'
+// const SnuOwnd = require('snudown-js')
 
-const markdown = SnuOwnd.getParser()
+// const markdown = SnuOwnd.getParser()
 
 // Flatten arrays one level
 export const flatten = arr => arr.reduce(
@@ -121,4 +121,5 @@ export const sortFunctions = {
     if (commentA.created_utc > commentB.created_utc) return 1
     return 0
   }
+
 }

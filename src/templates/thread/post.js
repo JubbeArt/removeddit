@@ -1,6 +1,6 @@
-import {html} from 'lit-html'
+import {html} from 'lit-html/lib/lit-extended'
 
-import { prettyScore, prettyDate, parse, redditThumbnails, isDeleted } from 'utils'
+import { prettyScore, prettyDate, parse, redditThumbnails, isDeleted } from '../../utils'
 
 export default (props) => {
   if (!props.title) {
@@ -15,7 +15,7 @@ export default (props) => {
   let thumbnail
 
   if (redditThumbnails.includes(props.thumbnail)) {
-    thumbnail = html`<a href="${url}" class="${`thumbnail thumbnail-${props.thumbnail}`}"></a>`
+    thumbnail = html`<a href="${url}" class$="${`thumbnail thumbnail-${props.thumbnail}`}"></a>`
   } else if (props.thumbnail !== '') {
     thumbnail = html`
       <a href="${url}">
@@ -25,7 +25,7 @@ export default (props) => {
   }
 
   return html`
-    <div class="${`thread ${props.removed && 'removed'}`}">
+    <div class$="${`thread ${props.removed && 'removed'}`}">
       ${props.position &&
       html`<span class="post-rank">${props.position}</span>`}
       <div class="thread-score-box">

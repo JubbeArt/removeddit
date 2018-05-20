@@ -1,7 +1,5 @@
 .vscode/
-
 node_modules/
-
-public/main.js
-
+dist/main.js
+dist/main.css
 *.log

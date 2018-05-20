@@ -1,4 +1,4 @@
-import {put} from 'utils'
+import {put} from '../utils'
 
 export const createStore = (initState = {}, persistentKeys = []) => {
   let state = initState
@@ -31,10 +31,3 @@ export const createStore = (initState = {}, persistentKeys = []) => {
     }
   }
 }
-
-// export
-
-// const saveState = {
-//   commentSort: true,
-//   commentShow: true
-// }

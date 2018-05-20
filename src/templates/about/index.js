@@ -1,4 +1,4 @@
-import {html} from 'lit-html'
+import {html} from 'lit-html/lib/lit-extended'
 
 export default () => html`
   <div id="main-box">

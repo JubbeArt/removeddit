@@ -1,6 +1,6 @@
 import {createStore} from './store'
-import {get, showFunctions, sortFunctions} from 'utils'
-import {html} from 'lit-html'
+import {get, showFunctions, sortFunctions} from '../utils'
+import {html} from 'lit-html/lib/lit-extended'
 
 export const commentSort = {
   top: 'top',
@@ -33,8 +33,7 @@ export const store = createStore({
       .filter(showFunctions[store.getState().currentShow])
       .sort(sortFunctions[store.getState().currentSort])
   }
-
-})
+}, ['commentSort', 'commentShow'])
 
 export const stateImages = {
   loading: '/images/loading.gif',

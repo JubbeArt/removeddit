@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { getRemovedThreadIDs } from 'api/removeddit'
-import { getThreads } from 'api/reddit'
+import { getRemovedThreadIDs } from '../api/removeddit'
+import { getThreads } from '../api/reddit'
 import Post from 'components/Post'
 
 const getSubredditForAPI = props => {

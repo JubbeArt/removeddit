@@ -1,4 +1,3 @@
-import { json } from 'utils'
 import { getAuth } from './auth'
 
 const cachedThreads = {}
@@ -23,7 +22,7 @@ export const getThread = (subreddit, threadID, commentID = '') => {
   return (
     getAuth()
       .then(auth => fetch(url, auth))
-      .then(json)
+      .then(response => response.json())
       .then(thread => {
         // Create cache object for thread  if it doesn't exists
         if (!cachedThreads.hasOwnProperty(threadID)) {
@@ -39,14 +38,13 @@ export const getThread = (subreddit, threadID, commentID = '') => {
   )
 }
 
-
 export const getThreads = threadIDs => {
   const threadString = threadIDs.map(id => `t3_${id}`).join()
 
   return (
     getAuth()
       .then(auth => fetch(`https://oauth.reddit.com/api/info?id=${threadString}`, auth))
-      .then(json)
+      .then(response => response.json())
       .then(response => {
         const threads = response.data.children
         return threads.map(threadData => threadData.data)
