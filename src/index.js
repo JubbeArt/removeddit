@@ -1,40 +1,58 @@
-import { render } from 'lit-html/lib/lit-extended'
-import Navigo from 'navigo'
 import aboutTemplate from './templates/about'
 import threadTemplate from './templates/thread'
 import subredditTemplate from './templates/subreddit'
-import {store} from './state'
 import getThreads from './core/subreddit'
+import SPA from './simpleSPA'
 
-const router = new Navigo(window.location.origin)
-
-const main = document.getElementById('main')
-
-// Causes a rerender of the currently selected template
-const renderPage = () => {
-  const template = store.getState().template(store.getState(), store.setState)
-  render(template, main)
+const routes = {
+  '/about': (_, setState) => {
+    setState({template: aboutTemplate, title: 'About Removeddit'})
+  },
+  '/r/:subreddit/comments/:threadID/:junk/:commentID': ({subreddit, threadID, commentID}, setState) => {
+    setState({template: threadTemplate, subreddit, threadID, commentID})
+  },
+  '/r/:subreddit/comments/:threadID*': ({subreddit, threadID}, setState) => {
+    setState({template: threadTemplate, subreddit, threadID, commentID: undefined})
+  },
+  '/r/:subreddit': ({subreddit}, setState) => {
+    setState({template: subredditTemplate, threads: [], title: `/r/${subreddit}`, subreddit, threadID: undefined, commentID: undefined})
+    getThreads(subreddit, setState)
+  },
+  '*': (_, setState) => {
+    setState({template: subredditTemplate, threads: [], title: '/r/all', subreddit: 'all', threadID: undefined, commentID: undefined})
+    getThreads('all', setState)
+  }
 }
 
-// Re-render page whenever state is changed
-store.subscribe(() => renderPage())
+const get = (key, defaultValue) => {
+  const value = localStorage.getItem(key)
 
-router.on({
-  '/about': () => {
-    store.setState({template: aboutTemplate})
-  },
-  '/r/:subreddit/comments/:threadID/:junk/:commentID': ({subreddit, threadID, commentID}) => {
-    store.setState({template: threadTemplate, subreddit, threadID, commentID})
-  },
-  '/r/:subreddit/comments/:threadID*': ({subreddit, threadID}) => {
-    store.setState({template: threadTemplate, subreddit, threadID, commentID: undefined})
-  },
-  '/r/:subreddit': ({subreddit}) => {
-    store.setState({template: subredditTemplate, threads: [], subreddit, threadID: undefined, commentID: undefined})
-    getThreads(subreddit, store.setState)
-  },
-  '*': () => {
-    store.setState({template: subredditTemplate, threads: [], subreddit: 'all', threadID: undefined, commentID: undefined})
-    getThreads('all', store.setState)
+  if (value !== null) {
+    return JSON.parse(value)
   }
-}).resolve()
+
+  return defaultValue
+}
+
+const initState = {
+  commentSort: get('commentSort', 'top'),
+  commentShow: get('commentShow', 'removedDeleted'),
+  subreddit: undefined,
+  threadID: undefined,
+  commentID: undefined,
+  threads: [],
+  thread: undefined,
+  allComments: [],
+  statusText: undefined,
+  statusImage: undefined,
+  title: 'Removeddit'
+  // comments: () => {
+  //   return store.getState().allComments
+  //     .filter(showFunctions[store.getState().currentShow])
+  //     .sort(sortFunctions[store.getState().currentSort])
+  // }
+}
+
+const persistentState = ['commentSort', 'commentShow']
+
+SPA({routes, initState, persistentState, stateLogger: console.log})

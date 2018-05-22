@@ -1,15 +1,15 @@
-import {html} from 'lit-html'
+import {html} from 'lit-html/lib/lit-extended'
 
 const getProcent = (part, total) => (total === 0 ? '0.0' : ((100 * part) / total).toFixed(1))
 
-export default (props) => html`
+export default ({ removed, deleted, total }) => html`
   <div id="comment-info">
     <span class="removed-text">
-      removed comments: ${props.removed}/${props.total} (${getProcent(props.removed, props.total)}%)
+      removed comments: ${removed}/${total} (${getProcent(removed, total)}%)
     </span>
     <br />
     <span class="deleted-text">
-      deleted comments:  ${props.deleted}/${props.total} (${getProcent(props.deleted, props.total)}%)
+      deleted comments:  ${deleted}/${total} (${getProcent(deleted, total)}%)
     </span>
   </div>
 `

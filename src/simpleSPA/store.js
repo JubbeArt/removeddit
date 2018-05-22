@@ -1,6 +1,6 @@
-import {put} from '../utils'
+const put = (key, value) => localStorage.setItem(key, JSON.stringify(value))
 
-export const createStore = (initState = {}, persistentKeys = []) => {
+export const createStore = (initState = {}, persistentKeys = [], logger) => {
   let state = initState
   let callbacks = []
 
@@ -16,6 +16,10 @@ export const createStore = (initState = {}, persistentKeys = []) => {
       state = {
         ...state,
         ...nextState
+      }
+
+      if (typeof logger === 'function') {
+        logger(state)
       }
 
       callbacks.forEach(callback => {

@@ -7,9 +7,8 @@ const clientID = '33W8M1OOxPv80A'
 // Token for reddit API
 let token
 
-// Header for general api calls
-export const getAuth = () => {
-  // We have already gotten a token
+const getToken = () => {
+// We have already gotten a token
   if (token !== undefined) {
     return Promise.resolve(token)
   }
@@ -17,7 +16,7 @@ export const getAuth = () => {
   // Headers for getting reddit api token
   const tokenInit = {
     headers: {
-      Authorization: `Basic ${btoa(`${clientID}:`)}`,
+      Authorization: `Basic ${window.btoa(`${clientID}:`)}`,
       'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
     },
     method: 'POST',
@@ -30,11 +29,18 @@ export const getAuth = () => {
       .then(responseBody => {
         // Save token for later
         token = responseBody.access_token
-        return {
-          headers: {
-            Authorization: `bearer ${token}`
-          }
-        }
+        return token
       })
   )
 }
+
+// Get header for general api calls
+export const getAuth = () => (
+  getToken()
+    .then(token => ({
+      headers: {
+        Authorization: `bearer ${token}`
+      }
+
+    }))
+)

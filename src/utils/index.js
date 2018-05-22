@@ -23,9 +23,6 @@ export const chunk = (arr, size) => {
   return chunks
 }
 
-// JSON parsing for fetch
-export const json = response => response.json()
-
 // Make multiple requests to the same url, with an array of data (usually comment IDs)
 // This is needed since there is a limit on how long a url can be
 export const fetchMultiple = (url, arr, header, size = 100) => {
@@ -34,7 +31,7 @@ export const fetchMultiple = (url, arr, header, size = 100) => {
   return Promise.all(subArrays.map(subArr => fetch(url + subArr.join(), header)))
 }
 
-export const jsonMultiple = responses => Promise.all(responses.map(json))
+export const jsonMultiple = responses => Promise.all(responses.map(resp => resp.json()))
 
 // Change bases
 export const toBase36 = number => parseInt(number, 10).toString(36)
@@ -83,13 +80,6 @@ export function prettyScore (score) {
 
   return score
 }
-
-// Retrieve, store and delete stuff in the local storage
-export const get = (key, defaultValue) => (
-  localStorage.getItem(key) !== null ? JSON.parse(localStorage.getItem(key)) : defaultValue
-)
-
-export const put = (key, value) => localStorage.setItem(key, JSON.stringify(value))
 
 // Filter comments
 export const showFunctions = {
