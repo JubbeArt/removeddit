@@ -15,11 +15,11 @@ const routes = {
     setState({template: threadTemplate, subreddit, threadID, commentID: undefined})
   },
   '/r/:subreddit': ({subreddit}, setState) => {
-    setState({template: subredditTemplate, threads: [], title: `/r/${subreddit}`, subreddit, threadID: undefined, commentID: undefined})
+    setState({template: subredditTemplate, threads: [], subreddit, threadID: undefined, commentID: undefined, title: `/r/${subreddit}`})
     getThreads(subreddit, setState)
   },
   '*': (_, setState) => {
-    setState({template: subredditTemplate, threads: [], title: '/r/all', subreddit: 'all', threadID: undefined, commentID: undefined})
+    setState({template: subredditTemplate, threads: [], subreddit: 'all', threadID: undefined, commentID: undefined, title: '/r/all'})
     getThreads('all', setState)
   }
 }

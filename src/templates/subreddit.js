@@ -1,5 +1,5 @@
 import { html } from 'lit-html/lib/lit-extended'
-import post from '../thread/post'
+import post from './thread/post'
 
 export default ({ subreddit, threads }, setState) => (
   html`

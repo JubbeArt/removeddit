@@ -19,7 +19,7 @@ export default () => html`
       <br /><br />
       Alternatively you can manually replace the <i>reddit</i> in the URL to <i>removeddit</i>.
       <br />
-      E.g. <a href="/r/TwoXChromosomes/comments/6z1hch/">https://www.removeddit.com/r/TwoXChromosomes/comments/6z1hch/</a>
+      E.g. <a href="/r/TwoXChromosomes/comments/6z1hch/" data-navigo>https://www.removeddit.com/r/TwoXChromosomes/comments/6z1hch/</a>
     </p>
     <p>
       Created by
@@ -28,8 +28,7 @@ export default () => html`
     </p>
     <h2 class="todo">TODO</h2>
     <ul>
-      <li>Collapsing comments</li>
-      <li>Maybe for specific users </li>
+      <li>Maybe list comments from specific users</li>
     </ul>
     <h2 class="contact">Links/Contact</h2>
     <p style="margin-bottom: 8px">For feedback and bug reports:</p>

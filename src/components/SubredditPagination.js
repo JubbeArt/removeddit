@@ -10,7 +10,7 @@ export default (props) => {
       pageination += <a href={`${props.url + i}`}>{i}</a>
     }
   }
-  return (
+  return (n
     <div id='pagination'>
       Page:
       {props.start > 1 &&
@@ -18,7 +18,7 @@ export default (props) => {
         <a href={`${props.url + 1}`}>1</a>
         <span> ...</span>
       </React.Fragment>
-    }
+      }
       {pageination}
     </div>
   )
