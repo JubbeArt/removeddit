@@ -4,5 +4,8 @@
 # Dependency directories
 node_modules/
 
-# Generated JS files
-static/js
+# Generated JS/CSS files
+static/main.*
+
+# Log files
+*.log
