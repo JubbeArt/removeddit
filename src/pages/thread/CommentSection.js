@@ -1,7 +1,7 @@
 import React from 'react'
-import Comment from 'components/Comment'
-import CommentInfo from 'components/CommentInfo'
-import SortBy from 'components/SortBy'
+import Comment from './Comment'
+import CommentInfo from './CommentInfo'
+import SortBy from './SortBy'
 import { connect } from 'react-redux'
 import {
   SORT_TOP, SORT_BOTTOM, SORT_NEW, SORT_OLD,

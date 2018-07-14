@@ -1,6 +1,6 @@
 import React from 'react'
-import Post from 'components/Post'
-import CommentSection from 'components/CommentSection'
+import Post from '../common/Post'
+import CommentSection from './CommentSection'
 import {
   getPost,
   getComments as getRedditComments

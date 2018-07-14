@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import StatusBox from 'containers/StatusBox'
+import StatusBox from './StatusBox'
 
 export default () => (
   <header>
