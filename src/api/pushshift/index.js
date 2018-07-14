@@ -8,13 +8,13 @@ export const getPost = threadID => {
   const elasticQuery = {
     query: {
       term: {
-        id: toBase10(threadID),
-      },
-    },
+        id: toBase10(threadID)
+      }
+    }
   }
 
   return (
-    fetch(postURL + JSON.stringify(elasticQuery))
+    window.fetch(postURL + JSON.stringify(elasticQuery))
       .then(json)
       .then(jsonData => jsonData.hits.hits[0]._source)
       .then(post => {
@@ -41,17 +41,17 @@ export const getComments = threadID => {
   const elasticQuery = {
     query: {
       match: {
-        link_id: toBase10(threadID),
-      },
+        link_id: toBase10(threadID)
+      }
     },
     size: 10000,
     _source: [
-      'author', 'body', 'created_utc', 'parent_id', 'score', 'subreddit', 'link_id',
-    ],
+      'author', 'body', 'created_utc', 'parent_id', 'score', 'subreddit', 'link_id'
+    ]
   }
 
   return (
-    fetch(commentURL + JSON.stringify(elasticQuery))
+    window.fetch(commentURL + JSON.stringify(elasticQuery))
       .then(json)
       .then(jsonData => jsonData.hits.hits)
       .then(comments => comments.map(comment => {

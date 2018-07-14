@@ -3,10 +3,9 @@ import {
   setCommentSort,
   setCommentShow,
   SORT_TOP, SORT_BOTTOM, SORT_NEW, SORT_OLD,
-  SHOW_ALL, SHOW_REMOVED_DELETED, SHOW_REMOVED, SHOW_DELETED,
+  SHOW_ALL, SHOW_REMOVED_DELETED, SHOW_REMOVED, SHOW_DELETED
 } from 'state'
 import { connect } from 'react-redux'
-
 
 const sortBy = props => (
   <div id='comment-sort'>
@@ -32,16 +31,15 @@ const sortBy = props => (
 
 const mapStateToProps = state => ({
   sort: state.commentSection.sort,
-  show: state.commentSection.show,
+  show: state.commentSection.show
 })
 
 const mapDispatchToProps = dispatch => ({
   setSort: sortString => dispatch(setCommentSort(sortString)),
-  setShow: showString => dispatch(setCommentShow(showString)),
+  setShow: showString => dispatch(setCommentShow(showString))
 })
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(sortBy)
-

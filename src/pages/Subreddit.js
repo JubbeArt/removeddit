@@ -12,21 +12,20 @@ const getSubredditForAPI = props => {
   return subreddit.toLowerCase()
 }
 
-
 export default class Subreddit extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
       threads: [],
-      subreddit: '',
+      subreddit: ''
     }
   }
-  componentDidMount() {
+  componentDidMount () {
     this.updateThreads(this.props)
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     const newSubreddit = getSubredditForAPI(nextProps)
 
     if (this.state.subreddit !== newSubreddit) {
@@ -34,7 +33,7 @@ export default class Subreddit extends React.Component {
     }
   }
 
-  updateThreads(props) {
+  updateThreads (props) {
     const subreddit = getSubredditForAPI(props)
     getRemovedThreadIDs(subreddit)
       .then(threadIDs => getThreads(threadIDs))
@@ -47,7 +46,7 @@ export default class Subreddit extends React.Component {
       })
   }
 
-  render() {
+  render () {
     const { subreddit = 'all' } = this.props.match.params
     const subredditLink = `/r/${subreddit}`
 
@@ -61,9 +60,9 @@ export default class Subreddit extends React.Component {
           <a href={`https://snew.github.io${subredditLink}`} className='subreddit-title-link'>ceddit</a>
         </div>
         {
-        this.state.threads.map(thread => (
-          <Post key={thread.id} {...thread} />
-        ))
+          this.state.threads.map(thread => (
+            <Post key={thread.id} {...thread} />
+          ))
         }
       </React.Fragment>
     )

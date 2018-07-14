@@ -18,7 +18,7 @@ export default (props) => {
         <a href={`${props.url + 1}`}>1</a>
         <span> ...</span>
       </React.Fragment>
-    }
+      }
       {pageination}
     </div>
   )

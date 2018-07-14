@@ -31,7 +31,7 @@ export const json = x => x.json()
 export const fetchMultiple = (url, arr, header, size = 100) => {
   const subArrays = chunk(arr, size)
 
-  return Promise.all(subArrays.map(subArr => fetch(url + subArr.join(), header)))
+  return Promise.all(subArrays.map(subArr => window.fetch(url + subArr.join(), header)))
 }
 
 export const jsonMultiple = responses => Promise.all(responses.map(json))
@@ -86,11 +86,10 @@ export const prettyScore = score => {
 
 // Retrieve, store and delete stuff in the local storage
 export const get = (key, defaultValue) => (
-  localStorage.getItem(key) !== null ? JSON.parse(localStorage.getItem(key)) : defaultValue
+  window.localStorage.getItem(key) !== null ? JSON.parse(window.localStorage.getItem(key)) : defaultValue
 )
 
-export const put = (key, value) => localStorage.setItem(key, JSON.stringify(value))
-
+export const put = (key, value) => window.localStorage.setItem(key, JSON.stringify(value))
 
 // Sorting for comments
 export const topSort = (commentA, commentB) => {

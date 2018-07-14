@@ -5,7 +5,7 @@
 node_modules/
 
 # Generated JS/CSS files
-static/main.*
+dist/main.*
 
 # Log files
 *.log

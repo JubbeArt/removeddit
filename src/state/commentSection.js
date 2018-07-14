@@ -26,7 +26,7 @@ const filterKey = 'commentFilter'
 // Init state
 const initialStatusState = {
   sort: get(sortKey, SORT_TOP),
-  show: get(filterKey, SHOW_REMOVED_DELETED),
+  show: get(filterKey, SHOW_REMOVED_DELETED)
 }
 
 export const commentSectionReducer = (state = initialStatusState, action) => {
@@ -35,13 +35,13 @@ export const commentSectionReducer = (state = initialStatusState, action) => {
       put(sortKey, action.payload)
       return {
         ...state,
-        sort: action.payload,
+        sort: action.payload
       }
     case COMMENT_SHOW:
       put(filterKey, action.payload)
       return {
         ...state,
-        show: action.payload,
+        show: action.payload
       }
     default:
       return state

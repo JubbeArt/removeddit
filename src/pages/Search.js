@@ -1,7 +1,7 @@
 
 //   var radioInput = function(name, displayNames, values) {
 //     var inputs = "";
-    
+
 //     for(var i = 0, len = displayNames.length; i < len; i++){
 //       inputs += '<span class="radioButton"'+ (Vars.lookup[name] === values[i] ? ' style="background: #239f2b; color:#fff"':'')+'>';
 //       inputs += '<input type="radio" id="'+name+i+'" name="'+name+'" onchange="CSS.radio(this)"';
@@ -12,7 +12,7 @@
 //   };
 
 //   var textInput = function(name){
-//     return '<input type="text" name="'+name+'" id="'+name+'" value="'+Vars.get(name)+'">'; 
+//     return '<input type="text" name="'+name+'" id="'+name+'" value="'+Vars.get(name)+'">';
 //   };
 
 //   var label = function(name, display) {
@@ -37,7 +37,7 @@
 
 //   var select = function(name, display, values){
 //     var html = '<select name="'+name+'" id="'+name+'">';
-    
+
 //     for(var i = 0, len = values.length; i < len; i++) {
 //       html += '<option value="'+values[i]+'"' + ((Vars.get(name) === values[i]) ? " selected" : '')+'>'+display[i]+'</option>';
 //     }
@@ -61,7 +61,7 @@
 //     between    (after/before)  "date"
 //     sort     (sort)    asc,desc
 //   */
-//     var html = inputRow('Im looking for: ', radioInput("thread", ["Thread","Comment"], ["true", "false"]));    
+//     var html = inputRow('Im looking for: ', radioInput("thread", ["Thread","Comment"], ["true", "false"]));
 //     html += inputRow(label("text", "Text"), textInput("text"));
 //     html += inputRow(label("title","Title"), textInput("title"));
 //     html += inputRow(label("subreddit", "Subreddit"), textInput("subreddit"));
@@ -74,5 +74,5 @@
 //     html += '<input type="button" value="'+(showAdvanced?'Hide':'Show')+' advanced">';
 //     html += '<input type="submit" value="Search">';
 //     searchBox.innerHTML = html;
-  
+
 //     mainDiv.appendChild(searchBox);

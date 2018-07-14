@@ -22,7 +22,7 @@ export const getThread = (subreddit, threadID, commentID = '') => {
   // Fetch thread from reddit
   return (
     getAuth()
-      .then(auth => fetch(url, auth))
+      .then(auth => window.fetch(url, auth))
       .then(json)
       .then(thread => {
         // Create cache object for thread  if it doesn't exists
@@ -39,13 +39,12 @@ export const getThread = (subreddit, threadID, commentID = '') => {
   )
 }
 
-
 export const getThreads = threadIDs => {
   const threadString = threadIDs.map(id => `t3_${id}`).join()
 
   return (
     getAuth()
-      .then(auth => fetch(`https://oauth.reddit.com/api/info?id=${threadString}`, auth))
+      .then(auth => window.fetch(`https://oauth.reddit.com/api/info?id=${threadString}`, auth))
       .then(json)
       .then(response => {
         const threads = response.data.children

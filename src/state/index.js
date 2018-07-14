@@ -8,7 +8,7 @@ export * from './commentSection'
 
 const reducer = combineReducers({
   status: statusReducer,
-  commentSection: commentSectionReducer,
+  commentSection: commentSectionReducer
 })
 
 export const store = createStore(reducer, applyMiddleware(logger))

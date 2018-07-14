@@ -9,7 +9,7 @@ export const getComments = commentIDs => (
 )
 
 export const fetchComments = (commentIDs, auth) => (
-  fetch(`https://oauth.reddit.com/api/info?id=${commentIDs.map(id => `t1_${id}`).join()}`, auth)
+  window.fetch(`https://oauth.reddit.com/api/info?id=${commentIDs.map(id => `t1_${id}`).join()}`, auth)
     .then(json)
     .then(results => results.data.children)
     .then(commentsData => commentsData.map(commentData => commentData.data))

@@ -1,7 +1,7 @@
 const images = {
   loading: '/images/loading.gif',
   error: '/images/error.png',
-  success: '/images/done.png',
+  success: '/images/done.png'
 }
 
 // Action types
@@ -17,7 +17,7 @@ export const setStatusError = (payload = '') => ({ type: STATUS_SET_ERROR, paylo
 // Init state
 const initialStatusState = {
   text: null,
-  image: null,
+  image: null
 }
 
 export const statusReducer = (state = initialStatusState, action) => {
@@ -26,19 +26,19 @@ export const statusReducer = (state = initialStatusState, action) => {
       return {
         ...state,
         text: action.payload,
-        image: images.success,
+        image: images.success
       }
     case STATUS_SET_LOADING:
       return {
         ...state,
         text: action.payload,
-        image: images.loading,
+        image: images.loading
       }
     case STATUS_SET_ERROR:
       return {
         ...state,
         text: action.payload,
-        image: images.error,
+        image: images.error
       }
     default:
       return state

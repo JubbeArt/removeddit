@@ -4,34 +4,25 @@ module.exports = {
   entry: [
     'babel-polyfill',
     'whatwg-fetch',
-    './src/js/index.js',
+    './src/index.js'
   ],
-  output: {
-    path: path.resolve(__dirname, 'static'),
-    publicPath: '/',
-  },
   devServer: {
-    contentBase: path.resolve(__dirname, 'static'),
-    historyApiFallback: true,
+    contentBase: path.resolve(__dirname, 'dist'),
+    historyApiFallback: true
   },
   devtool: 'cheap-module-eval-source-map',
   resolve: {
     modules: [
-      path.resolve('./src/js'),
-      path.resolve('./node_modules'),
-    ],
+      path.resolve(__dirname, 'src'),
+      path.resolve(__dirname, 'node_modules')
+    ]
   },
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          },
-        },
+        use: 'babel-loader'
       }
     ]
   }

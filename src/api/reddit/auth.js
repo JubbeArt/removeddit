@@ -5,7 +5,7 @@ export const getAuth = () => (
   getToken()
     .then(token => ({
       headers: {
-        Authorization: `bearer ${token}`,
-      },
+        Authorization: `bearer ${token}`
+      }
     }))
 )

@@ -2,7 +2,7 @@ import React from 'react'
 import {
   BrowserRouter,
   Switch,
-  Route,
+  Route
 } from 'react-router-dom'
 
 import Header from 'components/Header'
@@ -19,10 +19,8 @@ export default () => (
           <Route path='/r/:subreddit/comments/:threadID/:junk/:commentID' component={Thread} />
           <Route path='/r/:subreddit/comments/:threadID' component={Thread} />
           <Route path='/r/:subreddit' component={Subreddit} />
-
         </Switch>
       </div>
     </React.Fragment>
   </BrowserRouter>
 )
-

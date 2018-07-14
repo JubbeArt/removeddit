@@ -12,7 +12,7 @@ const StatusBox = props => (
 
 const mapStateToProps = state => ({
   text: state.status.text,
-  image: state.status.image,
+  image: state.status.image
 })
 
 export default connect(mapStateToProps)(StatusBox)
