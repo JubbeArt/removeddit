@@ -1,18 +1,17 @@
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-
-import { store } from './state'
+import { Provider } from 'unstated'
 
 import Header from './pages/common/Header'
 import About from './pages/about'
 import Subreddit from './pages/subreddit'
 import Thread from './pages/thread'
+import NotFound from './pages/notFound'
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider>
     <BrowserRouter basename={__dirname}>
       <React.Fragment>
         <Header />
@@ -23,6 +22,7 @@ ReactDOM.render(
             <Route path='/r/:subreddit/comments/:threadID/:junk/:commentID' component={Thread} />
             <Route path='/r/:subreddit/comments/:threadID' component={Thread} />
             <Route path='/r/:subreddit' component={Subreddit} />
+            <Route component={NotFound} />
           </Switch>
         </div>
       </React.Fragment>

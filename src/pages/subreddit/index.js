@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { getRemovedThreadIDs } from 'api/removeddit'
-import { getThreads } from 'api/reddit'
+import { getRemovedThreadIDs } from '../../api/removeddit'
+import { getThreads } from '../../api/reddit'
 import Post from '../common/Post'
 
 const getSubredditForAPI = props => {
@@ -21,19 +21,20 @@ export default class Subreddit extends React.Component {
       subreddit: ''
     }
   }
+
   componentDidMount () {
-    this.updateThreads(this.props)
+    this.getRemovedThreads(this.props)
   }
 
   componentWillReceiveProps (nextProps) {
     const newSubreddit = getSubredditForAPI(nextProps)
 
     if (this.state.subreddit !== newSubreddit) {
-      this.updateThreads(nextProps)
+      this.getRemovedThreads(nextProps)
     }
   }
 
-  updateThreads (props) {
+  getRemovedThreads (props) {
     const subreddit = getSubredditForAPI(props)
     getRemovedThreadIDs(subreddit)
       .then(threadIDs => getThreads(threadIDs))

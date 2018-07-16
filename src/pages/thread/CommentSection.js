@@ -2,11 +2,7 @@ import React from 'react'
 import Comment from './Comment'
 import CommentInfo from './CommentInfo'
 import SortBy from './SortBy'
-import { connect } from 'react-redux'
-import {
-  SORT_TOP, SORT_BOTTOM, SORT_NEW, SORT_OLD,
-  SHOW_ALL, SHOW_REMOVED_DELETED, SHOW_REMOVED, SHOW_DELETED
-} from 'state'
+import {connect, sort, filter} from '../../state'
 import {
   topSort, bottomSort, newSort, oldSort,
   showRemovedAndDeleted, showRemoved, showDeleted
@@ -94,22 +90,23 @@ const filterCommentTree = (comments, filterFunction) => {
 const commentSection = (props) => {
   console.time('render comment section')
   const commentTree = unflatten(props.comments, props.root, props.removed, props.deleted)
+  const {commentFilter, commentSort} = props.global.state
 
-  if (props.show === SHOW_REMOVED_DELETED) {
+  if (commentFilter === filter.removedDeleted) {
     filterCommentTree(commentTree, showRemovedAndDeleted)
-  } else if (props.show === SHOW_REMOVED) {
+  } else if (commentFilter === filter.removed) {
     filterCommentTree(commentTree, showRemoved)
-  } else if (props.show === SHOW_DELETED) {
+  } else if (commentFilter === filter.deleted) {
     filterCommentTree(commentTree, showDeleted)
   }
 
-  if (props.sort === SORT_TOP) {
+  if (commentSort === sort.top) {
     sortCommentTree(commentTree, topSort)
-  } else if (props.sort === SORT_BOTTOM) {
+  } else if (commentSort === sort.bottom) {
     sortCommentTree(commentTree, bottomSort)
-  } else if (props.sort === SORT_NEW) {
+  } else if (commentSort === sort.new) {
     sortCommentTree(commentTree, newSort)
-  } else if (props.sort === SORT_OLD) {
+  } else if (commentSort === sort.old) {
     sortCommentTree(commentTree, oldSort)
   }
   console.timeEnd('render comment section')
@@ -132,9 +129,4 @@ const commentSection = (props) => {
   )
 }
 
-const mapStateToProps = state => ({
-  sort: state.commentSection.sort,
-  show: state.commentSection.show
-})
-
-export default connect(mapStateToProps)(commentSection)
+export default connect(commentSection)

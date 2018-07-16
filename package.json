@@ -29,10 +29,9 @@
     "babel-polyfill": "^6.26.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
-    "redux": "^4.0.0",
     "snuownd": "git+https://github.com/JordanMilne/snuownd.git",
+    "unstated": "^2.1.1",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { prettyScore, prettyDate, parse } from 'utils'
+import { prettyScore, prettyDate, parse } from '../../utils'
 
 const Comment = (props) => {
   let commentStyle = 'comment '
