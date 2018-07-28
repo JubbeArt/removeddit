@@ -1,7 +1,5 @@
 import React from 'react'
 import Comment from './Comment'
-import CommentInfo from './CommentInfo'
-import SortBy from './SortBy'
 import {connect, sort, filter} from '../../state'
 import {
   topSort, bottomSort, newSort, oldSort,
@@ -112,20 +110,12 @@ const commentSection = (props) => {
   console.timeEnd('render comment section')
 
   return (
-    <div>
-      <CommentInfo
-        total={props.comments.length}
-        removed={props.removed.length}
-        deleted={props.deleted.length}
+    commentTree.map(comment => (
+      <Comment
+        key={comment.id}
+        {...comment}
       />
-      <SortBy />
-      {commentTree.map(comment => (
-        <Comment
-          key={comment.id}
-          {...comment}
-        />
-      ))}
-    </div>
+    ))
   )
 }
 

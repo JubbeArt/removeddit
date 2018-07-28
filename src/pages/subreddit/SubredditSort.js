@@ -6,7 +6,6 @@ export default (props) => {
   return (
     <div className='subreddit-info'>
       top post of <a href={`https://www.reddit.com/r/${props.subreddit}`}>/r/{props.subreddit}</a> from:
-      {/* <select onchange='Vars.reload(this)'> */}
       <select>
         <option value='hour' selected={isSelected('hour')}>past hour</option>
         <option value='12hour' selected={isSelected('12hour')}>past 12 hours</option>

@@ -13,15 +13,14 @@ export const getPost = threadID => {
     }
   }
 
-  return (
-    window.fetch(postURL + JSON.stringify(elasticQuery))
-      .then(response => response.json())
-      .then(response => {
-        const post = response.hits.hits[0]._source
-        post.id = toBase36(post.id)
-        return post
-      })
-  )
+  return window.fetch(postURL + JSON.stringify(elasticQuery))
+    .then(response => response.json())
+    .then(response => {
+      const post = response.hits.hits[0]._source
+      post.id = toBase36(post.id)
+      return post
+    })
+    .catch(() => { throw new Error('Could not get removed post') })
 }
 
 // export const getComments = threadID => (
@@ -50,24 +49,23 @@ export const getComments = threadID => {
     ]
   }
 
-  return (
-    window.fetch(commentURL + JSON.stringify(elasticQuery))
-      .then(response => response.json())
-      .then(response => {
-        const comments = response.hits.hits
-        return comments.map(comment => {
-          comment._source.id = toBase36(comment._id)
-          comment._source.link_id = toBase36(comment._source.link_id)
+  return window.fetch(commentURL + JSON.stringify(elasticQuery))
+    .then(response => response.json())
+    .then(response => {
+      const comments = response.hits.hits
+      return comments.map(comment => {
+        comment._source.id = toBase36(comment._id)
+        comment._source.link_id = toBase36(comment._source.link_id)
 
-          // Missing parent id === direct reply to thread
-          if (!comment._source.parent_id) {
-            comment._source.parent_id = threadID
-          } else {
-            comment._source.parent_id = toBase36(comment._source.parent_id)
-          }
+        // Missing parent id === direct reply to thread
+        if (!comment._source.parent_id) {
+          comment._source.parent_id = threadID
+        } else {
+          comment._source.parent_id = toBase36(comment._source.parent_id)
+        }
 
-          return comment._source
-        })
+        return comment._source
       })
-  )
+    })
+    .catch(() => { throw new Error('Could not get removed comments') })
 }

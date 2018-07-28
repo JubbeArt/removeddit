@@ -36,8 +36,10 @@ export default (props) => {
       {thumbnail}
       <div className='thread-content'>
         <a className='thread-title' href={url}>{props.title}</a>
-        {props.link_flair_text &&
-        <span className='link-flair'>{props.link_flair_text}</span>}
+        {
+          props.link_flair_text &&
+          <span className='link-flair'>{props.link_flair_text}</span>
+        }
         <span className='domain'>({props.domain})</span>
         <div className='thread-info'>
           submitted <span className='thread-time'>{prettyDate(props.created_utc)}</span> by&nbsp;
@@ -47,15 +49,9 @@ export default (props) => {
         {props.selftext &&
         <div className='thread-selftext user-text' dangerouslySetInnerHTML={{ __html: parse(props.selftext) }} />}
         <div className='total-comments'>
-          <Link className='grey-link' to={props.permalink}>
-            <b>{props.num_comments} comments</b>
-          </Link>&nbsp;
-          <a className='grey-link' href={`https://www.reddit.com${props.permalink}`}>
-            <b>reddit</b>
-          </a>&nbsp;
-          <a className='grey-link' href={`https://snew.github.io${props.permalink}`}>
-            <b>ceddit</b>
-          </a>
+          <Link className='grey-link' to={props.permalink}><b>{props.num_comments} comments</b></Link>&nbsp;
+          <a className='grey-link' href={`https://www.reddit.com${props.permalink}`}><b>reddit</b></a>&nbsp;
+          <a className='grey-link' href={`https://snew.github.io${props.permalink}`}><b>ceddit</b></a>
         </div>
       </div>
     </div>
