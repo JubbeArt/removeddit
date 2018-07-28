@@ -25,7 +25,7 @@ export default (props) => {
   }
 
   return (
-    <div className={`thread ${props.removed && 'removed'}`}>
+    <div className={`thread ${props.removed && 'removed'} ${props.deleted && 'deleted'}`}>
       {props.position &&
       <span className='post-rank'>{props.position}</span>}
       <div className='thread-score-box'>

@@ -43,6 +43,7 @@ const Comment = (props) => {
           <Comment
             key={comment.id}
             {...comment}
+            depth={props.depth + 1}
           />
         ))}
       </div>

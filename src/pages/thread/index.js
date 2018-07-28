@@ -33,10 +33,14 @@ class Thread extends React.Component {
         this.setState({ post })
         document.title = post.title
         // Fetch the thread from pushshift if it was deleted/removed
-        if (isDeleted(post.selftext)) {
+        if (isDeleted(post.selftext) || isRemoved(post.selftext)) {
           getRemovedPost(threadID)
             .then(removedPost => {
-              removedPost.removed = true
+              if (isRemoved(post.selftext)) {
+                removedPost.removed = true
+              } else {
+                removedPost.deleted = true
+              }
               this.setState({ post: removedPost })
             })
         }
@@ -104,7 +108,7 @@ class Thread extends React.Component {
       <React.Fragment>
         <Post {...this.state.post} />
         {
-          !this.state.loadingComments &&
+          (!this.state.loadingComments && root) &&
           <React.Fragment>
             <CommentInfo
               total={this.state.pushshiftComments.length}

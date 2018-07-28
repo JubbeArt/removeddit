@@ -8,7 +8,7 @@ import Header from './pages/common/Header'
 import About from './pages/about'
 import Subreddit from './pages/subreddit'
 import Thread from './pages/thread'
-import NotFound from './pages/notFound'
+import NotFound from './pages/404'
 
 ReactDOM.render(
   <Provider>

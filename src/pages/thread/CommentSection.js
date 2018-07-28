@@ -110,12 +110,15 @@ const commentSection = (props) => {
   console.timeEnd('render comment section')
 
   return (
-    commentTree.map(comment => (
-      <Comment
-        key={comment.id}
-        {...comment}
-      />
-    ))
+    commentTree.length !== 0
+      ? commentTree.map(comment => (
+        <Comment
+          key={comment.id}
+          {...comment}
+          depth={0}
+        />
+      ))
+      : <p>No comments found</p>
   )
 }
 

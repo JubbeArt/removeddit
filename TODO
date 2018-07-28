@@ -5,3 +5,5 @@ update header links active (NavLinks)
 make sort/filter state local
 
 old.removeddit.com
+
+gzip on server
