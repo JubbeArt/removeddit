@@ -44,21 +44,10 @@ class GlobalState extends Container {
     this.setState({commentFilter: filterType})
   }
 
-  setError (text) {
-    this.setState({statusText: text, statusImage: '/images/error.png'})
-  }
-
-  setSuccess () {
-    this.setState({statusText: '', statusImage: '/images/success.png'})
-  }
-
-  setLoading (text) {
-    this.setState({statusText: text, statusImage: '/images/loading.gif'})
-  }
-
-  clearStatus () {
-    this.setState({statusText: '', statusImage: undefined})
-  }
+  setSuccess = () => this.setState({statusText: '', statusImage: '/images/success.png'})
+  setLoading = (text) => this.setState({statusText: text, statusImage: '/images/loading.gif'})
+  setError = (error) => this.setState({statusText: error.message, statusImage: '/images/error.png'})
+  clearStatus = () => this.setState({statusText: '', statusImage: undefined})
 }
 
 // A redux-like connect function for Unstated

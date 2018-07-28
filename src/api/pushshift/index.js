@@ -1,8 +1,7 @@
 import { toBase10, toBase36 } from '../../utils'
 
-const baseURL = 'https://elastic.pushshift.io'
-const postURL = `${baseURL}/rs/submissions/_search?source=`
-const commentURL = `${baseURL}/rc/comments/_search?source=`
+const postURL = 'https://elastic.pushshift.io/rs/submissions/_search?source='
+const commentURL = 'https://elastic.pushshift.io/rc/comments/_search?source='
 
 export const getPost = threadID => {
   const elasticQuery = {
@@ -22,19 +21,6 @@ export const getPost = threadID => {
     })
     .catch(() => { throw new Error('Could not get removed post') })
 }
-
-// export const getComments = threadID => (
-//   fetch(`https://api.pushshift.io/reddit/comment/search?link_id=${threadID}&limit=10000`)
-//     .then(json)
-//     .then(data => data.data)
-//     .then(comments => {
-//       comments.forEach(comment => {
-//         comment.link_id = comment.link_id.split('_')[1]
-//         comment.parent_id = comment.parent_id.split('_')[1]
-//       })
-//       return comments
-//     })
-// )
 
 export const getComments = threadID => {
   const elasticQuery = {

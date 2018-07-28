@@ -42,6 +42,7 @@ class Subreddit extends React.Component {
         this.setState({ threads, loading: false })
         this.props.global.setSuccess()
       })
+      .catch(this.props.global.setError)
   }
 
   render () {

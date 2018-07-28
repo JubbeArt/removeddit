@@ -39,7 +39,7 @@ class Thread extends React.Component {
             })
         }
       })
-      .catch(error => console.log(error))
+      .catch(this.props.global.setError)
 
       // Get comment ids from pushshift
     getPushshiftComments(threadID)
@@ -88,6 +88,7 @@ class Thread extends React.Component {
           loadingComments: false
         })
       })
+      .catch(this.props.global.setError)
   }
 
   render () {
