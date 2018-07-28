@@ -44,19 +44,19 @@ class GlobalState extends Container {
     this.setState({commentFilter: filterType})
   }
 
-  setErrorText (text) {
+  setError (text) {
     this.setState({statusText: text, statusImage: '/images/error.png'})
   }
 
-  setSuccessText (text) {
-    this.setState({statusText: text, statusImage: '/images/done.png'})
+  setSuccess () {
+    this.setState({statusText: '', statusImage: '/images/success.png'})
   }
 
-  setLoadingText (text) {
+  setLoading (text) {
     this.setState({statusText: text, statusImage: '/images/loading.gif'})
   }
 
-  clearStatusText () {
+  clearStatus () {
     this.setState({statusText: '', statusImage: undefined})
   }
 }

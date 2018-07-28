@@ -3,39 +3,35 @@ import { Link } from 'react-router-dom'
 import { getRemovedThreadIDs } from '../../api/removeddit'
 import { getThreads } from '../../api/reddit'
 import Post from '../common/Post'
+import {connect} from '../../state'
 
-const getSubredditForAPI = props => {
-  const { subreddit = 'all' } = props.match.params
-  if (subreddit.toLowerCase() === 'all') {
-    return ''
-  }
-  return subreddit.toLowerCase()
-}
-
-export default class Subreddit extends React.Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      threads: [],
-      subreddit: ''
-    }
+class Subreddit extends React.Component {
+  state = {
+    threads: [],
+    loading: true
   }
 
   componentDidMount () {
-    this.getRemovedThreads(this.props)
+    const { subreddit = 'all' } = this.props.match.params
+    this.getRemovedThreads(subreddit)
   }
 
-  componentWillReceiveProps (nextProps) {
-    const newSubreddit = getSubredditForAPI(nextProps)
+  // Check if the subreddit has changed in the url, and fetch threads accordingly
+  componentDidUpdate (prevProps) {
+    const { subreddit: newSubreddit = 'all' } = this.props.match.params
+    const { subreddit = 'all' } = prevProps.match.params
 
-    if (this.state.subreddit !== newSubreddit) {
-      this.getRemovedThreads(nextProps)
+    if (subreddit !== newSubreddit) {
+      this.getRemovedThreads(newSubreddit)
     }
   }
 
-  getRemovedThreads (props) {
-    const subreddit = getSubredditForAPI(props)
+  // Download thread IDs from removeddit API, then thread info from reddit API
+  getRemovedThreads (subreddit) {
+    document.title = `/r/${subreddit}`
+    this.setState({ threads: [], loading: true })
+    this.props.global.setLoading('Loading removed threads...')
+
     getRemovedThreadIDs(subreddit)
       .then(threadIDs => getThreads(threadIDs))
       .then(threads => {
@@ -43,29 +39,34 @@ export default class Subreddit extends React.Component {
           thread.removed = true
           thread.selftext = ''
         })
-        this.setState({ threads, subreddit })
+        this.setState({ threads, loading: false })
+        this.props.global.setSuccess()
       })
   }
 
   render () {
     const { subreddit = 'all' } = this.props.match.params
-    const subredditLink = `/r/${subreddit}`
+    const noThreadsFound = this.state.threads.length === 0 && !this.state.loading
 
     return (
       <React.Fragment>
         <div className='subreddit-box'>
-          <Link to={subredditLink} className='subreddit-title'>{subredditLink}</Link>
+          <Link to={`/r/${subreddit}`} className='subreddit-title'>/r/{subreddit}</Link>
           <span className='space' />
-          <a href={`https://www.reddit.com${subredditLink}`} className='subreddit-title-link'>reddit</a>
+          <a href={`https://www.reddit.com/r/${subreddit}`} className='subreddit-title-link'>reddit</a>
           <span className='space' />
-          <a href={`https://snew.github.io${subredditLink}`} className='subreddit-title-link'>ceddit</a>
+          <a href={`https://snew.github.io/r/${subreddit}`} className='subreddit-title-link'>ceddit</a>
         </div>
         {
-          this.state.threads.map(thread => (
-            <Post key={thread.id} {...thread} />
-          ))
+          noThreadsFound
+            ? <p>No removed threads found for /r/{subreddit}</p>
+            : this.state.threads.map(thread => (
+              <Post key={thread.id} {...thread} />
+            ))
         }
       </React.Fragment>
     )
   }
 }
+
+export default connect(Subreddit)
