@@ -1,6 +1,6 @@
 const path = require('path')
 
-module.exports = {
+module.exports = (env, argv) => ({
   entry: [
     'babel-polyfill',
     'whatwg-fetch',
@@ -10,7 +10,7 @@ module.exports = {
     contentBase: path.resolve(__dirname, 'dist'),
     historyApiFallback: true
   },
-  devtool: 'cheap-module-eval-source-map',
+  devtool: argv.mode !== 'production' ? 'cheap-module-eval-source-map' : false,
   module: {
     rules: [
       {
@@ -20,4 +20,4 @@ module.exports = {
       }
     ]
   }
-}
+})
