@@ -4,12 +4,12 @@ import CommentSection from './CommentSection'
 import {
   getPost,
   getComments as getRedditComments
-} from 'api/reddit'
+} from '../../api/reddit'
 import {
   getPost as getRemovedPost,
   getComments as getPushshiftComments
-} from 'api/pushshift'
-import { isDeleted, isRemoved } from 'utils'
+} from '../../api/pushshift'
+import { isDeleted, isRemoved } from '../../utils'
 
 export default class Thread extends React.Component {
   constructor (props) {

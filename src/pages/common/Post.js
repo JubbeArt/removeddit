@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { prettyScore, prettyDate, parse, redditThumbnails, isDeleted } from 'utils'
+import { prettyScore, prettyDate, parse, redditThumbnails, isDeleted } from '../../utils'
 
 export default (props) => {
   if (!props.title) {

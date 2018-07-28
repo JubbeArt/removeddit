@@ -6,7 +6,7 @@ import {connect, sort, filter} from '../../state'
 import {
   topSort, bottomSort, newSort, oldSort,
   showRemovedAndDeleted, showRemoved, showDeleted
-} from 'utils'
+} from '../../utils'
 
 const arrayToLookup = (commentList, removed, deleted) => {
   const lookup = {}
