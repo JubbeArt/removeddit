@@ -5,7 +5,8 @@ html, body {
   font-family: verdana, arial, helvetica, sans-serif; }
 
 .main {
-  margin: 15px; }
+  margin: 15px;
+  color: white; }
 
 .removed {
   background-color: #840c09; }
@@ -17,7 +18,7 @@ html, body {
   color: #c70300; }
 
 .deleted-text {
-  color: #00007d; }
+  color: #0000ff; }
 
 a {
   color: #8cb3d9; }
