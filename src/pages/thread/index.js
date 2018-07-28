@@ -25,11 +25,13 @@ class Thread extends React.Component {
 
   componentDidMount () {
     const { subreddit, threadID } = this.props.match.params
+    this.props.global.setLoading('Loading comments from Pushshift...')
 
     // Get thread from reddit
     getPost(subreddit, threadID)
       .then(post => {
         this.setState({ post })
+        document.title = post.title
         // Fetch the thread from pushshift if it was deleted/removed
         if (isDeleted(post.selftext)) {
           getRemovedPost(threadID)
@@ -41,52 +43,52 @@ class Thread extends React.Component {
       })
       .catch(this.props.global.setError)
 
-      // Get comment ids from pushshift
+    // Get comment ids from pushshift
     getPushshiftComments(threadID)
       .then(pushshiftComments => {
         // Extract ids from pushshift response
         const ids = pushshiftComments.map(comment => comment.id)
-
+        this.props.global.setLoading('Comparing comments to Reddit API...')
         // Get all the comments from reddit
-        return (
-          getRedditComments(ids)
-            .then(redditComments => {
-              const redditCommentLookup = {}
-              redditComments.forEach(comment => {
-                redditCommentLookup[comment.id] = comment
-              })
-
-              pushshiftComments.forEach(comment => {
-                // Replace pushshift score with reddit (its usually more accurate)
-                const redditComment = redditCommentLookup[comment.id]
-                if (redditComment !== undefined) {
-                  comment.score = redditComment.score
-                }
-              })
-
-              this.setState({ pushshiftComments })
-              return redditComments
+        return getRedditComments(ids)
+          .then(redditComments => {
+            // Temporary lookup for updating score
+            const redditCommentLookup = {}
+            redditComments.forEach(comment => {
+              redditCommentLookup[comment.id] = comment
             })
-        )
-      })
-      .then(redditComments => {
-        const removed = []
-        const deleted = []
 
-        // Check what as removed / deleted according to reddit
-        redditComments.forEach(comment => {
-          if (isRemoved(comment.body)) {
-            removed.push(comment.id)
-          } else if (isDeleted(comment.body)) {
-            deleted.push(comment.id)
-          }
-        })
+            // Replace pushshift score with reddit (its usually more accurate)
+            pushshiftComments.forEach(comment => {
+              const redditComment = redditCommentLookup[comment.id]
+              if (redditComment !== undefined) {
+                comment.score = redditComment.score
+              }
+            })
 
-        this.setState({
-          removed,
-          deleted,
-          loadingComments: false
-        })
+            const removed = []
+            const deleted = []
+
+            // Check what as removed / deleted according to reddit
+            redditComments.forEach(comment => {
+              if (isRemoved(comment.body)) {
+                removed.push(comment.id)
+              } else if (isDeleted(comment.body)) {
+                deleted.push(comment.id)
+              }
+            })
+
+            console.log(`Pushshift: ${pushshiftComments.length} comments`)
+            console.log(`Reddit: ${redditComments.length} comments`)
+
+            this.props.global.setSuccess()
+            this.setState({
+              pushshiftComments,
+              removed,
+              deleted,
+              loadingComments: false
+            })
+          })
       })
       .catch(this.props.global.setError)
   }
@@ -99,7 +101,7 @@ class Thread extends React.Component {
     }
 
     return (
-      <div>
+      <React.Fragment>
         <Post {...this.state.post} />
         {
           !this.state.loadingComments &&
@@ -118,7 +120,7 @@ class Thread extends React.Component {
             />
           </React.Fragment>
         }
-      </div>
+      </React.Fragment>
     )
   }
 }
