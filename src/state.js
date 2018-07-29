@@ -1,6 +1,6 @@
 import React from 'react'
 import { Subscribe, Container } from 'unstated'
-import { get, put } from '../utils'
+import { get, put } from './utils'
 
 // Sort types for comments
 export const sort = {
