@@ -23,15 +23,11 @@ const sortKey = 'commentSort'
 const filterKey = 'commentFilter'
 
 class GlobalState extends Container {
-  constructor () {
-    super()
-
-    this.state = {
-      commentSort: get(sortKey, sort.top),
-      commentFilter: get(filterKey, filter.removedDeleted),
-      statusText: '',
-      statusImage: undefined
-    }
+  state = {
+    commentSort: get(sortKey, sort.top),
+    commentFilter: get(filterKey, filter.removedDeleted),
+    statusText: '',
+    statusImage: undefined
   }
 
   setCommentSort (sortType) {
