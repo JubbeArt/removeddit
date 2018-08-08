@@ -29,6 +29,3 @@ npm run build-sass
 # yarn
 yarn run build-sass
 ```
-
-## Linting
-The linter I use is called [standard](https://standardjs.com/) and you can find plugins for different editors [here](https://standardjs.com/#are-there-text-editor-plugins). Currently I'm using VSCode.
