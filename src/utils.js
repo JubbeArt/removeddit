@@ -22,10 +22,10 @@ export const toBase36 = number => parseInt(number, 10).toString(36)
 export const toBase10 = numberString => parseInt(numberString, 36)
 
 // Reddits way of indicating that something is deleted
-export const isDeleted = textBody => textBody === '[deleted]'
+export const isDeleted = textBody => textBody === '\\[deleted\\]'
 
 // Reddits way of indicating that something is deleted
-export const isRemoved = textBody => textBody === '[removed]'
+export const isRemoved = textBody => textBody === '\\[removed\\]'
 
 // Default thumbnails for reddit threads
 export const redditThumbnails = ['self', 'default', 'image', 'nsfw']

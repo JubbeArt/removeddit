@@ -1,6 +1,4 @@
 import React from 'react'
-import Post from '../common/Post'
-import CommentSection from './CommentSection'
 import {
   getPost,
   getComments as getRedditComments
@@ -10,9 +8,11 @@ import {
   getComments as getPushshiftComments
 } from '../../api/pushshift'
 import { isDeleted, isRemoved } from '../../utils'
-import CommentInfo from './CommentInfo'
-import SortBy from './SortBy'
 import { connect } from '../../state'
+import Post from '../common/Post'
+import CommentSection from './CommentSection'
+import SortBy from './SortBy'
+import CommentInfo from './CommentInfo'
 
 class Thread extends React.Component {
   state = {
