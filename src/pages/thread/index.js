@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import {
   getPost,
   getComments as getRedditComments
@@ -99,9 +100,11 @@ class Thread extends React.Component {
 
   render () {
     let root = this.state.post.id
+    let isSingleComment = false
 
     if (this.props.match.params.commentID !== undefined) {
       root = this.props.match.params.commentID
+      isSingleComment = true
     }
 
     return (
@@ -116,6 +119,12 @@ class Thread extends React.Component {
               deleted={this.state.deleted.length}
             />
             <SortBy />
+            {isSingleComment &&
+              <div class='view-rest-of-comment'>
+                <div>you are viewing a single comment's thread.</div>
+                <Link to={this.state.post.permalink}>view the rest of the comments</Link>
+              </div>
+            }
             <CommentSection
               root={root}
               comments={this.state.pushshiftComments}

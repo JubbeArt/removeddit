@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { prettyScore, prettyDate, parse } from '../../utils'
 
 const Comment = (props) => {
@@ -34,7 +35,7 @@ const Comment = (props) => {
       </div>
       <div className='comment-body' dangerouslySetInnerHTML={{ __html: innerHTML }} />
       <div className='comment-links'>
-        <a href={permalink}>permalink</a>
+        <Link to={permalink}>permalink</Link>
         <a href={`https://www.reddit.com${permalink}`}>reddit</a>
         <a href={`https://snew.github.io${permalink}`}>ceddit</a>
       </div>

@@ -277,6 +277,14 @@ header {
     color: #828282;
     margin-right: 4px; }
 
+.view-rest-of-comment {
+  background-color: #264d73;
+  border-color: #2966a3;
+  font-size: 13px;
+  padding: 10px;
+  color: #cccccc;
+  margin-bottom: 10px; }
+
 .post-rank {
   min-width: 20px;
   color: #505050;
