@@ -99,13 +99,12 @@ class Thread extends React.Component {
   }
 
   render () {
-    let root = this.state.post.id
-    let isSingleComment = false
+    const { subreddit, id } = this.state.post
+    const { commentID } = this.props.match.params
+    const linkToRestOfComments = `/r/${subreddit}/comments/${id}/_/`
 
-    if (this.props.match.params.commentID !== undefined) {
-      root = this.props.match.params.commentID
-      isSingleComment = true
-    }
+    const isSingleComment = commentID !== undefined
+    const root = isSingleComment ? commentID : id
 
     return (
       <React.Fragment>
@@ -120,9 +119,9 @@ class Thread extends React.Component {
             />
             <SortBy />
             {isSingleComment &&
-              <div class='view-rest-of-comment'>
+              <div className='view-rest-of-comment'>
                 <div>you are viewing a single comment's thread.</div>
-                <Link to={this.state.post.permalink}>view the rest of the comments</Link>
+                <Link to={linkToRestOfComments}>view the rest of the comments</Link>
               </div>
             }
             <CommentSection
