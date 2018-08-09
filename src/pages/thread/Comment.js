@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { prettyScore, prettyDate, parse } from '../../utils'
+import { prettyScore, prettyDate, parse, isRemoved } from '../../utils'
 
 const Comment = (props) => {
   let commentStyle = 'comment '
@@ -13,7 +13,7 @@ const Comment = (props) => {
     commentStyle += props.depth % 2 === 0 ? 'comment-even' : 'comment-odd'
   }
 
-  const innerHTML = (props.body === '[removed]' && props.removed) ? '<p>[removed too quickly to be archived]</p>' : parse(props.body)
+  const innerHTML = (isRemoved(props.body) && props.removed) ? '<p>[removed too quickly to be archived]</p>' : parse(props.body)
   const permalink = `/r/${props.subreddit}/comments/${props.link_id}/_/${props.id}/`
 
   return (
