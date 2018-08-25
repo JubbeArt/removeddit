@@ -29,7 +29,7 @@ export const getComments = threadID => {
         link_id: toBase10(threadID)
       }
     },
-    size: 10000,
+    size: 25000,
     _source: [
       'author', 'body', 'created_utc', 'parent_id', 'score', 'subreddit', 'link_id'
     ]
