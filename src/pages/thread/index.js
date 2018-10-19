@@ -8,7 +8,7 @@ import {
   getPost as getRemovedPost,
   getComments as getPushshiftComments
 } from '../../api/pushshift'
-import { isDeleted, isRemoved } from '../../utils'
+import { isRemoved } from '../../utils'
 import { connect } from '../../state'
 import Post from '../common/Post'
 import CommentSection from './CommentSection'
@@ -34,7 +34,7 @@ class Thread extends React.Component {
         this.setState({ post })
         document.title = post.title
         // Fetch the thread from pushshift if it was deleted/removed
-        if (isDeleted(post.selftext) || isRemoved(post.selftext)) {
+        if (isRemoved(post.selftext)) {
           getRemovedPost(threadID)
             .then(removedPost => {
               if (isRemoved(post.selftext)) {
