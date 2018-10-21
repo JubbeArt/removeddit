@@ -2,7 +2,7 @@
 // The app NEEDS TO BE an installed app and NOT a web apps
 
 // Current using dummy ID from throwaway
-const clientID = '33W8M1OOxPv80A'
+const clientID = 'Gu4d7t1AglWJVg'
 
 // Token for reddit API
 let token
