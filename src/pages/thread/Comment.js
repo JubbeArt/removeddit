@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { prettyScore, prettyDate, parse, isRemoved } from '../../utils'
 import classNames from 'classnames'
@@ -25,7 +25,6 @@ const Comment = (props) => {
   const permalink = `/r/${props.subreddit}/comments/${props.link_id}/_/${props.id}/`
   const handleSetActiveComment = (e) => {
     e.stopPropagation()
-    console.log(e.target)
     props.setActiveComment(props.id)
   }
 
