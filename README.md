@@ -27,5 +27,5 @@ The CSS is build seperatly (to keep the build steps / configs very simple) by ru
 npm run build-sass
 
 # yarn
-yarn run build-sass
+yarn build-sass
 ```

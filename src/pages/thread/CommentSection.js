@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Comment from './Comment'
 import {connect, sort, filter} from '../../state'
 import {
@@ -87,6 +87,7 @@ const filterCommentTree = (comments, filterFunction) => {
 
 const commentSection = (props) => {
   console.time('render comment section')
+  const [activeComment, setActiveComment] = useState('')
   const commentTree = unflatten(props.comments, props.root, props.removed, props.deleted)
   const {commentFilter, commentSort} = props.global.state
 
@@ -116,6 +117,8 @@ const commentSection = (props) => {
           key={comment.id}
           {...comment}
           depth={0}
+          activeComment={activeComment}
+          setActiveComment={setActiveComment}
         />
       ))
       : <p>No comments found</p>

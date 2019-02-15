@@ -1,4 +1,4 @@
-html, body 
+html, body
   margin: 0
   padding: 0
   background-color: $background
@@ -12,7 +12,7 @@ html, body
   background-color: $removed
 
 .deleted
-  background-color: $deleted
+  background-color: $deleted !important
 
 .removed-text
   color: $red
@@ -22,7 +22,7 @@ html, body
 
 a
   color: $link
-  
+
 a:link, a:visited, a:active
   text-decoration: none
 
@@ -35,6 +35,9 @@ a:hover
 .author:not([href])
   color: inherit
   text-decoration: none
+
+.hide
+  display: none
 
 .space
   margin-left: 5px
