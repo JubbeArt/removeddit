@@ -1,7 +1,7 @@
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { Provider } from 'unstated'
 
 import Header from './pages/common/Header'
@@ -22,6 +22,10 @@ ReactDOM.render(
             <Route path='/r/:subreddit/comments/:threadID/:junk/:commentID' component={Thread} />
             <Route path='/r/:subreddit/comments/:threadID' component={Thread} />
             <Route path='/r/:subreddit' component={Subreddit} />
+            <Redirect from='/user/:username/comments/:threadID/:junk/:commentID'
+                      to='/r/u_username/comments/:threadID/:junk/:commentID' />
+            <Redirect from='/user/:username/comments/:threadID' to='/r/u_:username/comments/:threadID' />
+            <Redirect from='/user/:username' to='/r/u_:username' />
             <Route component={NotFound} />
           </Switch>
         </div>
