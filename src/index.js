@@ -23,7 +23,7 @@ ReactDOM.render(
             <Route path='/r/:subreddit/comments/:threadID' component={Thread} />
             <Route path='/r/:subreddit' component={Subreddit} />
             <Redirect from='/user/:username/comments/:threadID/:junk/:commentID'
-                      to='/r/u_username/comments/:threadID/:junk/:commentID' />
+                      to='/r/u_:username/comments/:threadID/:junk/:commentID' />
             <Redirect from='/user/:username/comments/:threadID' to='/r/u_:username/comments/:threadID' />
             <Redirect from='/user/:username' to='/r/u_:username' />
             <Route component={NotFound} />
