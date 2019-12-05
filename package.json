@@ -25,7 +25,7 @@
   "scripts": {
     "start": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
-    "build-sass": "node-sass --style compressed src/sass/index.sass dist/main.css"
+    "css": "node-sass --style compressed src/sass/index.sass dist/main.css"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",

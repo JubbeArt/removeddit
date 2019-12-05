@@ -18,5 +18,5 @@ This will build the Javascript files and launch a local server for development. 
 
 The CSS is build seperatly (to keep the build steps / configs very simple) by running
 ```bash
-npm run build-sass
+npm run css
 ```
