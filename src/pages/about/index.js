@@ -36,9 +36,19 @@ const About = props => {
         </p>
         <h2 className='todo'>FAQ</h2>
         <b>Q: I posted some sensitive information on Reddit. Can you delete this from your page?</b>
-        <p>a</p>
+        <p>
+          No, I can't remove anything myself since I am not the not the one storing all the deleted comment.
+          This is done by an external service run by Jason Baumgartner (<a href='https://www.reddit.com/user/Stuck_In_the_Matrix'>/u/Stuck_In_the_Matrix</a>).
+          If you want something sensitive removed permanently you should contact him.
+        </p>
         <b>Q: How does it work?</b>
-
+        <p>
+          This page is only possible because of the amzaing work done by Jason.
+          His site <a href='https://pushshift.io/'>pushshift.io</a> activly listens for new comments on reddit and stores them in his own database.
+          Then sites like removeddit and ceddit can fetch these comment from pushshift.
+          Removeddit know what comment reddit shows (from Reddits API) and what comment should be showed (from Pushshift).
+          By comparing the comments from these 2 APIs, we can figure out what has been deleted and removed.
+        </p>
         <h2 className='contact'>Links/Contact</h2>
         <p style={{ marginBottom: '8px' }}>For feedback and bug reports:</p>
         <ul>
