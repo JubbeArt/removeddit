@@ -12,25 +12,25 @@ const About = props => {
       <div id='main-box'>
         <h2 className='about'>About</h2>
         <p>
-        Display
+          Display
           <b className='removed-text' title='Removed by mods'> removed </b>
-        (by mods) and
+          (by mods) and
           <b className='deleted-text' title='Deleted by users'> deleted </b>
-        (by users) comments/threads from  Reddit.
+          (by users) comments/threads from  Reddit.
         </p>
         <p>
           <b>Usage</b>: Drag this bookmarklet
           <a className='bookmarklet' href="javascript: document.location = document.URL.replace('reddit.com','removeddit.com');">
-          Removeddit
+            Removeddit
           </a>
-        to your bookmark bar and use it to get from reddit to removeddit.
+          to your bookmark bar and use it to get from reddit to removeddit.
           <br /><br />
-        Alternatively you can manually replace the <i>reddit</i> in the URL to <i>removeddit</i>.
+          Alternatively you can manually replace the <i>reddit</i> in the URL to <i>removeddit</i>.
           <br />
-        E.g. <a href='/r/TwoXChromosomes/comments/6z1hch/'>https://www.removeddit.com/r/TwoXChromosomes/comments/6z1hch/</a>
+          E.g. <a href='/r/TwoXChromosomes/comments/6z1hch/'>https://www.removeddit.com/r/TwoXChromosomes/comments/6z1hch/</a>
         </p>
         <p>
-        Created by
+          Created by
           <a href='https://github.com/JubbeArt/'> Jesper Wrang </a> and uses
           <a href='https://pushshift.io/'> Jason Baumgartner </a> service for getting removed comments.
         </p>
