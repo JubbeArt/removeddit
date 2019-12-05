@@ -10,14 +10,14 @@ const Header = props => (
       </h1>
       <nav>
         <Link to='/r/all'>/r/all</Link>
-        <Link to='/about/'>about</Link>
+        <Link to='/about/'>about & FAQ</Link>
       </nav>
     </div>
     <div id='status'>
       {props.global.state.statusText &&
-      <p id='status-text'>{props.global.state.statusText}</p>}
+        <p id='status-text'>{props.global.state.statusText}</p>}
       {props.global.state.statusImage &&
-      <img id='status-image' src={props.global.state.statusImage} alt='status' />}
+        <img id='status-image' src={props.global.state.statusImage} alt='status' />}
     </div>
   </header>
 )

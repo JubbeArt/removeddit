@@ -34,16 +34,16 @@ const About = props => {
           <a href='https://github.com/JubbeArt/'> Jesper Wrang </a> and uses
           <a href='https://pushshift.io/'> Jason Baumgartner </a> service for getting removed comments.
         </p>
-        <h2 className='todo'>TODO</h2>
-        <ul>
-          <li>Collapsing comments</li>
-          <li>Maybe for specific users </li>
-        </ul>
+        <h2 className='todo'>FAQ</h2>
+        <b>Q: I posted some sensitive information on Reddit. Can you delete this from your page?</b>
+        <p>a</p>
+        <b>Q: How does it work?</b>
+
         <h2 className='contact'>Links/Contact</h2>
         <p style={{ marginBottom: '8px' }}>For feedback and bug reports:</p>
         <ul>
           <li>email: removeddit (at) gmail.com</li>
-          <li>reddit: <a href='https://www.reddit.com/user/Jubbeart/'>/u/JubbeArt</a></li>
+          <li>reddit: <a href='https://www.reddit.com/user/Jubbeart/'>/u/JubbeArt</a> (not active anymore)</li>
         </ul>
         <p>
           <a href='https://github.com/JubbeArt/removeddit'>Code on Github.</a>
