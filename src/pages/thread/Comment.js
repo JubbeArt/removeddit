@@ -37,7 +37,7 @@ const Comment = (props) => {
       <div className='comment-links'>
         <Link to={permalink}>permalink</Link>
         <a href={`https://www.reddit.com${permalink}`}>reddit</a>
-        <a href={`https://snew.github.io${permalink}`}>ceddit</a>
+        <a href={`https://snew.notabug.io${permalink}`}>ceddit</a>
       </div>
       <div>
         {props.replies.map(comment => (

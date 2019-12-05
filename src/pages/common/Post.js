@@ -27,7 +27,7 @@ export default (props) => {
   return (
     <div className={`thread ${props.removed && 'removed'} ${props.deleted && 'deleted'}`}>
       {props.position &&
-      <span className='post-rank'>{props.position}</span>}
+        <span className='post-rank'>{props.position}</span>}
       <div className='thread-score-box'>
         <div className='vote upvote' />
         <div className='thread-score'>{prettyScore(props.score)}</div>
@@ -47,11 +47,11 @@ export default (props) => {
           &nbsp;to <Link className='subreddit-link author' to={`/r/${props.subreddit}`}>/r/{props.subreddit}</Link>
         </div>
         {props.selftext &&
-        <div className='thread-selftext user-text' dangerouslySetInnerHTML={{ __html: parse(props.selftext) }} />}
+          <div className='thread-selftext user-text' dangerouslySetInnerHTML={{ __html: parse(props.selftext) }} />}
         <div className='total-comments'>
           <Link className='grey-link' to={props.permalink}><b>{props.num_comments} comments</b></Link>&nbsp;
           <a className='grey-link' href={`https://www.reddit.com${props.permalink}`}><b>reddit</b></a>&nbsp;
-          <a className='grey-link' href={`https://snew.github.io${props.permalink}`}><b>ceddit</b></a>
+          <a className='grey-link' href={`https://snew.notabug.io${props.permalink}`}><b>ceddit</b></a>
         </div>
       </div>
     </div>

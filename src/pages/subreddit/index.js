@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { getRemovedThreadIDs } from '../../api/removeddit'
 import { getThreads } from '../../api/reddit'
 import Post from '../common/Post'
-import {connect} from '../../state'
+import { connect } from '../../state'
 
 class Subreddit extends React.Component {
   state = {
@@ -11,13 +11,13 @@ class Subreddit extends React.Component {
     loading: true
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { subreddit = 'all' } = this.props.match.params
     this.getRemovedThreads(subreddit)
   }
 
   // Check if the subreddit has changed in the url, and fetch threads accordingly
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const { subreddit: newSubreddit = 'all' } = this.props.match.params
     const { subreddit = 'all' } = prevProps.match.params
 
@@ -27,7 +27,7 @@ class Subreddit extends React.Component {
   }
 
   // Download thread IDs from removeddit API, then thread info from reddit API
-  getRemovedThreads (subreddit) {
+  getRemovedThreads(subreddit) {
     document.title = `/r/${subreddit}`
     this.setState({ threads: [], loading: true })
     this.props.global.setLoading('Loading removed threads...')
@@ -45,7 +45,7 @@ class Subreddit extends React.Component {
       .catch(this.props.global.setError)
   }
 
-  render () {
+  render() {
     const { subreddit = 'all' } = this.props.match.params
     const noThreadsFound = this.state.threads.length === 0 && !this.state.loading
 
@@ -56,7 +56,7 @@ class Subreddit extends React.Component {
           <span className='space' />
           <a href={`https://www.reddit.com/r/${subreddit}`} className='subreddit-title-link'>reddit</a>
           <span className='space' />
-          <a href={`https://snew.github.io/r/${subreddit}`} className='subreddit-title-link'>ceddit</a>
+          <a href={`https://snew.notabug.io/r/${subreddit}`} className='subreddit-title-link'>ceddit</a>
         </div>
         {
           noThreadsFound
