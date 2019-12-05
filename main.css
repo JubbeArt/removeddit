@@ -92,6 +92,9 @@ header {
     color: #239f2b; }
   #main-box h2.contact {
     color: #1b767a; }
+  #main-box .question {
+    font-size: 18px;
+    color: lightblue; }
   #main-box ul {
     padding-left: 30px;
     margin: 0; }
