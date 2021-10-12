@@ -1,5 +1,3 @@
-import { toBase36 } from '../../utils'
-
 const postURL = 'https://api.pushshift.io/reddit/search/submission'
 const commentsURL = 'https://api.pushshift.io/reddit/submission/comment_ids/'
 const commentURL = 'https://api.pushshift.io/reddit/search/comment'
@@ -8,10 +6,7 @@ const fetchJson = (url) => window.fetch(url).then((response) => response.json())
 
 export const getPost = (threadID) =>
   fetchJson(`${postURL}?ids=${threadID}&size=1`)
-    .then(([result]) => ({
-      ...result,
-      id: toBase36(result.id),
-    }))
+    .then(([result]) => result)
     .catch(() => {
       throw new Error('Could not get removed post')
     })
@@ -22,7 +17,7 @@ export const getComments = (threadID) =>
     .then(({ data }) =>
       data.map((comment) => ({
         ...comment,
-        parent_id: comment.parent_id || threadID,
+        parent_id: comment.parent_id.substring(3) || threadID,
       }))
     )
     .catch(() => {
